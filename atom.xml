@@ -4,9 +4,9 @@
   <subtitle>If I rest, I rust.</subtitle>
   <link href="/cnblogs/atom.xml" rel="self"/>
   
-  <link href="http://shzhangji.com/cnblogs/"/>
+  <link href="http://shzhangji.com/"/>
   <updated>2017-03-09T04:26:46.000Z</updated>
-  <id>http://shzhangji.com/cnblogs/</id>
+  <id>http://shzhangji.com/</id>
   
   <author>
     <name>张吉</name>
@@ -17,8 +17,8 @@
   
   <entry>
     <title>开发人员必知的5种开源框架</title>
-    <link href="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/"/>
-    <id>http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/</id>
+    <link href="http://shzhangji.com/2016/03/13/top-5-frameworks/"/>
+    <id>http://shzhangji.com/2016/03/13/top-5-frameworks/</id>
     <published>2016-03-13T08:25:00.000Z</published>
     <updated>2017-03-09T04:26:46.000Z</updated>
     
@@ -63,17 +63,17 @@
     
     </summary>
     
-      <category term="Programming" scheme="http://shzhangji.com/cnblogs/categories/Programming/"/>
+      <category term="Programming" scheme="http://shzhangji.com/categories/Programming/"/>
     
     
-      <category term="translation" scheme="http://shzhangji.com/cnblogs/tags/translation/"/>
+      <category term="translation" scheme="http://shzhangji.com/tags/translation/"/>
     
   </entry>
   
   <entry>
     <title>使用Spring AOP向领域模型注入依赖</title>
-    <link href="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/"/>
-    <id>http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/</id>
+    <link href="http://shzhangji.com/2015/09/12/model-dependency-injection-with-spring-aop/"/>
+    <id>http://shzhangji.com/2015/09/12/model-dependency-injection-with-spring-aop/</id>
     <published>2015-09-12T14:03:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -135,15 +135,15 @@
     
     </summary>
     
-      <category term="Notes" scheme="http://shzhangji.com/cnblogs/categories/Notes/"/>
+      <category term="Notes" scheme="http://shzhangji.com/categories/Notes/"/>
     
     
   </entry>
   
   <entry>
     <title>贫血领域模型</title>
-    <link href="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/"/>
-    <id>http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/</id>
+    <link href="http://shzhangji.com/2015/09/05/anemic-domain-model/"/>
+    <id>http://shzhangji.com/2015/09/05/anemic-domain-model/</id>
     <published>2015-09-05T11:02:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -177,15 +177,15 @@
     
     </summary>
     
-      <category term="Translation" scheme="http://shzhangji.com/cnblogs/categories/Translation/"/>
+      <category term="Translation" scheme="http://shzhangji.com/categories/Translation/"/>
     
     
   </entry>
   
   <entry>
     <title>HotSpot JVM中的对象指针压缩</title>
-    <link href="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/"/>
-    <id>http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/</id>
+    <link href="http://shzhangji.com/2015/06/25/compressed-oops-in-the-hotspot-jvm/"/>
+    <id>http://shzhangji.com/2015/06/25/compressed-oops-in-the-hotspot-jvm/</id>
     <published>2015-06-25T09:41:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -279,15 +279,15 @@
     
     </summary>
     
-      <category term="Translation" scheme="http://shzhangji.com/cnblogs/categories/Translation/"/>
+      <category term="Translation" scheme="http://shzhangji.com/categories/Translation/"/>
     
     
   </entry>
   
   <entry>
     <title>Apache HBase的适用场景</title>
-    <link href="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/"/>
-    <id>http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/</id>
+    <link href="http://shzhangji.com/2015/03/08/hbase-dos-and-donts/"/>
+    <id>http://shzhangji.com/2015/03/08/hbase-dos-and-donts/</id>
     <published>2015-03-08T00:03:00.000Z</published>
     <updated>2017-03-09T04:27:06.000Z</updated>
     
@@ -331,17 +331,17 @@
     
     </summary>
     
-      <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
+      <category term="Big Data" scheme="http://shzhangji.com/categories/Big-Data/"/>
     
     
-      <category term="translation" scheme="http://shzhangji.com/cnblogs/tags/translation/"/>
+      <category term="translation" scheme="http://shzhangji.com/tags/translation/"/>
     
   </entry>
   
   <entry>
     <title>深入理解Reduce-side Join</title>
-    <link href="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/"/>
-    <id>http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/</id>
+    <link href="http://shzhangji.com/2015/01/13/understand-reduce-side-join/"/>
+    <id>http://shzhangji.com/2015/01/13/understand-reduce-side-join/</id>
     <published>2015-01-13T06:20:00.000Z</published>
     <updated>2017-03-09T07:25:39.000Z</updated>
     
@@ -407,16 +407,16 @@
     </summary>
     
     
-      <category term="hadoop" scheme="http://shzhangji.com/cnblogs/tags/hadoop/"/>
+      <category term="hadoop" scheme="http://shzhangji.com/tags/hadoop/"/>
     
-      <category term="mapreduce" scheme="http://shzhangji.com/cnblogs/tags/mapreduce/"/>
+      <category term="mapreduce" scheme="http://shzhangji.com/tags/mapreduce/"/>
     
   </entry>
   
   <entry>
     <title>使用git rebase让历史变得清晰</title>
-    <link href="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/"/>
-    <id>http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/</id>
+    <link href="http://shzhangji.com/2014/12/23/use-git-rebase-to-clarify-history/"/>
+    <id>http://shzhangji.com/2014/12/23/use-git-rebase-to-clarify-history/</id>
     <published>2014-12-23T08:10:00.000Z</published>
     <updated>2017-03-09T07:25:39.000Z</updated>
     
@@ -461,15 +461,15 @@
     
     </summary>
     
-      <category term="Notes" scheme="http://shzhangji.com/cnblogs/categories/Notes/"/>
+      <category term="Notes" scheme="http://shzhangji.com/categories/Notes/"/>
     
     
   </entry>
   
   <entry>
     <title>Spark快速入门</title>
-    <link href="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/"/>
-    <id>http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/</id>
+    <link href="http://shzhangji.com/2014/12/16/spark-quick-start/"/>
+    <id>http://shzhangji.com/2014/12/16/spark-quick-start/</id>
     <published>2014-12-16T07:59:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -574,17 +574,17 @@
     
     </summary>
     
-      <category term="Tutorial" scheme="http://shzhangji.com/cnblogs/categories/Tutorial/"/>
+      <category term="Tutorial" scheme="http://shzhangji.com/categories/Tutorial/"/>
     
-      <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Tutorial/Big-Data/"/>
+      <category term="Big Data" scheme="http://shzhangji.com/categories/Tutorial/Big-Data/"/>
     
     
   </entry>
   
   <entry>
     <title>离线环境下构建sbt项目</title>
-    <link href="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/"/>
-    <id>http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/</id>
+    <link href="http://shzhangji.com/2014/11/07/sbt-offline/"/>
+    <id>http://shzhangji.com/2014/11/07/sbt-offline/</id>
     <published>2014-11-07T07:02:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -632,15 +632,15 @@
     
     </summary>
     
-      <category term="Notes" scheme="http://shzhangji.com/cnblogs/categories/Notes/"/>
+      <category term="Notes" scheme="http://shzhangji.com/categories/Notes/"/>
     
     
   </entry>
   
   <entry>
     <title>MySQL异常UTF-8字符的处理</title>
-    <link href="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/"/>
-    <id>http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/</id>
+    <link href="http://shzhangji.com/2014/10/14/mysql-incorrent-utf8-value/"/>
+    <id>http://shzhangji.com/2014/10/14/mysql-incorrent-utf8-value/</id>
     <published>2014-10-14T05:16:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -683,15 +683,15 @@
     
     </summary>
     
-      <category term="Notes" scheme="http://shzhangji.com/cnblogs/categories/Notes/"/>
+      <category term="Notes" scheme="http://shzhangji.com/categories/Notes/"/>
     
     
   </entry>
   
   <entry>
     <title>在CDH 4.5上安装Shark 0.9</title>
-    <link href="http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/"/>
-    <id>http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/</id>
+    <link href="http://shzhangji.com/2014/07/05/deploy-shark-0.9-with-cdh-4.5/"/>
+    <id>http://shzhangji.com/2014/07/05/deploy-shark-0.9-with-cdh-4.5/</id>
     <published>2014-07-05T09:16:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -798,17 +798,17 @@
     
     </summary>
     
-      <category term="Notes" scheme="http://shzhangji.com/cnblogs/categories/Notes/"/>
+      <category term="Notes" scheme="http://shzhangji.com/categories/Notes/"/>
     
-      <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Notes/Big-Data/"/>
+      <category term="Big Data" scheme="http://shzhangji.com/categories/Notes/Big-Data/"/>
     
     
   </entry>
   
   <entry>
     <title>Hive小文件问题的处理</title>
-    <link href="http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/"/>
-    <id>http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/</id>
+    <link href="http://shzhangji.com/2014/04/07/hive-small-files/"/>
+    <id>http://shzhangji.com/2014/04/07/hive-small-files/</id>
     <published>2014-04-07T09:09:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -850,17 +850,17 @@
     
     </summary>
     
-      <category term="Notes" scheme="http://shzhangji.com/cnblogs/categories/Notes/"/>
+      <category term="Notes" scheme="http://shzhangji.com/categories/Notes/"/>
     
-      <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Notes/Big-Data/"/>
+      <category term="Big Data" scheme="http://shzhangji.com/categories/Notes/Big-Data/"/>
     
     
   </entry>
   
   <entry>
     <title>Java反射机制</title>
-    <link href="http://shzhangji.com/cnblogs/2014/01/25/java-reflection-tutorial/"/>
-    <id>http://shzhangji.com/cnblogs/2014/01/25/java-reflection-tutorial/</id>
+    <link href="http://shzhangji.com/2014/01/25/java-reflection-tutorial/"/>
+    <id>http://shzhangji.com/2014/01/25/java-reflection-tutorial/</id>
     <published>2014-01-25T01:42:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -937,17 +937,17 @@
     
     </summary>
     
-      <category term="Translation" scheme="http://shzhangji.com/cnblogs/categories/Translation/"/>
+      <category term="Translation" scheme="http://shzhangji.com/categories/Translation/"/>
     
-      <category term="Tutorial" scheme="http://shzhangji.com/cnblogs/categories/Translation/Tutorial/"/>
+      <category term="Tutorial" scheme="http://shzhangji.com/categories/Translation/Tutorial/"/>
     
     
   </entry>
   
   <entry>
     <title>抽象泄漏定律</title>
-    <link href="http://shzhangji.com/cnblogs/2013/12/17/the-law-of-leaky-abstractions/"/>
-    <id>http://shzhangji.com/cnblogs/2013/12/17/the-law-of-leaky-abstractions/</id>
+    <link href="http://shzhangji.com/2013/12/17/the-law-of-leaky-abstractions/"/>
+    <id>http://shzhangji.com/2013/12/17/the-law-of-leaky-abstractions/</id>
     <published>2013-12-17T05:05:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -997,15 +997,15 @@
     
     </summary>
     
-      <category term="Translation" scheme="http://shzhangji.com/cnblogs/categories/Translation/"/>
+      <category term="Translation" scheme="http://shzhangji.com/categories/Translation/"/>
     
     
   </entry>
   
   <entry>
     <title>Hive并发情况下报DELETEME表不存在的异常</title>
-    <link href="http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/"/>
-    <id>http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/</id>
+    <link href="http://shzhangji.com/2013/09/06/hive-deleteme-error/"/>
+    <id>http://shzhangji.com/2013/09/06/hive-deleteme-error/</id>
     <published>2013-09-06T03:20:00.000Z</published>
     <updated>2017-03-09T07:25:39.000Z</updated>
     
@@ -1054,19 +1054,19 @@
     
     </summary>
     
-      <category term="Notes" scheme="http://shzhangji.com/cnblogs/categories/Notes/"/>
+      <category term="Notes" scheme="http://shzhangji.com/categories/Notes/"/>
     
-      <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Notes/Big-Data/"/>
+      <category term="Big Data" scheme="http://shzhangji.com/categories/Notes/Big-Data/"/>
     
     
-      <category term="hive" scheme="http://shzhangji.com/cnblogs/tags/hive/"/>
+      <category term="hive" scheme="http://shzhangji.com/tags/hive/"/>
     
   </entry>
   
   <entry>
     <title>Ansible FAQ</title>
-    <link href="http://shzhangji.com/cnblogs/2013/06/11/ansible-faq/"/>
-    <id>http://shzhangji.com/cnblogs/2013/06/11/ansible-faq/</id>
+    <link href="http://shzhangji.com/2013/06/11/ansible-faq/"/>
+    <id>http://shzhangji.com/2013/06/11/ansible-faq/</id>
     <published>2013-06-11T13:18:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -1156,17 +1156,17 @@
     
     </summary>
     
-      <category term="Translation" scheme="http://shzhangji.com/cnblogs/categories/Translation/"/>
+      <category term="Translation" scheme="http://shzhangji.com/categories/Translation/"/>
     
     
-      <category term="ops" scheme="http://shzhangji.com/cnblogs/tags/ops/"/>
+      <category term="ops" scheme="http://shzhangji.com/tags/ops/"/>
     
   </entry>
   
   <entry>
     <title>Apache Hadoop YARN - 项目背景与简介</title>
-    <link href="http://shzhangji.com/cnblogs/2013/05/25/apache-hadoop-yarn-background-and-an-overview/"/>
-    <id>http://shzhangji.com/cnblogs/2013/05/25/apache-hadoop-yarn-background-and-an-overview/</id>
+    <link href="http://shzhangji.com/2013/05/25/apache-hadoop-yarn-background-and-an-overview/"/>
+    <id>http://shzhangji.com/2013/05/25/apache-hadoop-yarn-background-and-an-overview/</id>
     <published>2013-05-25T02:57:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -1224,17 +1224,17 @@
     
     </summary>
     
-      <category term="Translation" scheme="http://shzhangji.com/cnblogs/categories/Translation/"/>
+      <category term="Translation" scheme="http://shzhangji.com/categories/Translation/"/>
     
     
-      <category term="hadoop" scheme="http://shzhangji.com/cnblogs/tags/hadoop/"/>
+      <category term="hadoop" scheme="http://shzhangji.com/tags/hadoop/"/>
     
   </entry>
   
   <entry>
     <title>Cascalog：基于Clojure的Hadoop查询语言</title>
-    <link href="http://shzhangji.com/cnblogs/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/"/>
-    <id>http://shzhangji.com/cnblogs/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/</id>
+    <link href="http://shzhangji.com/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/"/>
+    <id>http://shzhangji.com/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/</id>
     <published>2013-05-01T10:01:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -1348,19 +1348,19 @@
     
     </summary>
     
-      <category term="Translation" scheme="http://shzhangji.com/cnblogs/categories/Translation/"/>
+      <category term="Translation" scheme="http://shzhangji.com/categories/Translation/"/>
     
-      <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Translation/Big-Data/"/>
+      <category term="Big Data" scheme="http://shzhangji.com/categories/Translation/Big-Data/"/>
     
     
-      <category term="clojure" scheme="http://shzhangji.com/cnblogs/tags/clojure/"/>
+      <category term="clojure" scheme="http://shzhangji.com/tags/clojure/"/>
     
   </entry>
   
   <entry>
     <title>Clojure实战(5)：Storm实时计算框架</title>
-    <link href="http://shzhangji.com/cnblogs/2013/04/22/cia-storm/"/>
-    <id>http://shzhangji.com/cnblogs/2013/04/22/cia-storm/</id>
+    <link href="http://shzhangji.com/2013/04/22/cia-storm/"/>
+    <id>http://shzhangji.com/2013/04/22/cia-storm/</id>
     <published>2013-04-22T04:11:00.000Z</published>
     <updated>2017-03-09T03:44:04.000Z</updated>
     
@@ -1453,21 +1453,21 @@
     
     </summary>
     
-      <category term="Tutorial" scheme="http://shzhangji.com/cnblogs/categories/Tutorial/"/>
+      <category term="Tutorial" scheme="http://shzhangji.com/categories/Tutorial/"/>
     
-      <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Tutorial/Big-Data/"/>
+      <category term="Big Data" scheme="http://shzhangji.com/categories/Tutorial/Big-Data/"/>
     
     
-      <category term="clojure" scheme="http://shzhangji.com/cnblogs/tags/clojure/"/>
+      <category term="clojure" scheme="http://shzhangji.com/tags/clojure/"/>
     
-      <category term="storm" scheme="http://shzhangji.com/cnblogs/tags/storm/"/>
+      <category term="storm" scheme="http://shzhangji.com/tags/storm/"/>
     
   </entry>
   
   <entry>
     <title>Perl入门实战：JVM监控脚本（下）</title>
-    <link href="http://shzhangji.com/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/"/>
-    <id>http://shzhangji.com/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/</id>
+    <link href="http://shzhangji.com/2013/03/28/perl-prime-in-action-jvm-monitoring-2/"/>
+    <id>http://shzhangji.com/2013/03/28/perl-prime-in-action-jvm-monitoring-2/</id>
     <published>2013-03-28T07:28:00.000Z</published>
     <updated>2017-03-09T03:37:13.000Z</updated>
     
@@ -1533,10 +1533,10 @@
     
     </summary>
     
-      <category term="Tutorial" scheme="http://shzhangji.com/cnblogs/categories/Tutorial/"/>
+      <category term="Tutorial" scheme="http://shzhangji.com/categories/Tutorial/"/>
     
     
-      <category term="perl" scheme="http://shzhangji.com/cnblogs/tags/perl/"/>
+      <category term="perl" scheme="http://shzhangji.com/tags/perl/"/>
     
   </entry>
   
