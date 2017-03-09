@@ -86,7 +86,7 @@ ga('send', 'pageview');
   
     <article id="post-fork-and-zombie-process" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2013/03/27/fork-and-zombie-process/" class="article-date">
+    <a href="/cnblogs/2013/03/27/fork-and-zombie-process/" class="article-date">
   <time datetime="2013-03-27T12:18:00.000Z" itemprop="datePublished">2013-03-27</time>
 </a>
     
@@ -102,7 +102,7 @@ ga('send', 'pageview');
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/blog/2013/03/27/fork-and-zombie-process/">fork()与僵尸进程</a>
+      <a class="article-title" href="/cnblogs/2013/03/27/fork-and-zombie-process/">fork()与僵尸进程</a>
     </h1>
   
 
@@ -116,15 +116,15 @@ ga('send', 'pageview');
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// myfork.c</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</div><div class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">pid_t</span> pid = fork();</div><div class="line">        <span class="keyword">if</span> (pid &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">// 主进程</span></div><div class="line">            sleep(<span class="number">5</span>);</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">// 子进程</span></div><div class="line">            <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"fork error\n"</span>);</div><div class="line">            <span class="keyword">return</span> <span class="number">2</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
         
           <p class="article-more-link">
-            <a href="/blog/2013/03/27/fork-and-zombie-process/#more">阅读全文</a>
+            <a href="/cnblogs/2013/03/27/fork-and-zombie-process/#more">阅读全文</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://cn.shzhangji.com/blog/2013/03/27/fork-and-zombie-process/" data-id="cj01vpku2000menzjv15f5yoi" class="article-share-link">分享</a>
+      <a data-url="http://cn.shzhangji.com/cnblogs/2013/03/27/fork-and-zombie-process/" data-id="cj01vpku2000menzjv15f5yoi" class="article-share-link">分享</a>
       
-        <a href="http://cn.shzhangji.com/blog/2013/03/27/fork-and-zombie-process/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://cn.shzhangji.com/cnblogs/2013/03/27/fork-and-zombie-process/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">programming</a></li></ul>
@@ -138,7 +138,7 @@ ga('send', 'pageview');
   
     <article id="post-perl-prime-in-action-jvm-monitoring-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2013/03/26/perl-prime-in-action-jvm-monitoring-1/" class="article-date">
+    <a href="/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/" class="article-date">
   <time datetime="2013-03-26T15:00:00.000Z" itemprop="datePublished">2013-03-26</time>
 </a>
     
@@ -154,7 +154,7 @@ ga('send', 'pageview');
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/blog/2013/03/26/perl-prime-in-action-jvm-monitoring-1/">Perl入门实战：JVM监控脚本（上）</a>
+      <a class="article-title" href="/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/">Perl入门实战：JVM监控脚本（上）</a>
     </h1>
   
 
@@ -174,15 +174,15 @@ ga('send', 'pageview');
 <p>此外，Zabbix Agent也需要编写一个脚本来调用上述服务，这个在文章末尾会给出范例代码。</p>
         
           <p class="article-more-link">
-            <a href="/blog/2013/03/26/perl-prime-in-action-jvm-monitoring-1/#more">阅读全文</a>
+            <a href="/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/#more">阅读全文</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://cn.shzhangji.com/blog/2013/03/26/perl-prime-in-action-jvm-monitoring-1/" data-id="cj01vpku4000qenzjmt4c7uwe" class="article-share-link">分享</a>
+      <a data-url="http://cn.shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/" data-id="cj01vpku4000qenzjmt4c7uwe" class="article-share-link">分享</a>
       
-        <a href="http://cn.shzhangji.com/blog/2013/03/26/perl-prime-in-action-jvm-monitoring-1/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://cn.shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/perl/">perl</a></li></ul>
@@ -196,7 +196,7 @@ ga('send', 'pageview');
   
     <article id="post-currying-and-partial-application" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2013/03/07/currying-and-partial-application/" class="article-date">
+    <a href="/cnblogs/2013/03/07/currying-and-partial-application/" class="article-date">
   <time datetime="2013-03-07T12:59:00.000Z" itemprop="datePublished">2013-03-07</time>
 </a>
     
@@ -212,7 +212,7 @@ ga('send', 'pageview');
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/blog/2013/03/07/currying-and-partial-application/">柯里化与偏应用（JavaScript描述）</a>
+      <a class="article-title" href="/cnblogs/2013/03/07/currying-and-partial-application/">柯里化与偏应用（JavaScript描述）</a>
     </h1>
   
 
@@ -227,15 +227,15 @@ ga('send', 'pageview');
 <p>有些函数能够接收不定数量的参数，我们称之为“可变参数函数”（Variadic）。不过这类函数、以及不接收参数的函数并不是本文讨论的重点。</p>
         
           <p class="article-more-link">
-            <a href="/blog/2013/03/07/currying-and-partial-application/#more">阅读全文</a>
+            <a href="/cnblogs/2013/03/07/currying-and-partial-application/#more">阅读全文</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://cn.shzhangji.com/blog/2013/03/07/currying-and-partial-application/" data-id="cj01vpku0000lenzjxi82hubq" class="article-share-link">分享</a>
+      <a data-url="http://cn.shzhangji.com/cnblogs/2013/03/07/currying-and-partial-application/" data-id="cj01vpku0000lenzjxi82hubq" class="article-share-link">分享</a>
       
-        <a href="http://cn.shzhangji.com/blog/2013/03/07/currying-and-partial-application/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://cn.shzhangji.com/cnblogs/2013/03/07/currying-and-partial-application/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fp/">fp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/javascript/">javascript</a></li></ul>
@@ -249,7 +249,7 @@ ga('send', 'pageview');
   
     <article id="post-cia-hadoop" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2013/02/09/cia-hadoop/" class="article-date">
+    <a href="/cnblogs/2013/02/09/cia-hadoop/" class="article-date">
   <time datetime="2013-02-09T08:43:00.000Z" itemprop="datePublished">2013-02-09</time>
 </a>
     
@@ -265,7 +265,7 @@ ga('send', 'pageview');
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/blog/2013/02/09/cia-hadoop/">Clojure实战(4)：编写Hadoop MapReduce脚本</a>
+      <a class="article-title" href="/cnblogs/2013/02/09/cia-hadoop/">Clojure实战(4)：编写Hadoop MapReduce脚本</a>
     </h1>
   
 
@@ -278,15 +278,15 @@ ga('send', 'pageview');
 <p>Hadoop项目是由Java语言编写的，运行在JVM之上，因此我们可以直接使用Clojure来编写MapReduce脚本，这也是本文的主题。Hadoop集群的搭建不在本文讨论范围内，而且运行MapReduce脚本也无需搭建测试环境。</p>
         
           <p class="article-more-link">
-            <a href="/blog/2013/02/09/cia-hadoop/#more">阅读全文</a>
+            <a href="/cnblogs/2013/02/09/cia-hadoop/#more">阅读全文</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://cn.shzhangji.com/blog/2013/02/09/cia-hadoop/" data-id="cj01vpktr000eenzjyne2syyu" class="article-share-link">分享</a>
+      <a data-url="http://cn.shzhangji.com/cnblogs/2013/02/09/cia-hadoop/" data-id="cj01vpktr000eenzjyne2syyu" class="article-share-link">分享</a>
       
-        <a href="http://cn.shzhangji.com/blog/2013/02/09/cia-hadoop/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://cn.shzhangji.com/cnblogs/2013/02/09/cia-hadoop/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li></ul>
@@ -300,7 +300,7 @@ ga('send', 'pageview');
   
     <article id="post-clojure-style-guide" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2013/01/04/clojure-style-guide/" class="article-date">
+    <a href="/cnblogs/2013/01/04/clojure-style-guide/" class="article-date">
   <time datetime="2013-01-04T12:49:00.000Z" itemprop="datePublished">2013-01-04</time>
 </a>
     
@@ -316,7 +316,7 @@ ga('send', 'pageview');
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/blog/2013/01/04/clojure-style-guide/">Clojure 代码规范</a>
+      <a class="article-title" href="/cnblogs/2013/01/04/clojure-style-guide/">Clojure 代码规范</a>
     </h1>
   
 
@@ -331,15 +331,15 @@ ga('send', 'pageview');
 <p>这份规范还处于编写阶段，部分章节有所缺失，内容并不完整；部分规则没有示例，或者示例还不能完全将其描述清楚。未来这些问题都会得到改进，只是请你了解这一情况。</p>
         
           <p class="article-more-link">
-            <a href="/blog/2013/01/04/clojure-style-guide/#more">阅读全文</a>
+            <a href="/cnblogs/2013/01/04/clojure-style-guide/#more">阅读全文</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://cn.shzhangji.com/blog/2013/01/04/clojure-style-guide/" data-id="cj01vpktu000genzjffxxjp1o" class="article-share-link">分享</a>
+      <a data-url="http://cn.shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/" data-id="cj01vpktu000genzjffxxjp1o" class="article-share-link">分享</a>
       
-        <a href="http://cn.shzhangji.com/blog/2013/01/04/clojure-style-guide/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://cn.shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/clojure/">clojure</a></li></ul>
@@ -353,7 +353,7 @@ ga('send', 'pageview');
   
     <article id="post-nginx-live-upgrade" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2012/12/23/nginx-live-upgrade/" class="article-date">
+    <a href="/cnblogs/2012/12/23/nginx-live-upgrade/" class="article-date">
   <time datetime="2012-12-23T14:11:00.000Z" itemprop="datePublished">2012-12-23</time>
 </a>
     
@@ -369,7 +369,7 @@ ga('send', 'pageview');
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/blog/2012/12/23/nginx-live-upgrade/">Nginx热升级</a>
+      <a class="article-title" href="/cnblogs/2012/12/23/nginx-live-upgrade/">Nginx热升级</a>
     </h1>
   
 
@@ -384,15 +384,15 @@ ga('send', 'pageview');
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">prey:~ root<span class="comment"># ps -ef|grep nginx</span></div><div class="line"> 127     1   nginx: master process /usr/<span class="built_in">local</span>/nginx-1.2.4/sbin/nginx</div><div class="line"> 129   127   nginx: worker process</div><div class="line">prey:~ root<span class="comment"># kill -USR2 127</span></div><div class="line">prey:~ root<span class="comment"># ps -ef|grep nginx</span></div><div class="line"> 127     1   nginx: master process /usr/<span class="built_in">local</span>/nginx-1.2.4/sbin/nginx</div><div class="line"> 129   127   nginx: worker process  </div><div class="line">5180   127   nginx: master process /usr/<span class="built_in">local</span>/nginx-1.2.4/sbin/nginx</div><div class="line">5182  5180   nginx: worker process</div></pre></td></tr></table></figure>
         
           <p class="article-more-link">
-            <a href="/blog/2012/12/23/nginx-live-upgrade/#more">阅读全文</a>
+            <a href="/cnblogs/2012/12/23/nginx-live-upgrade/#more">阅读全文</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://cn.shzhangji.com/blog/2012/12/23/nginx-live-upgrade/" data-id="cj01vpktg000benzjj0dexol3" class="article-share-link">分享</a>
+      <a data-url="http://cn.shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/" data-id="cj01vpktg000benzjj0dexol3" class="article-share-link">分享</a>
       
-        <a href="http://cn.shzhangji.com/blog/2012/12/23/nginx-live-upgrade/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://cn.shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nginx/">nginx</a></li></ul>
@@ -406,7 +406,7 @@ ga('send', 'pageview');
   
     <article id="post-cia-noir-3" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2012/12/16/cia-noir-3/" class="article-date">
+    <a href="/cnblogs/2012/12/16/cia-noir-3/" class="article-date">
   <time datetime="2012-12-16T12:20:00.000Z" itemprop="datePublished">2012-12-16</time>
 </a>
     
@@ -422,7 +422,7 @@ ga('send', 'pageview');
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/blog/2012/12/16/cia-noir-3/">Clojure实战(3)：使用Noir框架开发博客(下)</a>
+      <a class="article-title" href="/cnblogs/2012/12/16/cia-noir-3/">Clojure实战(3)：使用Noir框架开发博客(下)</a>
     </h1>
   
 
@@ -438,15 +438,15 @@ ga('send', 'pageview');
 <p>闪信的生命周期是一次请求，即在设置了闪信后的下一个请求中，可以多次<code>flash-get</code>，但再下一次请求就获取不到值了。</p>
         
           <p class="article-more-link">
-            <a href="/blog/2012/12/16/cia-noir-3/#more">阅读全文</a>
+            <a href="/cnblogs/2012/12/16/cia-noir-3/#more">阅读全文</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://cn.shzhangji.com/blog/2012/12/16/cia-noir-3/" data-id="cj01vpkta0009enzjwnkzb6va" class="article-share-link">分享</a>
+      <a data-url="http://cn.shzhangji.com/cnblogs/2012/12/16/cia-noir-3/" data-id="cj01vpkta0009enzjwnkzb6va" class="article-share-link">分享</a>
       
-        <a href="http://cn.shzhangji.com/blog/2012/12/16/cia-noir-3/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://cn.shzhangji.com/cnblogs/2012/12/16/cia-noir-3/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/noir/">noir</a></li></ul>
@@ -460,7 +460,7 @@ ga('send', 'pageview');
   
     <article id="post-cia-noir-2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2012/12/08/cia-noir-2/" class="article-date">
+    <a href="/cnblogs/2012/12/08/cia-noir-2/" class="article-date">
   <time datetime="2012-12-08T04:09:00.000Z" itemprop="datePublished">2012-12-08</time>
 </a>
     
@@ -476,7 +476,7 @@ ga('send', 'pageview');
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/blog/2012/12/08/cia-noir-2/">Clojure实战(2)：使用Noir框架开发博客(中)</a>
+      <a class="article-title" href="/cnblogs/2012/12/08/cia-noir-2/">Clojure实战(2)：使用Noir框架开发博客(中)</a>
     </h1>
   
 
@@ -496,15 +496,15 @@ ga('send', 'pageview');
 <p><code>defpage</code>和<code>common/layout</code>我们之前已经见到过，前者定义了URL<code>/blog/add</code>指向的页面，后者则是套用了一个模板。<code>[:h1 ...]</code>和<code>[:br]</code>也应该熟悉，它们是Hiccup的语法，分别生成<code>&lt;h1&gt;...&lt;/h1&gt;</code>和<code>&lt;br&gt;</code>标签。</p>
         
           <p class="article-more-link">
-            <a href="/blog/2012/12/08/cia-noir-2/#more">阅读全文</a>
+            <a href="/cnblogs/2012/12/08/cia-noir-2/#more">阅读全文</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://cn.shzhangji.com/blog/2012/12/08/cia-noir-2/" data-id="cj01vpkt40006enzjzyuu39pg" class="article-share-link">分享</a>
+      <a data-url="http://cn.shzhangji.com/cnblogs/2012/12/08/cia-noir-2/" data-id="cj01vpkt40006enzjzyuu39pg" class="article-share-link">分享</a>
       
-        <a href="http://cn.shzhangji.com/blog/2012/12/08/cia-noir-2/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://cn.shzhangji.com/cnblogs/2012/12/08/cia-noir-2/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/noir/">noir</a></li></ul>
@@ -518,7 +518,7 @@ ga('send', 'pageview');
   
     <article id="post-cia-noir-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2012/11/25/cia-noir-1/" class="article-date">
+    <a href="/cnblogs/2012/11/25/cia-noir-1/" class="article-date">
   <time datetime="2012-11-25T08:58:00.000Z" itemprop="datePublished">2012-11-25</time>
 </a>
     
@@ -534,7 +534,7 @@ ga('send', 'pageview');
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/blog/2012/11/25/cia-noir-1/">Clojure实战(1)：使用Noir框架开发博客(上)</a>
+      <a class="article-title" href="/cnblogs/2012/11/25/cia-noir-1/">Clojure实战(1)：使用Noir框架开发博客(上)</a>
     </h1>
   
 
@@ -548,15 +548,15 @@ ga('send', 'pageview');
 <p>因为平时都是做Web开发，所以先从一个Web框架入手会是不错的选择，因此这份教程会从使用<a href="http://webnoir.org/">Noir</a>框架搭建一个博客开始，带你领略Clojure的魅力。</p>
         
           <p class="article-more-link">
-            <a href="/blog/2012/11/25/cia-noir-1/#more">阅读全文</a>
+            <a href="/cnblogs/2012/11/25/cia-noir-1/#more">阅读全文</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://cn.shzhangji.com/blog/2012/11/25/cia-noir-1/" data-id="cj01vpkt20005enzjx79j05of" class="article-share-link">分享</a>
+      <a data-url="http://cn.shzhangji.com/cnblogs/2012/11/25/cia-noir-1/" data-id="cj01vpkt20005enzjx79j05of" class="article-share-link">分享</a>
       
-        <a href="http://cn.shzhangji.com/blog/2012/11/25/cia-noir-1/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://cn.shzhangji.com/cnblogs/2012/11/25/cia-noir-1/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/noir/">noir</a></li></ul>
@@ -570,7 +570,7 @@ ga('send', 'pageview');
   
     <article id="post-aosa-python-packaging" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2012/11/18/aosa-python-packaging/" class="article-date">
+    <a href="/cnblogs/2012/11/18/aosa-python-packaging/" class="article-date">
   <time datetime="2012-11-18T11:20:00.000Z" itemprop="datePublished">2012-11-18</time>
 </a>
     
@@ -586,7 +586,7 @@ ga('send', 'pageview');
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/blog/2012/11/18/aosa-python-packaging/">开源软件架构 - 卷1：第14章 Python打包工具</a>
+      <a class="article-title" href="/cnblogs/2012/11/18/aosa-python-packaging/">开源软件架构 - 卷1：第14章 Python打包工具</a>
     </h1>
   
 
@@ -602,15 +602,15 @@ ga('send', 'pageview');
 <p>不过这种“模块化”也被一些开发者视为缺点，因为他们无法控制应用程序的依赖关系。他们希望提供一个独立和稳定的软件运行环境，这样就不会在系统升级后遭遇各种依赖方面的问题。</p>
         
           <p class="article-more-link">
-            <a href="/blog/2012/11/18/aosa-python-packaging/#more">阅读全文</a>
+            <a href="/cnblogs/2012/11/18/aosa-python-packaging/#more">阅读全文</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://cn.shzhangji.com/blog/2012/11/18/aosa-python-packaging/" data-id="cj01vpksz0004enzjq69kwfqo" class="article-share-link">分享</a>
+      <a data-url="http://cn.shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/" data-id="cj01vpksz0004enzjq69kwfqo" class="article-share-link">分享</a>
       
-        <a href="http://cn.shzhangji.com/blog/2012/11/18/aosa-python-packaging/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://cn.shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/aosa/">aosa</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
@@ -657,23 +657,23 @@ ga('send', 'pageview');
       <ul>
         
           <li>
-            <a href="/blog/2016/03/13/top-5-frameworks/">开发人员必知的5种开源框架</a>
+            <a href="/cnblogs/2016/03/13/top-5-frameworks/">开发人员必知的5种开源框架</a>
           </li>
         
           <li>
-            <a href="/blog/2015/09/12/model-dependency-injection-with-spring-aop/">使用Spring AOP向领域模型注入依赖</a>
+            <a href="/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/">使用Spring AOP向领域模型注入依赖</a>
           </li>
         
           <li>
-            <a href="/blog/2015/09/05/anemic-domain-model/">贫血领域模型</a>
+            <a href="/cnblogs/2015/09/05/anemic-domain-model/">贫血领域模型</a>
           </li>
         
           <li>
-            <a href="/blog/2015/06/25/compressed-oops-in-the-hotspot-jvm/">HotSpot JVM中的对象指针压缩</a>
+            <a href="/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/">HotSpot JVM中的对象指针压缩</a>
           </li>
         
           <li>
-            <a href="/blog/2015/03/08/hbase-dos-and-donts/">Apache HBase的适用场景</a>
+            <a href="/cnblogs/2015/03/08/hbase-dos-and-donts/">Apache HBase的适用场景</a>
           </li>
         
       </ul>

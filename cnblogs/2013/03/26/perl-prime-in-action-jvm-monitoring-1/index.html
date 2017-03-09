@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Perl入门实战：JVM监控脚本（上） | 张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="由于最近在搭建Zabbix监控服务，需要制作各类监控的模板，如iostat、Nginx、MySQL等，因此会写一些脚本来完成数据采集的工作。又因为近期对Perl语言比较感兴趣，因此决定花些时间学一学，写一个脚本来练练手，于是就有了这样一份笔记。
+需求描述我们将编写一个获取JVM虚拟机状态信息的脚本：
+
+启动一个服务进程，通过套接字接收形如“JVMPORT 2181”的请求；
+执行netstat命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Perl入门实战：JVM监控脚本（上）">
+<meta property="og:url" content="http://cn.shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta property="og:description" content="由于最近在搭建Zabbix监控服务，需要制作各类监控的模板，如iostat、Nginx、MySQL等，因此会写一些脚本来完成数据采集的工作。又因为近期对Perl语言比较感兴趣，因此决定花些时间学一学，写一个脚本来练练手，于是就有了这样一份笔记。
+需求描述我们将编写一个获取JVM虚拟机状态信息的脚本：
+
+启动一个服务进程，通过套接字接收形如“JVMPORT 2181”的请求；
+执行netstat命令">
+<meta property="og:updated_time" content="2017-03-09T03:37:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Perl入门实战：JVM监控脚本（上）">
+<meta name="twitter:description" content="由于最近在搭建Zabbix监控服务，需要制作各类监控的模板，如iostat、Nginx、MySQL等，因此会写一些脚本来完成数据采集的工作。又因为近期对Perl语言比较感兴趣，因此决定花些时间学一学，写一个脚本来练练手，于是就有了这样一份笔记。
+需求描述我们将编写一个获取JVM虚拟机状态信息的脚本：
+
+启动一个服务进程，通过套接字接收形如“JVMPORT 2181”的请求；
+执行netstat命令">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://cn.shzhangji.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-perl-prime-in-action-jvm-monitoring-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/" class="article-date">
+  <time datetime="2013-03-26T15:00:00.000Z" itemprop="datePublished">2013-03-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Perl入门实战：JVM监控脚本（上）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>由于最近在搭建Zabbix监控服务，需要制作各类监控的模板，如iostat、Nginx、MySQL等，因此会写一些脚本来完成数据采集的工作。又因为近期对Perl语言比较感兴趣，因此决定花些时间学一学，写一个脚本来练练手，于是就有了这样一份笔记。</p>
+<h2 id="需求描述"><a href="#需求描述" class="headerlink" title="需求描述"></a>需求描述</h2><p>我们将编写一个获取JVM虚拟机状态信息的脚本：</p>
+<ol>
+<li>启动一个服务进程，通过套接字接收形如“JVMPORT 2181”的请求；</li>
+<li>执行<code>netstat</code>命令，根据端口获取进程号；</li>
+<li>执行<code>jstat</code>命令获取JVM的GC信息；<code>jstack</code>获取线程信息；<code>ps -o pcpu,rss</code>获取CPU和内存使用情况；</li>
+<li>将以上信息返回给客户端；</li>
+</ol>
+<p>之所以需要这样一个服务是因为Zabbix Agent会运行在zabbix用户下，无法获取运行在其他用户下的JVM信息。</p>
+<p>此外，Zabbix Agent也需要编写一个脚本来调用上述服务，这个在文章末尾会给出范例代码。</p>
+<a id="more"></a>
+<h2 id="Hello-world"><a href="#Hello-world" class="headerlink" title="Hello, world!"></a>Hello, world!</h2><p>还是要不免俗套地来一个helloworld，不过我们的版本会稍稍丰富些：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/perl</span></div><div class="line"><span class="keyword">use</span> strict;</div><div class="line"><span class="keyword">my</span> $name = <span class="string">'Jerry'</span>;</div><div class="line"><span class="keyword">print</span> <span class="string">"Hello, $name!\n"</span>; <span class="comment"># 输出 Hello, Jerry!</span></div></pre></td></tr></table></figure>
+<p>将该文件保存为<code>hello.pl</code>，可以用两种方式执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ perl hello.pl</div><div class="line">Hello, Jerry!</div><div class="line">$ chmod 755 hello.pl</div><div class="line">$ ./hello.pl</div><div class="line">Hello, Jerry!</div></pre></td></tr></table></figure>
+<ul>
+<li>所有的语句都以分号结尾，因此一行中可以有多条语句，但并不提倡这样做。</li>
+<li><code>use</code>表示加载某个模块，加载<a href="http://search.cpan.org/~rjbs/perl-5.16.3/lib/strict.pm" target="_blank" rel="external"><code>strict</code>模块</a>表示会对当前文件的语法做出一些规范和约束。比如将<code>my $name ...</code>前的<code>my</code>去掉，执行后Perl解释器会报错。建议坚持使用该模块。</li>
+<li><code>$name</code>，一个Perl变量。<code>$</code>表示该变量是一个标量，可以存放数值、字符串等基本类型。其它符号有<code>@</code>和<code>%</code>，分别对应数组和哈希表。</li>
+<li><code>my</code>表示声明一个变量，类似的有<code>our</code>、<code>local</code>等，将来接触到变量作用域时会了解。</li>
+<li>字符串可以用单引号或双引号括起来，区别是双引号中的变量会被替换成实际值以及进行转移，单引号则不会。如<code>&#39;Hello, $name!\n&#39;</code>中的<code>$name</code>和<code>\n</code>会按原样输出，而不是替换为“Jerry”和换行符。</li>
+<li><code>print</code>语句用于将字符串输出到标准输出上。</li>
+<li><code>#</code>表示注释。</li>
+</ul>
+<h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><p>我们第一个任务是从“JVMPORT 2181”这样的字符串中提取“2181”这个端口号。解决方案当然是使用正则，而且Perl的强项之一正是文本处理：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">my</span> $line = <span class="string">'JVMPORT 2181'</span>;</div><div class="line"><span class="keyword">if</span> ($line =~ <span class="regexp">/^JVMPORT ([0-9]+)$/</span>) &#123;</div><div class="line">    <span class="keyword">print</span> $1, <span class="string">"\n"</span>; <span class="comment"># 输出 2181</span></div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="keyword">print</span> <span class="string">'匹配失败'</span>, <span class="string">"\n"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里假设你知道如何使用正则表达式。</p>
+<ul>
+<li><code>=~</code>运算符表示将变量和正则表达式进行匹配，如果匹配成功则返回真，失败则返回假。</li>
+<li>匹配成功后，Perl会对全局魔术变量——<code>$0</code>至<code>$9</code>进行赋值，分别表示正则表达式完全匹配到的字符串、第一个子模式匹配到的字符串、第二个子模式，依此类推。</li>
+<li><code>if...else...</code>是条件控制语句，其中<code>...} else if (...</code>可以简写为<code>...} elsif (...</code>。</li>
+</ul>
+<h2 id="调用命令行"><a href="#调用命令行" class="headerlink" title="调用命令行"></a>调用命令行</h2><p>使用反引号（即大键盘数字1左边的按键）：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">my</span> $uname = <span class="string">`uname`</span>;</div><div class="line"><span class="keyword">print</span> $uname; <span class="comment"># 输出 Linux</span></div><div class="line"><span class="keyword">my</span> $pid = <span class="string">'1234'</span>;</div><div class="line">$line = <span class="string">`ps -ef | grep $pid`</span>; <span class="comment"># 支持管道符和变量替换</span></div></pre></td></tr></table></figure>
+<p>对于返回多行结果的命令，我们需要对每一行的内容进行遍历，因此会使用数组和<code>foreach</code>语句：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">my</span> $pid;</div><div class="line"><span class="keyword">my</span> $jvmport = <span class="string">'2181'</span>;</div><div class="line"><span class="keyword">my</span> @netstat = <span class="string">`netstat -lntp 2&gt;/dev/null`</span>;</div><div class="line"><span class="keyword">foreach</span> <span class="keyword">my</span> $line (@netstat) &#123;</div><div class="line">    <span class="keyword">if</span> ($line =~ <span class="regexp">/.*?:$jvmport\s.*?([0-9]+)\/java\s*$/</span>) &#123;</div><div class="line">        $pid = $1;</div><div class="line">        <span class="keyword">last</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span> ($pid) &#123;</div><div class="line">    <span class="keyword">print</span> $pid, <span class="string">"\n"</span>;</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="keyword">print</span> <span class="string">'端口不存在'</span>, <span class="string">"\n"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><code>$pid</code>变量的结果是2181端口对应的进程号。</li>
+<li>这个正则可能稍难理解，但对照<code>netstat</code>的输出结果来看就可以了。</li>
+<li><code>foreach</code>是循环语句的一种，用来遍历一个数组的元素，这里则是遍历<code>netstat</code>命令每一行的内容。注意，<code>foreach</code>可以直接用<code>for</code>代替，即<code>for my $line (@netstat) { ... }</code>。</li>
+<li><code>last</code>表示退出循环。如果要进入下一次循环，可使用<code>next</code>语句。</li>
+</ul>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><p>下面我们要根据进程号来获取JVM的GC信息：（“2017”为上文获取到的进程号）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ jstat -gc 2017</div><div class="line"> S0C    S1C    S0U    S1U      EC       EU        OC         OU       PC     PU    YGC     YGCT    FGC    FGCT     GCT   </div><div class="line">192.0  192.0   0.0    50.1   1792.0   682.8     4480.0     556.3    21248.0 9483.2      3    0.008   0      0.000    0.008</div></pre></td></tr></table></figure>
+<p>如何将以上输出结果转换为以下形式？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">s0c 192.0</div><div class="line">s1c 192.0</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>这时我们就需要更多地使用数组这一数据结构：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">my</span> $pid = <span class="number">2017</span>;</div><div class="line"><span class="keyword">my</span> @jstat = <span class="string">`jstat -gc $pid`</span>;</div><div class="line"></div><div class="line">$jstat[<span class="number">0</span>] =~ <span class="regexp">s/^\s+|\s+$//</span>;</div><div class="line">$jstat[<span class="number">1</span>] =~ <span class="regexp">s/^\s+|\s+$//</span>;</div><div class="line"></div><div class="line"><span class="keyword">my</span> @kv_keys = <span class="keyword">split</span>(<span class="regexp">/\s+/</span>, $jstat[<span class="number">0</span>]);</div><div class="line"><span class="keyword">my</span> @kv_vals = <span class="keyword">split</span>(<span class="regexp">/\s+/</span>, $jstat[<span class="number">1</span>]);</div><div class="line"></div><div class="line"><span class="keyword">my</span> $result = <span class="string">''</span>;</div><div class="line"><span class="keyword">for</span> <span class="keyword">my</span> $i (<span class="number">0</span> .. $#kv_keys) &#123;</div><div class="line">    $result .= <span class="string">"$kv_keys[$i] $kv_vals[$i]\n"</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">print</span> $result;</div></pre></td></tr></table></figure>
+<ul>
+<li>使用<code>$jstat[0]</code>获取数组的第一个元素，数组的下标从0开始，注意这里的<code>$</code>符号，而非<code>@</code>。</li>
+<li><code>$#kv_keys</code>返回的是数组最大的下标，而非数组的长度。</li>
+<li><code>for my $i (0 .. 10) {}</code>则是另一种循环结构，<code>$i</code>的值从0到10（含0和10）。</li>
+</ul>
+<p>对于正则表达式，这里也出现了两个新的用法：</p>
+<ul>
+<li><code>s/A/B/</code>表示将A的值替换为B，上述代码中是将首尾的空格去除；</li>
+<li><code>split(A, B)</code>函数表示将字符串B按照正则A进行分割，并返回一个数组。</li>
+</ul>
+<p>另外在学习过程中还发现了这样一种写法：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">my</span> @jstat;</div><div class="line"></div><div class="line">$jstat[<span class="number">0</span>] =~ <span class="regexp">s/^\s+|\s+$//</span>;</div><div class="line">$jstat[<span class="number">1</span>] =~ <span class="regexp">s/^\s+|\s+$//</span>;</div><div class="line"></div><div class="line"><span class="keyword">map</span> &#123; <span class="regexp">s/^\s+|\s+$//</span> &#125; @jstat;</div></pre></td></tr></table></figure>
+<p><code>map</code>函数会对数组中的每个元素应用第一个参数指向的函数（这里是一个匿名函数），当需要处理的数组元素很多时，这种是首选做法。具体内容读者可以自己去了解。</p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>我们可以用以下命令来获取指定进程的CPU和内存使用率：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ ps -o pcpu,rss -p 2017</div><div class="line">%CPU   RSS</div><div class="line"> 0.1 21632</div></pre></td></tr></table></figure>
+<p>格式和<code>jstat</code>是一样的，为了不再写一遍上文中的代码，我们可以将其封装为函数。</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">sub</span> <span class="title">kv_parse</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">my</span> @kv_data = @_;</div><div class="line"></div><div class="line">    <span class="keyword">map</span> &#123; <span class="regexp">s/^\s+|\s+$//</span> &#125; @kv_data;</div><div class="line">    </div><div class="line">    <span class="keyword">my</span> @kv_keys = <span class="keyword">split</span>(<span class="regexp">/\s+/</span>, $kv_data[<span class="number">0</span>]);</div><div class="line">    <span class="keyword">my</span> @kv_vals = <span class="keyword">split</span>(<span class="regexp">/\s+/</span>, $kv_data[<span class="number">1</span>]);</div><div class="line">    </div><div class="line">    <span class="keyword">my</span> $result = <span class="string">''</span>;</div><div class="line">    <span class="keyword">for</span> <span class="keyword">my</span> $i (<span class="number">0</span> .. $#kv_keys) &#123;</div><div class="line">        $result .= <span class="string">"$kv_keys[$i] $kv_vals[$i]\n"</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> $result;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">my</span> $pid = <span class="number">2017</span>;</div><div class="line"><span class="keyword">my</span> @jstat = <span class="string">`jstat -gc $pid`</span>;</div><div class="line"><span class="keyword">my</span> @ps = <span class="string">`ps -o pcpu,rss -p $pid`</span>;</div><div class="line"></div><div class="line"><span class="keyword">print</span> kv_parse(@jstat);</div><div class="line"><span class="keyword">print</span> kv_parse(@ps);</div></pre></td></tr></table></figure>
+<p><code>sub</code>表示定义一个函数（subroutine），和其他语言不同的是，它没有参数列表，获取参数使用的是魔术变量<code>@_</code>：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">sub</span> <span class="title">hello</span> </span>&#123;</div><div class="line">    <span class="keyword">my</span> $name1 = $_[<span class="number">0</span>];</div><div class="line">    $name1 = <span class="keyword">shift</span> @_;</div><div class="line">    <span class="keyword">my</span> $name2 = <span class="keyword">shift</span>(@_);</div><div class="line">    <span class="keyword">my</span> $name3 = <span class="keyword">shift</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">hello(<span class="string">'111'</span>, <span class="string">'222'</span>, <span class="string">'333'</span>);</div><div class="line">hello <span class="string">'111'</span>, <span class="string">'222'</span>, <span class="string">'333'</span>;</div><div class="line">&amp;hello(<span class="string">'111'</span>, <span class="string">'222'</span>, <span class="string">'333'</span>);</div></pre></td></tr></table></figure>
+<ul>
+<li><code>$_[0]</code>和<code>shift @_</code>返回的都是第一参数。不同的是，<code>shift</code>函数会将这个参数从<code>@_</code>数组中移除；</li>
+<li><code>shift @_</code>和<code>shift(@_)</code>是等价的，因为调用函数时参数列表可以不加括号；</li>
+<li><code>shift @_</code>和只写<code>shift</code>也是等价的，该函数若不指定参数，则默认使用<code>@_</code>数组。</li>
+<li><code>&amp;</code>符号也是比较特别的，主要作用有两个：一是告诉Perl解释器<code>hello</code>将是一个用户定义的函数，这样就不会和Perl原生关键字冲突；二是忽略函数原型（prototype）。具体可以参考这篇文章：<a href="https://www.socialtext.net/perl5/subroutines_called_with_the_ampersand" target="_blank" rel="external">Subroutines Called With The Ampersand</a>。</li>
+</ul>
+<p>当传递一个数组给函数时，该数组不会被作为<code>@_</code>的第一个元素，而是作为<code>@_</code>本身。这也是很特别的地方。当传递多个数组，Perl会将这些数组进行拼接：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">sub</span> <span class="title">hello</span> </span>&#123;</div><div class="line">    <span class="keyword">for</span> <span class="keyword">my</span> $i (@_) &#123;</div><div class="line">        <span class="keyword">print</span> $i;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">my</span> @arr1 = (<span class="number">1</span>, <span class="number">2</span>); <span class="comment"># 使用圆括号定义一个数组，元素以逗号分隔。</span></div><div class="line"><span class="keyword">my</span> @arr2 = (<span class="number">3</span>, <span class="number">4</span>);</div><div class="line"></div><div class="line">hello @arr1, @arr2; <span class="comment"># 输出 1234</span></div></pre></td></tr></table></figure>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>对于初学者来讲，本文的信息量可能有些大了。但如果你已经有一定的编程经验（包括Bash），应该可以理解这些内容。</p>
+<p>Perl文化的特色是“不只一种做法来完成一件事情”，所以我们可以看到很多不同的写法。但也有一些是大家普遍接受的写法，所以也算是一种规范吧。</p>
+<p>下一章我们会继续完成这个监控脚本。</p>
+<p>PS：本文的示例代码可以从<a href="https://github.com/jizhang/perl-jvm-monitoring-example" target="_blank" rel="external">Github</a>中下载。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://cn.shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/" data-id="cj01vpku4000qenzjmt4c7uwe" class="article-share-link">分享</a>
+      
+        <a href="http://cn.shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/perl/">perl</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/cnblogs/2013/03/27/fork-and-zombie-process/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          fork()与僵尸进程
+        
+      </div>
+    </a>
+  
+  
+    <a href="/cnblogs/2013/03/07/currying-and-partial-application/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">柯里化与偏应用（JavaScript描述）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/aosa/" style="font-size: 13.33px;">aosa</a> <a href="/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/tags/fp/" style="font-size: 10px;">fp</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hadoop/" style="font-size: 16.67px;">hadoop</a> <a href="/tags/hive/" style="font-size: 10px;">hive</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/noir/" style="font-size: 16.67px;">noir</a> <a href="/tags/ops/" style="font-size: 10px;">ops</a> <a href="/tags/perl/" style="font-size: 13.33px;">perl</a> <a href="/tags/programming/" style="font-size: 10px;">programming</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/storm/" style="font-size: 10px;">storm</a> <a href="/tags/translation/" style="font-size: 13.33px;">translation</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/cnblogs/2016/03/13/top-5-frameworks/">开发人员必知的5种开源框架</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/">使用Spring AOP向领域模型注入依赖</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2015/09/05/anemic-domain-model/">贫血领域模型</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/">HotSpot JVM中的对象指针压缩</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2015/03/08/hbase-dos-and-donts/">Apache HBase的适用场景</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  var disqus_url = 'http://cn.shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
