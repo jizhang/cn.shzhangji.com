@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="张吉的博客">
+<meta property="og:url" content="http://cn.shzhangji.com/page/3/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="张吉的博客">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://cn.shzhangji.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-fork-and-zombie-process" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2013/03/27/fork-and-zombie-process/" class="article-date">
+  <time datetime="2013-03-27T12:18:00.000Z" itemprop="datePublished">2013-03-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Notes/">Notes</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2013/03/27/fork-and-zombie-process/">fork()与僵尸进程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>使用fork()函数派生出多个子进程来并行执行程序的不同代码块，是一种常用的编程泛型。特别是在网络编程中，父进程初始化后派生出指定数量的子进程，共同监听网络端口并处理请求，从而达到扩容的目的。</p>
+<p>但是，在使用fork()函数时若处理不当，很容易产生僵尸进程。根据UNIX系统的定义，僵尸进程是指子进程退出后，它的父进程没有“等待”该子进程，这样的子进程就会成为僵尸进程。何谓“等待”？僵尸进程的危害是什么？以及要如何避免？这就是本文将要阐述的内容。</p>
+<h2 id="fork-函数"><a href="#fork-函数" class="headerlink" title="fork()函数"></a>fork()函数</h2><p>下面这段C语言代码展示了fork()函数的使用方法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// myfork.c</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</div><div class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">pid_t</span> pid = fork();</div><div class="line">        <span class="keyword">if</span> (pid &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">// 主进程</span></div><div class="line">            sleep(<span class="number">5</span>);</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">// 子进程</span></div><div class="line">            <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"fork error\n"</span>);</div><div class="line">            <span class="keyword">return</span> <span class="number">2</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/blog/2013/03/27/fork-and-zombie-process/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://cn.shzhangji.com/blog/2013/03/27/fork-and-zombie-process/" data-id="cj01vpku2000menzjv15f5yoi" class="article-share-link">分享</a>
+      
+        <a href="http://cn.shzhangji.com/blog/2013/03/27/fork-and-zombie-process/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-perl-prime-in-action-jvm-monitoring-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2013/03/26/perl-prime-in-action-jvm-monitoring-1/" class="article-date">
+  <time datetime="2013-03-26T15:00:00.000Z" itemprop="datePublished">2013-03-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2013/03/26/perl-prime-in-action-jvm-monitoring-1/">Perl入门实战：JVM监控脚本（上）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>由于最近在搭建Zabbix监控服务，需要制作各类监控的模板，如iostat、Nginx、MySQL等，因此会写一些脚本来完成数据采集的工作。又因为近期对Perl语言比较感兴趣，因此决定花些时间学一学，写一个脚本来练练手，于是就有了这样一份笔记。</p>
+<h2 id="需求描述"><a href="#需求描述" class="headerlink" title="需求描述"></a>需求描述</h2><p>我们将编写一个获取JVM虚拟机状态信息的脚本：</p>
+<ol>
+<li>启动一个服务进程，通过套接字接收形如“JVMPORT 2181”的请求；</li>
+<li>执行<code>netstat</code>命令，根据端口获取进程号；</li>
+<li>执行<code>jstat</code>命令获取JVM的GC信息；<code>jstack</code>获取线程信息；<code>ps -o pcpu,rss</code>获取CPU和内存使用情况；</li>
+<li>将以上信息返回给客户端；</li>
+</ol>
+<p>之所以需要这样一个服务是因为Zabbix Agent会运行在zabbix用户下，无法获取运行在其他用户下的JVM信息。</p>
+<p>此外，Zabbix Agent也需要编写一个脚本来调用上述服务，这个在文章末尾会给出范例代码。</p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2013/03/26/perl-prime-in-action-jvm-monitoring-1/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://cn.shzhangji.com/blog/2013/03/26/perl-prime-in-action-jvm-monitoring-1/" data-id="cj01vpku4000qenzjmt4c7uwe" class="article-share-link">分享</a>
+      
+        <a href="http://cn.shzhangji.com/blog/2013/03/26/perl-prime-in-action-jvm-monitoring-1/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/perl/">perl</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-currying-and-partial-application" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2013/03/07/currying-and-partial-application/" class="article-date">
+  <time datetime="2013-03-07T12:59:00.000Z" itemprop="datePublished">2013-03-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Translation/">Translation</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2013/03/07/currying-and-partial-application/">柯里化与偏应用（JavaScript描述）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文：<a href="http://raganwald.com/2013/03/07/currying-and-partial-application.html">http://raganwald.com/2013/03/07/currying-and-partial-application.html</a></p>
+<p>上周末我参加了<a href="http://wrocloverb.com/">wroc_love.rb大会</a>，其间<a href="http://steveklabnik.com/">Steve Klabnik</a>的一张PPT中提到了<a href="https://en.wikipedia.org/wiki/Partial_application">偏应用（Partial Application）</a>和<a href="https://en.wikipedia.org/wiki/Currying">柯里化（Currying）</a>，并说这两者之间的区别如今已经不重要了。但是我不这么认为。</p>
+<p>在这周发布的博文中，我用五种方式对<code>this</code>和闭包做了解释，但只有三到四种提到了柯里化。所以这篇博文就重点来谈谈这个。</p>
+<h2 id="函数参数的个数"><a href="#函数参数的个数" class="headerlink" title="函数参数的个数"></a>函数参数的个数</h2><p>在讲解之前，我们先明确一些术语。函数定义时会写明它所接收的参数个数（Arity）。“一元函数”（Unary）接收一个参数，“多元函数”（Polyadic）接收多个参数。还有一些特殊的名称，如“二元函数”（Binary）接收两个参数，“三元函数”（Ternary）接收三个参数等。你可以对照希腊语或拉丁语词汇来创造这些特殊的名称。</p>
+<p>有些函数能够接收不定数量的参数，我们称之为“可变参数函数”（Variadic）。不过这类函数、以及不接收参数的函数并不是本文讨论的重点。</p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2013/03/07/currying-and-partial-application/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://cn.shzhangji.com/blog/2013/03/07/currying-and-partial-application/" data-id="cj01vpku0000lenzjxi82hubq" class="article-share-link">分享</a>
+      
+        <a href="http://cn.shzhangji.com/blog/2013/03/07/currying-and-partial-application/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fp/">fp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/javascript/">javascript</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-cia-hadoop" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2013/02/09/cia-hadoop/" class="article-date">
+  <time datetime="2013-02-09T08:43:00.000Z" itemprop="datePublished">2013-02-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>►<a class="article-category-link" href="/categories/Tutorial/Big-Data/">Big Data</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2013/02/09/cia-hadoop/">Clojure实战(4)：编写Hadoop MapReduce脚本</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Hadoop简介"><a href="#Hadoop简介" class="headerlink" title="Hadoop简介"></a>Hadoop简介</h2><p>众所周知，我们已经进入了大数据时代，每天都有PB级的数据需要处理、分析，从中提取出有用的信息。Hadoop就是这一时代背景下的产物。它是Apache基金会下的开源项目，受<a href="http://en.wikipedia.org/wiki/Apache_Hadoop#Papers">Google两篇论文</a>的启发，采用分布式的文件系统HDFS，以及通用的MapReduce解决方案，能够在数千台物理节点上进行分布式并行计算。</p>
+<p>对于Hadoop的介绍这里不再赘述，读者可以<a href="http://hadoop.apache.org/">访问其官网</a>，或阅读<a href="http://product.dangdang.com/main/product.aspx?product_id=21127813">Hadoop权威指南</a>。</p>
+<p>Hadoop项目是由Java语言编写的，运行在JVM之上，因此我们可以直接使用Clojure来编写MapReduce脚本，这也是本文的主题。Hadoop集群的搭建不在本文讨论范围内，而且运行MapReduce脚本也无需搭建测试环境。</p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2013/02/09/cia-hadoop/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://cn.shzhangji.com/blog/2013/02/09/cia-hadoop/" data-id="cj01vpktr000eenzjyne2syyu" class="article-share-link">分享</a>
+      
+        <a href="http://cn.shzhangji.com/blog/2013/02/09/cia-hadoop/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-clojure-style-guide" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2013/01/04/clojure-style-guide/" class="article-date">
+  <time datetime="2013-01-04T12:49:00.000Z" itemprop="datePublished">2013-01-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Translation/">Translation</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2013/01/04/clojure-style-guide/">Clojure 代码规范</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文地址：<a href="https://github.com/bbatsov/clojure-style-guide">https://github.com/bbatsov/clojure-style-guide</a></p>
+<p>这份Clojure代码规范旨在提供一系列的最佳实践，让现实工作中的Clojure程序员能够写出易于维护的代码，并能与他人协作和共享。一份反应真实需求的代码规范才能被人接收，而那些理想化的、甚至部分观点遭到程序员拒绝的代码规范注定不会长久——无论它有多出色。</p>
+<p>这份规范由多个章节组成，每个章节包含一组相关的规则。我会尝试去描述每条规则背后的理念（过于明显的理念我就省略了）。</p>
+<p>这些规则并不是我凭空想象的，它们出自于我作为一个专业软件开发工程师长久以来的工作积累，以及Clojure社区成员们的反馈和建议，还有各种广为流传的Clojure编程学习资源，如<a href="http://www.clojurebook.com/">《Clojure Programming》</a>、<a href="http://joyofclojure.com/">《The Joy of Clojure》</a>等。</p>
+<p>这份规范还处于编写阶段，部分章节有所缺失，内容并不完整；部分规则没有示例，或者示例还不能完全将其描述清楚。未来这些问题都会得到改进，只是请你了解这一情况。</p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2013/01/04/clojure-style-guide/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://cn.shzhangji.com/blog/2013/01/04/clojure-style-guide/" data-id="cj01vpktu000genzjffxxjp1o" class="article-share-link">分享</a>
+      
+        <a href="http://cn.shzhangji.com/blog/2013/01/04/clojure-style-guide/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/clojure/">clojure</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-nginx-live-upgrade" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2012/12/23/nginx-live-upgrade/" class="article-date">
+  <time datetime="2012-12-23T14:11:00.000Z" itemprop="datePublished">2012-12-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Notes/">Notes</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2012/12/23/nginx-live-upgrade/">Nginx热升级</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>系统管理员可以使用Nginx提供的信号机制来对其进行维护，比较常用的是<code>kill -HUP &lt;master pid&gt;</code>命令，它能通知Nginx使用新的配置文件启动工作进程，并逐个关闭旧进程，完成平滑切换。当需要对Nginx进行版本升级或增减模块时，为了不丢失请求，可以结合使用<code>USR2</code>、<code>WINCH</code>等信号进行平滑过度，达到热升级的目的。如果中途遇到问题，也能立刻回退至原版本。</p>
+<h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><p>1、备份原Nginx二进制文件；</p>
+<p>2、编译新Nginx源码，安装路径需与旧版一致；</p>
+<p>3、向主进程发送<code>USR2</code>信号，Nginx会启动一个新版本的master进程和工作进程，和旧版一起处理请求：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">prey:~ root<span class="comment"># ps -ef|grep nginx</span></div><div class="line"> 127     1   nginx: master process /usr/<span class="built_in">local</span>/nginx-1.2.4/sbin/nginx</div><div class="line"> 129   127   nginx: worker process</div><div class="line">prey:~ root<span class="comment"># kill -USR2 127</span></div><div class="line">prey:~ root<span class="comment"># ps -ef|grep nginx</span></div><div class="line"> 127     1   nginx: master process /usr/<span class="built_in">local</span>/nginx-1.2.4/sbin/nginx</div><div class="line"> 129   127   nginx: worker process  </div><div class="line">5180   127   nginx: master process /usr/<span class="built_in">local</span>/nginx-1.2.4/sbin/nginx</div><div class="line">5182  5180   nginx: worker process</div></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/blog/2012/12/23/nginx-live-upgrade/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://cn.shzhangji.com/blog/2012/12/23/nginx-live-upgrade/" data-id="cj01vpktg000benzjj0dexol3" class="article-share-link">分享</a>
+      
+        <a href="http://cn.shzhangji.com/blog/2012/12/23/nginx-live-upgrade/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nginx/">nginx</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-cia-noir-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2012/12/16/cia-noir-3/" class="article-date">
+  <time datetime="2012-12-16T12:20:00.000Z" itemprop="datePublished">2012-12-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2012/12/16/cia-noir-3/">Clojure实战(3)：使用Noir框架开发博客(下)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Session和Cookie"><a href="#Session和Cookie" class="headerlink" title="Session和Cookie"></a>Session和Cookie</h2><p>做网络编程的人肯定对这两个概念不陌生，因此这里就不介绍它们的定义和作用了。我们要实现的需求也很简单：用户通过一个表单登录，在当前窗口中保持登录状态，并可以选择“记住我”来免去关闭并新开窗口之后的重登录。显然，前者使用Session，后者使用Cookie。下面我们就来看Noir对这两者的支持。</p>
+<h3 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h3><figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(<span class="name">require</span> 'noir.session)</div><div class="line">(<span class="name">noir.session/put!</span> <span class="symbol">:username</span> <span class="string">"john"</span>)</div><div class="line">(<span class="name">noir.session/get</span> <span class="symbol">:username</span> <span class="string">"nobody"</span>)</div><div class="line">(<span class="name">noir.session/clear!</span>)</div></pre></td></tr></table></figure>
+<p>很简单的API。注意<code>put!</code>函数中的<code>!</code>，和之前遇到的<code>?</code>一样，这种特殊字符是合法的函数名，但<code>!</code>习惯用来表示该方法会改变某个对象的状态，这里<code>put!</code>就表示会改变Session的状态。</p>
+<p>Noir还提供了一种“闪信（Flash）”机制，主要用于在页面跳转之间暂存消息。如用户登录后会跳转到首页，如果想在首页显示“登录成功”的信息，就需要用到闪信了。闪信的API也放置在<code>noir.session</code>命名空间下：</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(<span class="name">noir.session/flash-put!</span> <span class="string">"登录成功"</span>)</div><div class="line">(<span class="name">noir.session/flash-get</span>)</div></pre></td></tr></table></figure>
+<p>闪信的生命周期是一次请求，即在设置了闪信后的下一个请求中，可以多次<code>flash-get</code>，但再下一次请求就获取不到值了。</p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2012/12/16/cia-noir-3/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://cn.shzhangji.com/blog/2012/12/16/cia-noir-3/" data-id="cj01vpkta0009enzjwnkzb6va" class="article-share-link">分享</a>
+      
+        <a href="http://cn.shzhangji.com/blog/2012/12/16/cia-noir-3/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/noir/">noir</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-cia-noir-2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2012/12/08/cia-noir-2/" class="article-date">
+  <time datetime="2012-12-08T04:09:00.000Z" itemprop="datePublished">2012-12-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2012/12/08/cia-noir-2/">Clojure实战(2)：使用Noir框架开发博客(中)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="在Eclipse中编写Clojure代码"><a href="#在Eclipse中编写Clojure代码" class="headerlink" title="在Eclipse中编写Clojure代码"></a>在Eclipse中编写Clojure代码</h2><p>从这章起我们就要开始真正的编码了。Vim可能是很多程序员的选择，但如果你像我一样更喜欢GUI界面，那就来看看如何在Eclipse中编写Clojure代码吧。</p>
+<h3 id="安装Eclipse插件"><a href="#安装Eclipse插件" class="headerlink" title="安装Eclipse插件"></a>安装Eclipse插件</h3><p>Eclipse提供了一个Clojure插件：CounterClockwise，可以用来编写Clojure代码，进行语法高亮、调试等操作。打开Eclipse的Market Place，搜索counterclockwise关键字，点击Install即可。</p>
+<h3 id="将Leiningen项目导入Eclipse"><a href="#将Leiningen项目导入Eclipse" class="headerlink" title="将Leiningen项目导入Eclipse"></a>将Leiningen项目导入Eclipse</h3><p>由于CounterClockwise插件并没有默认使用Leiningen来管理项目，因此需要做一些额外的工作。</p>
+<p>在使用<code>lein new</code>命令创建项目后，在project.clj文件中增加如下一行：</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">(<span class="name">defproject</span> ...</div><div class="line">            <span class="symbol">:dev-dependencies</span> [[lein-eclipse <span class="string">"1.0.0"</span>]]</div><div class="line">            ...)</div></pre></td></tr></table></figure>
+<p>然后依次执行<code>lein deps</code>和<code>lein eclipse</code>，会看到项目根目录下生成了.project和.classpath文件。然后就可以进入Eclipse导入这个项目了。如果使用Git进行版本控制，<code>lein</code>已经为你生成好了.gitignore文件。执行了<code>git init</code>后，就能在Eclilpse中选择Share Project菜单项，进行可视化的版本控制。</p>
+<h2 id="使用表单"><a href="#使用表单" class="headerlink" title="使用表单"></a>使用表单</h2><p>我们现在需要编写一个新建文章的功能，它是一个简单的页面，页面上有“标题”和“内容”两个文本框，并有一个“提交”按钮。</p>
+<p>在src/blog/views目录下新建一个文件article.clj，输入以下内容：</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">(<span class="name"><span class="builtin-name">ns</span></span> blog.views.article</div><div class="line">  (<span class="symbol">:require</span> [blog.views.common <span class="symbol">:as</span> common])</div><div class="line">  (<span class="symbol">:use</span> [noir.core]</div><div class="line">        [hiccup.form-helpers]))</div><div class="line"></div><div class="line">(<span class="name">defpage</span> <span class="string">"/blog/add"</span> []</div><div class="line">  (<span class="name">common/layout</span></div><div class="line">    [<span class="symbol">:h1</span> <span class="string">"新建文章"</span>]</div><div class="line">    (<span class="name">form-to</span> [<span class="symbol">:post</span> <span class="string">"/blog/add"</span>]</div><div class="line">             (<span class="name">label</span> <span class="string">"title"</span> <span class="string">"标题："</span>)</div><div class="line">             (<span class="name">text-field</span> &#123;<span class="symbol">:size</span> <span class="number">50</span>&#125; <span class="string">"title"</span>) [<span class="symbol">:br</span>]</div><div class="line">             (<span class="name">label</span> <span class="string">"content"</span> <span class="string">"内容："</span>)</div><div class="line">             (<span class="name">text-area</span> &#123;<span class="symbol">:rows</span> <span class="number">20</span> <span class="symbol">:cols</span> <span class="number">50</span>&#125; <span class="string">"content"</span>) [<span class="symbol">:br</span>]</div><div class="line">             (<span class="name">submit-button</span> <span class="string">"提交"</span>))))</div></pre></td></tr></table></figure>
+<p><code>defpage</code>和<code>common/layout</code>我们之前已经见到过，前者定义了URL<code>/blog/add</code>指向的页面，后者则是套用了一个模板。<code>[:h1 ...]</code>和<code>[:br]</code>也应该熟悉，它们是Hiccup的语法，分别生成<code>&lt;h1&gt;...&lt;/h1&gt;</code>和<code>&lt;br&gt;</code>标签。</p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2012/12/08/cia-noir-2/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://cn.shzhangji.com/blog/2012/12/08/cia-noir-2/" data-id="cj01vpkt40006enzjzyuu39pg" class="article-share-link">分享</a>
+      
+        <a href="http://cn.shzhangji.com/blog/2012/12/08/cia-noir-2/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/noir/">noir</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-cia-noir-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2012/11/25/cia-noir-1/" class="article-date">
+  <time datetime="2012-11-25T08:58:00.000Z" itemprop="datePublished">2012-11-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2012/11/25/cia-noir-1/">Clojure实战(1)：使用Noir框架开发博客(上)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>为什么要学习一门新的语言？我的想法很简单，平时OO、PO代码写多了，却从未接触过函数式编程，不免有些遗憾。考察下来，Clojure可以用来尝尝鲜，所以就决定学一学。为了给自己的学习留下些记录，就有了这样一份教程。</p>
+<p>Clojure已经有一些不错的教程，如<a href="http://java.ociweb.com/mark/">Mark Volkmann</a>的<a href="http://java.ociweb.com/mark/clojure/article.html">Clojure - Functional Programming for the JVM</a>，Storm的主要贡献者<a href="http://xumingming.sinaapp.com/">徐明明</a>也对这个教程做了<a href="http://xumingming.sinaapp.com/302/clojure-functional-programming-for-the-jvm-clojure-tutorial/">全文翻译</a>。还有一些不错的书籍，像<a href="http://oreilly.com/">O’Reilly</a>的<a href="http://www.amazon.com/Clojure-Programming-Chas-Emerick/dp/1449394701">Clojure Programming</a>，都值得一读。我是从Mark的教程开始学起的，对其中没有提到的部分则是参考了Clojure Programming这本书。Clojure的<a href="http://clojure.org/">官方网站</a>上有详尽的<a href="http://clojure.github.com/clojure/">API参考</a>，可以作为工具书查阅。</p>
+<p>但是，上面提到的教程都是针对Clojure语言本身的，从 <em>Hello, world!</em> 开始，讲解Clojure的各种语法，关键字，结构等等。虽然Clojure的语法已经足够吸引你的眼球，在<a href="http://en.wikipedia.org/wiki/Read-eval-print_loop">REPL</a>中敲击Clojure代码已经是一种莫大的乐趣了，但似乎还有些不够，我们想看到一个用Clojure编写的应用程序！</p>
+<p>因为平时都是做Web开发，所以先从一个Web框架入手会是不错的选择，因此这份教程会从使用<a href="http://webnoir.org/">Noir</a>框架搭建一个博客开始，带你领略Clojure的魅力。</p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2012/11/25/cia-noir-1/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://cn.shzhangji.com/blog/2012/11/25/cia-noir-1/" data-id="cj01vpkt20005enzjx79j05of" class="article-share-link">分享</a>
+      
+        <a href="http://cn.shzhangji.com/blog/2012/11/25/cia-noir-1/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/noir/">noir</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-aosa-python-packaging" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2012/11/18/aosa-python-packaging/" class="article-date">
+  <time datetime="2012-11-18T11:20:00.000Z" itemprop="datePublished">2012-11-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Translation/">Translation</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2012/11/18/aosa-python-packaging/">开源软件架构 - 卷1：第14章 Python打包工具</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>作者：<a href="http://www.aosabook.org/en/intro1.html#ziade-tarek">Tarek Ziadé</a>，翻译：<a href="mailto:zhangji87@gmail.com">张吉</a></p>
+<p>原文：<a href="http://www.aosabook.org/en/packaging.html">http://www.aosabook.org/en/packaging.html</a></p>
+<h2 id="14-1-简介"><a href="#14-1-简介" class="headerlink" title="14.1 简介"></a>14.1 简介</h2><p>对于如何安装软件，目前有两种思想流派。第一种是说软件应该自给自足，不依赖于其它任何部件，这点在Windows和Mac OS X系统中很流行。这种方式简化了软件的管理：每个软件都有自己独立的“领域”，安装和卸载它们不会对操作系统产生影响。如果软件依赖一项不常见的类库，那么这个类库一定是包含在软件安装包之中的。</p>
+<p>第二种流派，主要在类Linux的操作系统中盛行，即软件应该是由一个个独立的、小型的软件包组成的。类库被包含在软件包中，包与包之间可以有依赖关系。安装软件时需要查找和安装它所依赖的其他特定版本的软件包。这些依赖包通常是从一个包含所有软件包的中央仓库中获取的。这种理念也催生了Linux发行版中那些复杂的依赖管理工具，如<code>dpkg</code>和<code>RPM</code>。它们会跟踪软件包的依赖关系，并防止两个软件使用了版本相冲突的第三方包。</p>
+<p>以上两种流派各有优劣。高度模块化的系统可以使得更新和替换某个软件包变的非常方便，因为每个类库都只有一份，所有依赖于它的应用程序都能因此受益。比如，修复某个类库的安全漏洞可以立刻应用到所有程序中，而如果应用程序使用了自带的类库，那安全更新就很难应用进去了，特别是在类库版本不一致的情况下更难处理。</p>
+<p>不过这种“模块化”也被一些开发者视为缺点，因为他们无法控制应用程序的依赖关系。他们希望提供一个独立和稳定的软件运行环境，这样就不会在系统升级后遭遇各种依赖方面的问题。</p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2012/11/18/aosa-python-packaging/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://cn.shzhangji.com/blog/2012/11/18/aosa-python-packaging/" data-id="cj01vpksz0004enzjq69kwfqo" class="article-share-link">分享</a>
+      
+        <a href="http://cn.shzhangji.com/blog/2012/11/18/aosa-python-packaging/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/aosa/">aosa</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; 上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">下一页 &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/aosa/" style="font-size: 13.33px;">aosa</a> <a href="/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/tags/fp/" style="font-size: 10px;">fp</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hadoop/" style="font-size: 16.67px;">hadoop</a> <a href="/tags/hive/" style="font-size: 10px;">hive</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/noir/" style="font-size: 16.67px;">noir</a> <a href="/tags/ops/" style="font-size: 10px;">ops</a> <a href="/tags/perl/" style="font-size: 13.33px;">perl</a> <a href="/tags/programming/" style="font-size: 10px;">programming</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/storm/" style="font-size: 10px;">storm</a> <a href="/tags/translation/" style="font-size: 13.33px;">translation</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blog/2016/03/13/top-5-frameworks/">开发人员必知的5种开源框架</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2015/09/12/model-dependency-injection-with-spring-aop/">使用Spring AOP向领域模型注入依赖</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2015/09/05/anemic-domain-model/">贫血领域模型</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2015/06/25/compressed-oops-in-the-hotspot-jvm/">HotSpot JVM中的对象指针压缩</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2015/03/08/hbase-dos-and-donts/">Apache HBase的适用场景</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
