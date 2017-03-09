@@ -343,10 +343,10 @@
     <link href="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/"/>
     <id>http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/</id>
     <published>2015-01-13T06:20:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T07:25:39.000Z</updated>
     
     <content type="html"><![CDATA[<p>在《<a href="http://www.amazon.com/MapReduce-Design-Patterns-Effective-Algorithms/dp/1449327176" target="_blank" rel="external">MapReduce Design Patterns</a>》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：</p>
-<p><img src="/images/reduce-side-join/reduce-side-join.png" alt=""></p>
+<p><img src="/cnblogs/images/reduce-side-join/reduce-side-join.png" alt=""></p>
 <ol>
 <li>使用<a href="https://hadoop.apache.org/docs/r1.0.4/api/org/apache/hadoop/mapred/lib/MultipleInputs.html" target="_blank" rel="external">MultipleInputs</a>指定不同的来源表和相应的Mapper类；</li>
 <li>Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录；</li>
@@ -388,7 +388,7 @@
     <summary type="html">
     
       &lt;p&gt;在《&lt;a href=&quot;http://www.amazon.com/MapReduce-Design-Patterns-Effective-Algorithms/dp/1449327176&quot;&gt;MapReduce Design Patterns&lt;/a&gt;》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/images/reduce-side-join/reduce-side-join.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/cnblogs/images/reduce-side-join/reduce-side-join.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;使用&lt;a href=&quot;https://hadoop.apache.org/docs/r1.0.4/api/org/apache/hadoop/mapred/lib/MultipleInputs.html&quot;&gt;MultipleInputs&lt;/a&gt;指定不同的来源表和相应的Mapper类；&lt;/li&gt;
 &lt;li&gt;Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录；&lt;/li&gt;
@@ -418,10 +418,10 @@
     <link href="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/"/>
     <id>http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/</id>
     <published>2014-12-23T08:10:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T07:25:39.000Z</updated>
     
     <content type="html"><![CDATA[<p>当多人协作开发一个分支时，历史记录通常如下方左图所示，比较凌乱。如果希望能像右图那样呈线性提交，就需要学习git rebase的用法。</p>
-<p><img src="/images/git-rebase/rebase-result.png" alt=""></p>
+<p><img src="/cnblogs/images/git-rebase/rebase-result.png" alt=""></p>
 <h2 id="“Merge-branch”提交的产生"><a href="#“Merge-branch”提交的产生" class="headerlink" title="“Merge branch”提交的产生"></a>“Merge branch”提交的产生</h2><p>我们的工作流程是：修改代码→提交到本地仓库→拉取远程改动→推送。正是在git pull这一步产生的Merge branch提交。事实上，git pull等效于get fetch origin和get merge origin/master这两条命令，前者是拉取远程仓库到本地临时库，后者是将临时库中的改动合并到本地分支中。</p>
 <p>要避免Merge branch提交也有一个“土法”：先pull、再commit、最后push。不过万一commit和push之间远程又发生了改动，还需要再pull一次，就又会产生Merge branch提交。</p>
 <h2 id="使用git-pull-–rebase"><a href="#使用git-pull-–rebase" class="headerlink" title="使用git pull –rebase"></a>使用git pull –rebase</h2><p>修改代码→commit→git pull –rebase→git push。也就是将get merge origin/master替换成了git rebase origin/master，它的过程是先将HEAD指向origin/master，然后逐一应用本地的修改，这样就不会产生Merge branch提交了。具体过程见下文扩展阅读。</p>
@@ -437,24 +437,24 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git config --global branch.autosetuprebase always</div></pre></td></tr></table></figure>
 <p>这样对于新建的分支都会设定上面的rebase=true了。已经创建好的分支还是需要手动配置的。</p>
 <h2 id="扩展阅读-1-：git-rebase工作原理"><a href="#扩展阅读-1-：git-rebase工作原理" class="headerlink" title="扩展阅读[1]：git rebase工作原理"></a>扩展阅读[1]：git rebase工作原理</h2><p>先看看git merge的示意图：</p>
-<p><img src="/images/git-rebase/merge.png" alt=""></p>
+<p><img src="/cnblogs/images/git-rebase/merge.png" alt=""></p>
 <p><a href="https://www.atlassian.com/ja/git/tutorial/git-branches" target="_blank" rel="external">图片来源</a></p>
 <p>可以看到Some Feature分支的两个提交通过一个新的提交（蓝色）和master连接起来了。</p>
 <p>再来看git rebase的示意图：</p>
-<p><img src="/images/git-rebase/rebase-1.png" alt=""></p>
-<p><img src="/images/git-rebase/rebase-2.png" alt=""></p>
+<p><img src="/cnblogs/images/git-rebase/rebase-1.png" alt=""></p>
+<p><img src="/cnblogs/images/git-rebase/rebase-2.png" alt=""></p>
 <p>Feature分支中的两个提交被“嫁接”到了Master分支的头部，或者说Feature分支的“基”（base）变成了 Master，rebase也因此得名。</p>
 <h2 id="扩展阅读-2-：git-merge-–no-ff"><a href="#扩展阅读-2-：git-merge-–no-ff" class="headerlink" title="扩展阅读[2]：git merge –no-ff"></a>扩展阅读[2]：git merge –no-ff</h2><p>在做项目开发时会用到分支，合并时采用以下步骤：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ git checkout feature-branch</div><div class="line">$ git rebase master</div><div class="line">$ git checkout master</div><div class="line">$ git merge --no-ff feature-branch</div><div class="line">$ git push origin master</div></pre></td></tr></table></figure>
 <p>历史就成了这样：</p>
-<p><img src="/images/git-rebase/no-ff.png" alt=""></p>
+<p><img src="/cnblogs/images/git-rebase/no-ff.png" alt=""></p>
 <p>可以看到，Merge branch ‘feature-branch’那段可以很好的展现出这些提交是属于某一特性的。</p>
 ]]></content>
     
     <summary type="html">
     
       &lt;p&gt;当多人协作开发一个分支时，历史记录通常如下方左图所示，比较凌乱。如果希望能像右图那样呈线性提交，就需要学习git rebase的用法。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/images/git-rebase/rebase-result.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/cnblogs/images/git-rebase/rebase-result.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;h2 id=&quot;“Merge-branch”提交的产生&quot;&gt;&lt;a href=&quot;#“Merge-branch”提交的产生&quot; class=&quot;headerlink&quot; title=&quot;“Merge branch”提交的产生&quot;&gt;&lt;/a&gt;“Merge branch”提交的产生&lt;/h2&gt;&lt;p&gt;我们的工作流程是：修改代码→提交到本地仓库→拉取远程改动→推送。正是在git pull这一步产生的Merge branch提交。事实上，git pull等效于get fetch origin和get merge origin/master这两条命令，前者是拉取远程仓库到本地临时库，后者是将临时库中的改动合并到本地分支中。&lt;/p&gt;
 &lt;p&gt;要避免Merge branch提交也有一个“土法”：先pull、再commit、最后push。不过万一commit和push之间远程又发生了改动，还需要再pull一次，就又会产生Merge branch提交。&lt;/p&gt;
 &lt;h2 id=&quot;使用git-pull-–rebase&quot;&gt;&lt;a href=&quot;#使用git-pull-–rebase&quot; class=&quot;headerlink&quot; title=&quot;使用git pull –rebase&quot;&gt;&lt;/a&gt;使用git pull –rebase&lt;/h2&gt;&lt;p&gt;修改代码→commit→git pull –rebase→git push。也就是将get merge origin/master替换成了git rebase origin/master，它的过程是先将HEAD指向origin/master，然后逐一应用本地的修改，这样就不会产生Merge branch提交了。具体过程见下文扩展阅读。&lt;/p&gt;
@@ -1007,17 +1007,17 @@
     <link href="http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/"/>
     <id>http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/</id>
     <published>2013-09-06T03:20:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T07:25:39.000Z</updated>
     
     <content type="html"><![CDATA[<p>在每天运行的Hive脚本中，偶尔会抛出以下错误：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">2013-09-03 01:39:00,973 ERROR parse.SemanticAnalyzer (SemanticAnalyzer.java:getMetaData(1128)) - org.apache.hadoop.hive.ql.metadata.HiveException: Unable to fetch table dw_xxx_xxx</div><div class="line">        at org.apache.hadoop.hive.ql.metadata.Hive.getTable(Hive.java:896)</div><div class="line">        ...</div><div class="line">Caused by: javax.jdo.JDODataStoreException: Exception thrown obtaining schema column information from datastore</div><div class="line">NestedThrowables:</div><div class="line">com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table &apos;hive.DELETEME1378143540925&apos; doesn&apos;t exist</div><div class="line">        at org.datanucleus.jdo.NucleusJDOHelper.getJDOExceptionForNucleusException(NucleusJDOHelper.java:313)</div><div class="line">        ...</div></pre></td></tr></table></figure>
 <p>查阅了网上的资料，是DataNucleus的问题。</p>
 <p>背景1：我们知道MySQL中的库表信息是存放在information_schema库中的，Hive也有类似的机制，它会将库表信息存放在一个第三方的RDBMS中，目前我们线上配置的是本机MySQL，即：</p>
 <p>$ mysql -uhive -ppassword hive</p>
-<p><img src="/images/hive-deleteme-error/1.png" alt="1.png"></p>
+<p><img src="/cnblogs/images/hive-deleteme-error/1.png" alt="1.png"></p>
 <a id="more"></a>
 <p>背景2：Hive使用的是DataNuclues ORM库来操作数据库的，而基本上所有的ORM框架（对象关系映射）都会提供自动建表的功能，即开发者只需编写Java对象，ORM会自动生成DDL。DataNuclues也有这一功能，而且它在初始化时会通过生成临时表的方式来获取数据库的Catalog和Schema，也就是 DELETEME表：</p>
-<p><img src="/images/hive-deleteme-error/2.png" alt="2.png"></p>
+<p><img src="/cnblogs/images/hive-deleteme-error/2.png" alt="2.png"></p>
 <p>这样就有一个问题：在并发量大的情况下，DELETEME表名中的毫秒数可能相同，那在pt.drop(conn)的时候就会产生找不到表的报错。</p>
 <p>解决办法已经可以在代码中看到了：将datanucleus.fixedDataStore选项置为true，即告知DataNuclues该数据库的表结构是既定的，不允许执行DDL操作。</p>
 <p>这样配置会有什么问题？让我们回忆一下Hive的安装步骤：</p>
@@ -1050,7 +1050,7 @@
 &lt;p&gt;查阅了网上的资料，是DataNucleus的问题。&lt;/p&gt;
 &lt;p&gt;背景1：我们知道MySQL中的库表信息是存放在information_schema库中的，Hive也有类似的机制，它会将库表信息存放在一个第三方的RDBMS中，目前我们线上配置的是本机MySQL，即：&lt;/p&gt;
 &lt;p&gt;$ mysql -uhive -ppassword hive&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/images/hive-deleteme-error/1.png&quot; alt=&quot;1.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/cnblogs/images/hive-deleteme-error/1.png&quot; alt=&quot;1.png&quot;&gt;&lt;/p&gt;
     
     </summary>
     

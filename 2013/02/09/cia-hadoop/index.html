@@ -13,13 +13,13 @@
 <meta property="og:site_name" content="张吉的博客">
 <meta property="og:description" content="Hadoop简介众所周知，我们已经进入了大数据时代，每天都有PB级的数据需要处理、分析，从中提取出有用的信息。Hadoop就是这一时代背景下的产物。它是Apache基金会下的开源项目，受Google两篇论文的启发，采用分布式的文件系统HDFS，以及通用的MapReduce解决方案，能够在数千台物理节点上进行分布式并行计算。
 对于Hadoop的介绍这里不再赘述，读者可以访问其官网，或阅读Hadoop">
-<meta property="og:image" content="http://shzhangji.com/cnblogs/images/cia-hadoop/wordcount.png">
-<meta property="og:updated_time" content="2017-03-09T03:44:04.000Z">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/cnblogs/images/cia-hadoop/wordcount.png">
+<meta property="og:updated_time" content="2017-03-09T07:25:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Clojure实战(4)：编写Hadoop MapReduce脚本">
 <meta name="twitter:description" content="Hadoop简介众所周知，我们已经进入了大数据时代，每天都有PB级的数据需要处理、分析，从中提取出有用的信息。Hadoop就是这一时代背景下的产物。它是Apache基金会下的开源项目，受Google两篇论文的启发，采用分布式的文件系统HDFS，以及通用的MapReduce解决方案，能够在数千台物理节点上进行分布式并行计算。
 对于Hadoop的介绍这里不再赘述，读者可以访问其官网，或阅读Hadoop">
-<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/cia-hadoop/wordcount.png">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/cnblogs/images/cia-hadoop/wordcount.png">
 <meta name="twitter:creator" content="@zjerryj">
 <link rel="publisher" href="zhangji87@gmail.com">
   
@@ -131,7 +131,7 @@ ga('send', 'pageview');
 <p>编辑<code>project.clj</code>文件，添加依赖项<code>clojure-hadoop &quot;1.4.1&quot;</code>，尔后执行<code>lein deps</code>。</p>
 <h3 id="Map和Reduce"><a href="#Map和Reduce" class="headerlink" title="Map和Reduce"></a>Map和Reduce</h3><p>MapReduce，简称mapred，是Hadoop的核心概念之一。可以将其理解为处理问题的一种方式，即将大问题拆分成多个小问题来分析和解决，最终合并成一个结果。其中拆分的过程就是Map，合并的过程就是Reduce。</p>
 <p>以Wordcount为例，将一段文字划分成一个个单词的过程就是Map。这个过程是可以并行执行的，即将文章拆分成多个段落，每个段落分别在不同的节点上执行划分单词的操作。这个过程结束后，我们便可以统计各个单词出现的次数，这也就是Reduce的过程。同样，Reduce也是可以并发执行的。整个过程如下图所示：</p>
-<p><img src="/images/cia-hadoop/wordcount.png" alt="Wordcount"></p>
+<p><img src="/cnblogs/images/cia-hadoop/wordcount.png" alt="Wordcount"></p>
 <p>中间Shuffle部分的功能是将Map输出的数据按键排序，交由Reduce处理。整个过程全部由Hadoop把控，开发者只需编写<code>Map</code>和<code>Reduce</code>函数，这也是Hadoop强大之处。</p>
 <h4 id="编写Map函数"><a href="#编写Map函数" class="headerlink" title="编写Map函数"></a>编写Map函数</h4><p>在本示例中，我们处理的原始数据是文本文件，Hadoop会逐行读取并调用Map函数。Map函数会接收到两个参数：<code>key</code>是一个长整型，表示该行在整个文件中的偏移量，很少使用；<code>value</code>则是该行的内容。以下是将一行文字拆分成单词的Map函数：</p>
 <figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">;; src/cia_hadoop/wordcount.clj</span></div><div class="line"></div><div class="line">(<span class="name"><span class="builtin-name">ns</span></span> cia-hadoop.wordcount</div><div class="line">  (<span class="symbol">:require</span> [clojure-hadoop.wrap <span class="symbol">:as</span> wrap]</div><div class="line">            [clojure-hadoop.defjob <span class="symbol">:as</span> defjob])</div><div class="line">  (<span class="symbol">:import</span> [java.util StringTokenizer])</div><div class="line">  (<span class="symbol">:use</span> clojure-hadoop.job))</div><div class="line"></div><div class="line">(<span class="name"><span class="builtin-name">defn</span></span> my-map [key value]</div><div class="line">  (<span class="name"><span class="builtin-name">map</span></span> (<span class="name"><span class="builtin-name">fn</span></span> [token] [token <span class="number">1</span>])</div><div class="line">       (<span class="name">enumeration-seq</span> (<span class="name">StringTokenizer.</span> value))))</div></pre></td></tr></table></figure>

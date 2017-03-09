@@ -23,8 +23,8 @@ Reducer在接收到同一个Key的记录后，执行以下两步：
 Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录；
 Reducer在接收到同一个Key的记录后，执行以下两步：
 遍历Values，根据标签将来源表的记录分别放">
-<meta property="og:image" content="http://shzhangji.com/cnblogs/images/reduce-side-join/reduce-side-join.png">
-<meta property="og:updated_time" content="2017-03-09T03:37:13.000Z">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/cnblogs/images/reduce-side-join/reduce-side-join.png">
+<meta property="og:updated_time" content="2017-03-09T07:25:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Reduce-side Join">
 <meta name="twitter:description" content="在《MapReduce Design Patterns》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：
@@ -34,7 +34,7 @@ Reducer在接收到同一个Key的记录后，执行以下两步：
 Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录；
 Reducer在接收到同一个Key的记录后，执行以下两步：
 遍历Values，根据标签将来源表的记录分别放">
-<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/reduce-side-join/reduce-side-join.png">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/cnblogs/images/reduce-side-join/reduce-side-join.png">
 <meta name="twitter:creator" content="@zjerryj">
 <link rel="publisher" href="zhangji87@gmail.com">
   
@@ -129,7 +129,7 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p>在《<a href="http://www.amazon.com/MapReduce-Design-Patterns-Effective-Algorithms/dp/1449327176" target="_blank" rel="external">MapReduce Design Patterns</a>》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：</p>
-<p><img src="/images/reduce-side-join/reduce-side-join.png" alt=""></p>
+<p><img src="/cnblogs/images/reduce-side-join/reduce-side-join.png" alt=""></p>
 <ol>
 <li>使用<a href="https://hadoop.apache.org/docs/r1.0.4/api/org/apache/hadoop/mapred/lib/MultipleInputs.html" target="_blank" rel="external">MultipleInputs</a>指定不同的来源表和相应的Mapper类；</li>
 <li>Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录；</li>

@@ -379,7 +379,7 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p>在《<a href="http://www.amazon.com/MapReduce-Design-Patterns-Effective-Algorithms/dp/1449327176">MapReduce Design Patterns</a>》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：</p>
-<p><img src="/images/reduce-side-join/reduce-side-join.png" alt=""></p>
+<p><img src="/cnblogs/images/reduce-side-join/reduce-side-join.png" alt=""></p>
 <ol>
 <li>使用<a href="https://hadoop.apache.org/docs/r1.0.4/api/org/apache/hadoop/mapred/lib/MultipleInputs.html">MultipleInputs</a>指定不同的来源表和相应的Mapper类；</li>
 <li>Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录；</li>
@@ -443,7 +443,7 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p>当多人协作开发一个分支时，历史记录通常如下方左图所示，比较凌乱。如果希望能像右图那样呈线性提交，就需要学习git rebase的用法。</p>
-<p><img src="/images/git-rebase/rebase-result.png" alt=""></p>
+<p><img src="/cnblogs/images/git-rebase/rebase-result.png" alt=""></p>
 <h2 id="“Merge-branch”提交的产生"><a href="#“Merge-branch”提交的产生" class="headerlink" title="“Merge branch”提交的产生"></a>“Merge branch”提交的产生</h2><p>我们的工作流程是：修改代码→提交到本地仓库→拉取远程改动→推送。正是在git pull这一步产生的Merge branch提交。事实上，git pull等效于get fetch origin和get merge origin/master这两条命令，前者是拉取远程仓库到本地临时库，后者是将临时库中的改动合并到本地分支中。</p>
 <p>要避免Merge branch提交也有一个“土法”：先pull、再commit、最后push。不过万一commit和push之间远程又发生了改动，还需要再pull一次，就又会产生Merge branch提交。</p>
 <h2 id="使用git-pull-–rebase"><a href="#使用git-pull-–rebase" class="headerlink" title="使用git pull –rebase"></a>使用git pull –rebase</h2><p>修改代码→commit→git pull –rebase→git push。也就是将get merge origin/master替换成了git rebase origin/master，它的过程是先将HEAD指向origin/master，然后逐一应用本地的修改，这样就不会产生Merge branch提交了。具体过程见下文扩展阅读。</p>

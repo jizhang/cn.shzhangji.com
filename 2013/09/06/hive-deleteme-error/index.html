@@ -13,14 +13,14 @@
 <meta property="og:site_name" content="张吉的博客">
 <meta property="og:description" content="在每天运行的Hive脚本中，偶尔会抛出以下错误：
 123456782013-09-03 01:39:00,973 ERROR parse.SemanticAnalyzer (SemanticAnalyzer.java:getMetaData(1128)) - org.apache.hadoop.hive.ql.metadata.HiveException: Unable to fetch tabl">
-<meta property="og:image" content="http://shzhangji.com/cnblogs/images/hive-deleteme-error/1.png">
-<meta property="og:image" content="http://shzhangji.com/cnblogs/images/hive-deleteme-error/2.png">
-<meta property="og:updated_time" content="2017-03-09T03:37:13.000Z">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/cnblogs/images/hive-deleteme-error/1.png">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/cnblogs/images/hive-deleteme-error/2.png">
+<meta property="og:updated_time" content="2017-03-09T07:25:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hive并发情况下报DELETEME表不存在的异常">
 <meta name="twitter:description" content="在每天运行的Hive脚本中，偶尔会抛出以下错误：
 123456782013-09-03 01:39:00,973 ERROR parse.SemanticAnalyzer (SemanticAnalyzer.java:getMetaData(1128)) - org.apache.hadoop.hive.ql.metadata.HiveException: Unable to fetch tabl">
-<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/hive-deleteme-error/1.png">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/cnblogs/images/hive-deleteme-error/1.png">
 <meta name="twitter:creator" content="@zjerryj">
 <link rel="publisher" href="zhangji87@gmail.com">
   
@@ -123,10 +123,10 @@ ga('send', 'pageview');
 <p>查阅了网上的资料，是DataNucleus的问题。</p>
 <p>背景1：我们知道MySQL中的库表信息是存放在information_schema库中的，Hive也有类似的机制，它会将库表信息存放在一个第三方的RDBMS中，目前我们线上配置的是本机MySQL，即：</p>
 <p>$ mysql -uhive -ppassword hive</p>
-<p><img src="/images/hive-deleteme-error/1.png" alt="1.png"></p>
+<p><img src="/cnblogs/images/hive-deleteme-error/1.png" alt="1.png"></p>
 <a id="more"></a>
 <p>背景2：Hive使用的是DataNuclues ORM库来操作数据库的，而基本上所有的ORM框架（对象关系映射）都会提供自动建表的功能，即开发者只需编写Java对象，ORM会自动生成DDL。DataNuclues也有这一功能，而且它在初始化时会通过生成临时表的方式来获取数据库的Catalog和Schema，也就是 DELETEME表：</p>
-<p><img src="/images/hive-deleteme-error/2.png" alt="2.png"></p>
+<p><img src="/cnblogs/images/hive-deleteme-error/2.png" alt="2.png"></p>
 <p>这样就有一个问题：在并发量大的情况下，DELETEME表名中的毫秒数可能相同，那在pt.drop(conn)的时候就会产生找不到表的报错。</p>
 <p>解决办法已经可以在代码中看到了：将datanucleus.fixedDataStore选项置为true，即告知DataNuclues该数据库的表结构是既定的，不允许执行DDL操作。</p>
 <p>这样配置会有什么问题？让我们回忆一下Hive的安装步骤：</p>

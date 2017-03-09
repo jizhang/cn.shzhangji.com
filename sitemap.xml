@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://shzhangji.com/cnblogs/cnblogs/2015/01/13/understand-reduce-side-join/</loc>
+    
+    <lastmod>2017-03-09T07:25:39.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/02/09/cia-hadoop/</loc>
+    
+    <lastmod>2017-03-09T07:25:39.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/</loc>
+    
+    <lastmod>2017-03-09T07:25:39.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/09/06/hive-deleteme-error/</loc>
+    
+    <lastmod>2017-03-09T07:25:39.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://shzhangji.com/cnblogs/cnblogs/2015/03/08/hbase-dos-and-donts/</loc>
     
     <lastmod>2017-03-09T04:27:06.000Z</lastmod>
@@ -44,13 +72,6 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/02/09/cia-hadoop/</loc>
-    
-    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://shzhangji.com/cnblogs/cnblogs/2012/11/18/aosa-python-packaging/</loc>
     
     <lastmod>2017-03-09T03:44:04.000Z</lastmod>
@@ -65,14 +86,7 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/</loc>
-    
-    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/03/27/fork-and-zombie-process/</loc>
+    <loc>http://shzhangji.com/cnblogs/cnblogs/2014/10/14/mysql-incorrent-utf8-value/</loc>
     
     <lastmod>2017-03-09T03:37:13.000Z</lastmod>
     
@@ -86,20 +100,6 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/03/07/currying-and-partial-application/</loc>
-    
-    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/</loc>
-    
-    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://shzhangji.com/cnblogs/cnblogs/2013/05/25/apache-hadoop-yarn-background-and-an-overview/</loc>
     
     <lastmod>2017-03-09T03:37:13.000Z</lastmod>
@@ -107,14 +107,14 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/01/04/clojure-style-guide/</loc>
+    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/</loc>
     
     <lastmod>2017-03-09T03:37:13.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/09/06/hive-deleteme-error/</loc>
+    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/03/27/fork-and-zombie-process/</loc>
     
     <lastmod>2017-03-09T03:37:13.000Z</lastmod>
     
@@ -142,14 +142,14 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/</loc>
+    <loc>http://shzhangji.com/cnblogs/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/</loc>
     
     <lastmod>2017-03-09T03:37:13.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/cnblogs/2014/10/14/mysql-incorrent-utf8-value/</loc>
+    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/</loc>
     
     <lastmod>2017-03-09T03:37:13.000Z</lastmod>
     
@@ -170,7 +170,14 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/</loc>
+    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/03/07/currying-and-partial-application/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/cnblogs/2013/01/04/clojure-style-guide/</loc>
     
     <lastmod>2017-03-09T03:37:13.000Z</lastmod>
     
@@ -178,13 +185,6 @@
   
   <url>
     <loc>http://shzhangji.com/cnblogs/cnblogs/2012/12/23/nginx-live-upgrade/</loc>
-    
-    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/cnblogs/2015/01/13/understand-reduce-side-join/</loc>
     
     <lastmod>2017-03-09T03:37:13.000Z</lastmod>
     
