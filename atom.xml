@@ -5,7 +5,7 @@
   <link href="/cnblogs/atom.xml" rel="self"/>
   
   <link href="http://shzhangji.com/"/>
-  <updated>2017-03-09T04:26:46.000Z</updated>
+  <updated>2017-03-09T22:24:58.563Z</updated>
   <id>http://shzhangji.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://shzhangji.com/2016/03/13/top-5-frameworks/"/>
     <id>http://shzhangji.com/2016/03/13/top-5-frameworks/</id>
     <published>2016-03-13T08:25:00.000Z</published>
-    <updated>2017-03-09T04:26:46.000Z</updated>
+    <updated>2017-03-09T22:24:58.563Z</updated>
     
     <content type="html"><![CDATA[<p>作者：<a href="https://opensource.com/business/15/12/top-5-frameworks" target="_blank" rel="external">John Esposito</a></p>
 <p>软件侵吞着世界<a href="http://www.wsj.com/articles/SB10001424053111903480904576512250915629460" target="_blank" rel="external">已经四年多了</a>，但开发人员看待软件的方式稍有不同。我们一直在致力于<a href="http://www.dougengelbart.org/pubs/augment-3906.html" target="_blank" rel="external">解决实际问题</a>，而<a href="http://worrydream.com/refs/Brooks-NoSilverBullet.pdf" target="_blank" rel="external">很少思考软件开发的基石</a>。当问题变得更庞大、解决方案更复杂时，一些实用的、不怎么<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html" target="_blank" rel="external">产生泄漏</a>的抽象工具就显得越来越重要。</p>
@@ -75,9 +75,9 @@
     <link href="http://shzhangji.com/2015/09/12/model-dependency-injection-with-spring-aop/"/>
     <id>http://shzhangji.com/2015/09/12/model-dependency-injection-with-spring-aop/</id>
     <published>2015-09-12T14:03:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.562Z</updated>
     
-    <content type="html"><![CDATA[<p>在<a href="http://shzhangji.com/blog/2015/09/05/anemic-domain-model/" target="_blank" rel="external">贫血领域模型</a>这篇译文中，Martin阐述了这种“反模式”的症状和问题，并引用了领域驱动设计中的话来说明领域模型和分层设计之间的关系。对于Spring项目的开发人员来说，贫血领域模型十分常见：模型（或实体）仅仅包含对数据表的映射，通常是一组私有属性和公有getter/setter，所有的业务逻辑都写在服务层中，领域模型仅仅用来传递数据。为了编写真正的领域模型，我们需要将业务逻辑移至模型对象中，这就引出另一个问题：业务逻辑通常需要调用其他服务或模型，而使用<code>new</code>关键字或由JPA创建的对象是不受Spring托管的，也就无法进行依赖注入。解决这个问题的方法有很多，比较之后我选择使用面向切面编程来实现。</p>
+    <content type="html"><![CDATA[<p>在<a href="http://shzhangji.com/blog/2015/09/05/anemic-domain-model/">贫血领域模型</a>这篇译文中，Martin阐述了这种“反模式”的症状和问题，并引用了领域驱动设计中的话来说明领域模型和分层设计之间的关系。对于Spring项目的开发人员来说，贫血领域模型十分常见：模型（或实体）仅仅包含对数据表的映射，通常是一组私有属性和公有getter/setter，所有的业务逻辑都写在服务层中，领域模型仅仅用来传递数据。为了编写真正的领域模型，我们需要将业务逻辑移至模型对象中，这就引出另一个问题：业务逻辑通常需要调用其他服务或模型，而使用<code>new</code>关键字或由JPA创建的对象是不受Spring托管的，也就无法进行依赖注入。解决这个问题的方法有很多，比较之后我选择使用面向切面编程来实现。</p>
 <h2 id="面向切面编程"><a href="#面向切面编程" class="headerlink" title="面向切面编程"></a>面向切面编程</h2><p>面向切面编程，或<a href="https://en.wikipedia.org/wiki/Aspect-oriented_programming" target="_blank" rel="external">AOP</a>，是一种编程范式，和面向对象编程（<a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank" rel="external">OOP</a>）互为补充。简单来说，AOP可以在不修改既有代码的情况下改变代码的行为。开发者通过定义一组规则，在特定的类方法前后增加逻辑，如记录日志、性能监控、事务管理等。这些逻辑称为切面（Aspect），规则称为切点（Pointcut），在调用前还是调用后执行称为通知（Before advice, After advice）。最后，我们可以选择在编译期将这些逻辑写入类文件，或是在运行时动态加载这些逻辑，这是两种不同的织入方式（Compile-time weaving, Load-time weaving）。</p>
 <p>对于领域模型的依赖注入，我们要做的就是使用AOP在对象创建后调用Spring框架来注入依赖。幸运的是，<a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#aop" target="_blank" rel="external">Spring AOP</a>已经提供了<code>@Configurable</code>注解来帮助我们实现这一需求。</p>
 <a id="more"></a>
@@ -145,7 +145,7 @@
     <link href="http://shzhangji.com/2015/09/05/anemic-domain-model/"/>
     <id>http://shzhangji.com/2015/09/05/anemic-domain-model/</id>
     <published>2015-09-05T11:02:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.561Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://www.martinfowler.com/bliki/AnemicDomainModel.html" target="_blank" rel="external">http://www.martinfowler.com/bliki/AnemicDomainModel.html</a></p>
 <p>贫血领域模型是一个存在已久的反模式，目前仍有许多拥趸者。一次我和Eric Evans聊天谈到它时，都觉得这个模型似乎越来越流行了。作为<a href="http://martinfowler.com/eaaCatalog/domainModel.html" target="_blank" rel="external">领域模型</a>的推广者，我们觉得这不是一件好事。</p>
@@ -187,7 +187,7 @@
     <link href="http://shzhangji.com/2015/06/25/compressed-oops-in-the-hotspot-jvm/"/>
     <id>http://shzhangji.com/2015/06/25/compressed-oops-in-the-hotspot-jvm/</id>
     <published>2015-06-25T09:41:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.559Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="https://wiki.openjdk.java.net/display/HotSpot/CompressedOops" target="_blank" rel="external">https://wiki.openjdk.java.net/display/HotSpot/CompressedOops</a></p>
 <h2 id="什么是一般对象指针？"><a href="#什么是一般对象指针？" class="headerlink" title="什么是一般对象指针？"></a>什么是一般对象指针？</h2><p>一般对象指针（oop, ordinary object pointer）是HotSpot虚拟机的一个术语，表示受托管的对象指针。它的大小通常和本地指针是一样的。Java应用程序和GC子系统会非常小心地跟踪这些受托管的指针，以便在销毁对象时回收内存空间，或是在对空间进行整理时移动（复制）对象。</p>
@@ -289,7 +289,7 @@
     <link href="http://shzhangji.com/2015/03/08/hbase-dos-and-donts/"/>
     <id>http://shzhangji.com/2015/03/08/hbase-dos-and-donts/</id>
     <published>2015-03-08T00:03:00.000Z</published>
-    <updated>2017-03-09T04:27:06.000Z</updated>
+    <updated>2017-03-09T22:24:58.558Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/" target="_blank" rel="external">http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/</a></p>
 <p>最近我在<a href="http://www.meetup.com/LA-HUG/" target="_blank" rel="external">洛杉矶Hadoop用户组</a>做了一次关于<a href="http://www.meetup.com/LA-HUG/pages/Video_from_April_13th_HBASE_DO%27S_and_DON%27TS/" target="_blank" rel="external">HBase适用场景</a>的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分享中的主要内容做了一个整理。如果你没有时间阅读全文，以下是一些摘要：</p>
@@ -343,7 +343,7 @@
     <link href="http://shzhangji.com/2015/01/13/understand-reduce-side-join/"/>
     <id>http://shzhangji.com/2015/01/13/understand-reduce-side-join/</id>
     <published>2015-01-13T06:20:00.000Z</published>
-    <updated>2017-03-09T07:25:39.000Z</updated>
+    <updated>2017-03-09T22:24:58.557Z</updated>
     
     <content type="html"><![CDATA[<p>在《<a href="http://www.amazon.com/MapReduce-Design-Patterns-Effective-Algorithms/dp/1449327176" target="_blank" rel="external">MapReduce Design Patterns</a>》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：</p>
 <p><img src="/cnblogs/images/reduce-side-join/reduce-side-join.png" alt=""></p>
@@ -418,7 +418,7 @@
     <link href="http://shzhangji.com/2014/12/23/use-git-rebase-to-clarify-history/"/>
     <id>http://shzhangji.com/2014/12/23/use-git-rebase-to-clarify-history/</id>
     <published>2014-12-23T08:10:00.000Z</published>
-    <updated>2017-03-09T07:25:39.000Z</updated>
+    <updated>2017-03-09T22:24:58.555Z</updated>
     
     <content type="html"><![CDATA[<p>当多人协作开发一个分支时，历史记录通常如下方左图所示，比较凌乱。如果希望能像右图那样呈线性提交，就需要学习git rebase的用法。</p>
 <p><img src="/cnblogs/images/git-rebase/rebase-result.png" alt=""></p>
@@ -471,7 +471,7 @@
     <link href="http://shzhangji.com/2014/12/16/spark-quick-start/"/>
     <id>http://shzhangji.com/2014/12/16/spark-quick-start/</id>
     <published>2014-12-16T07:59:00.000Z</published>
-    <updated>2017-06-06T03:12:23.000Z</updated>
+    <updated>2017-06-04T11:24:34.855Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://spark.apache.org/images/spark-logo.png" alt=""></p>
 <p><a href="http://spark.apache.org" target="_blank" rel="external">Apache Spark</a>是新兴的一种快速通用的大规模数据处理引擎。它的优势有三个方面：</p>
@@ -588,7 +588,7 @@
     <link href="http://shzhangji.com/2014/11/07/sbt-offline/"/>
     <id>http://shzhangji.com/2014/11/07/sbt-offline/</id>
     <published>2014-11-07T07:02:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.553Z</updated>
     
     <content type="html"><![CDATA[<p>在公司网络中使用<a href="http://www.scala-sbt.org/" target="_blank" rel="external">sbt</a>、<a href="http://maven.apache.org/" target="_blank" rel="external">Maven</a>等项目构建工具时，我们通常会搭建一个公用的<a href="http://www.sonatype.org/nexus/" target="_blank" rel="external">Nexus</a>镜像服务，原因有以下几个：</p>
 <ul>
@@ -644,7 +644,7 @@
     <link href="http://shzhangji.com/2014/10/14/mysql-incorrent-utf8-value/"/>
     <id>http://shzhangji.com/2014/10/14/mysql-incorrent-utf8-value/</id>
     <published>2014-10-14T05:16:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.552Z</updated>
     
     <content type="html"><![CDATA[<p>ETL流程中，我们会将Hive中的数据导入MySQL——先用Hive命令行将数据保存为文本文件，然后用MySQL的LOAD DATA语句进行加载。最近有一张表在加载到MySQL时会报以下错误：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Incorrect string value: &apos;\xF0\x9D\x8C\x86&apos; for column ...</div></pre></td></tr></table></figure>
@@ -695,7 +695,7 @@
     <link href="http://shzhangji.com/2014/07/05/deploy-shark-0.9-with-cdh-4.5/"/>
     <id>http://shzhangji.com/2014/07/05/deploy-shark-0.9-with-cdh-4.5/</id>
     <published>2014-07-05T09:16:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.551Z</updated>
     
     <content type="html"><![CDATA[<p><a href="http://spark.apache.org" target="_blank" rel="external">Spark</a>是一个新兴的大数据计算平台，它的优势之一是内存型计算，因此对于需要多次迭代的算法尤为适用。同时，它又能够很好地融合到现有的<a href="http://hadoop.apache.org" target="_blank" rel="external">Hadoop</a>生态环境中，包括直接存取HDFS上的文件，以及运行于YARN之上。对于<a href="http://hive.apache.org" target="_blank" rel="external">Hive</a>，Spark也有相应的替代项目——<a href="http://shark.cs.berkeley.edu/" target="_blank" rel="external">Shark</a>，能做到 <strong>drop-in replacement</strong> ，直接构建在现有集群之上。本文就将简要阐述如何在CDH4.5上搭建Shark0.9集群。</p>
 <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ul>
@@ -812,7 +812,7 @@
     <link href="http://shzhangji.com/2014/04/07/hive-small-files/"/>
     <id>http://shzhangji.com/2014/04/07/hive-small-files/</id>
     <published>2014-04-07T09:09:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.549Z</updated>
     
     <content type="html"><![CDATA[<p>Hive的后端存储是HDFS，它对大文件的处理是非常高效的，如果合理配置文件系统的块大小，NameNode可以支持很大的数据量。但是在数据仓库中，越是上层的表其汇总程度就越高，数据量也就越小。而且这些表通常会按日期进行分区，随着时间的推移，HDFS的文件数目就会逐渐增加。</p>
 <h2 id="小文件带来的问题"><a href="#小文件带来的问题" class="headerlink" title="小文件带来的问题"></a>小文件带来的问题</h2><p>关于这个问题的阐述可以读一读Cloudera的<a href="http://blog.cloudera.com/blog/2009/02/the-small-files-problem/" target="_blank" rel="external">这篇文章</a>。简单来说，HDFS的文件元信息，包括位置、大小、分块信息等，都是保存在NameNode的内存中的。每个对象大约占用150个字节，因此一千万个文件及分块就会占用约3G的内存空间，一旦接近这个量级，NameNode的性能就会开始下降了。</p>
@@ -864,7 +864,7 @@
     <link href="http://shzhangji.com/2014/01/25/java-reflection-tutorial/"/>
     <id>http://shzhangji.com/2014/01/25/java-reflection-tutorial/</id>
     <published>2014-01-25T01:42:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.548Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://www.programcreek.com/2013/09/java-reflection-tutorial/" target="_blank" rel="external">http://www.programcreek.com/2013/09/java-reflection-tutorial/</a></p>
 <p>什么是反射？它有何用处？</p>
@@ -951,7 +951,7 @@
     <link href="http://shzhangji.com/2013/12/17/the-law-of-leaky-abstractions/"/>
     <id>http://shzhangji.com/2013/12/17/the-law-of-leaky-abstractions/</id>
     <published>2013-12-17T05:05:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.547Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html" target="_blank" rel="external">http://www.joelonsoftware.com/articles/LeakyAbstractions.html</a></p>
 <p>TCP协议是互联网的基石，我们每天都需要依靠它来构建各类互联网应用。也正是在这一协议中，时刻发生着一件近乎神奇的事情。</p>
@@ -1009,7 +1009,7 @@
     <link href="http://shzhangji.com/2013/09/06/hive-deleteme-error/"/>
     <id>http://shzhangji.com/2013/09/06/hive-deleteme-error/</id>
     <published>2013-09-06T03:20:00.000Z</published>
-    <updated>2017-03-09T07:25:39.000Z</updated>
+    <updated>2017-03-09T22:24:58.546Z</updated>
     
     <content type="html"><![CDATA[<p>在每天运行的Hive脚本中，偶尔会抛出以下错误：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">2013-09-03 01:39:00,973 ERROR parse.SemanticAnalyzer (SemanticAnalyzer.java:getMetaData(1128)) - org.apache.hadoop.hive.ql.metadata.HiveException: Unable to fetch table dw_xxx_xxx</div><div class="line">        at org.apache.hadoop.hive.ql.metadata.Hive.getTable(Hive.java:896)</div><div class="line">        ...</div><div class="line">Caused by: javax.jdo.JDODataStoreException: Exception thrown obtaining schema column information from datastore</div><div class="line">NestedThrowables:</div><div class="line">com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table &apos;hive.DELETEME1378143540925&apos; doesn&apos;t exist</div><div class="line">        at org.datanucleus.jdo.NucleusJDOHelper.getJDOExceptionForNucleusException(NucleusJDOHelper.java:313)</div><div class="line">        ...</div></pre></td></tr></table></figure>
@@ -1070,7 +1070,7 @@
     <link href="http://shzhangji.com/2013/06/11/ansible-faq/"/>
     <id>http://shzhangji.com/2013/06/11/ansible-faq/</id>
     <published>2013-06-11T13:18:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.544Z</updated>
     
     <content type="html"><![CDATA[<p>本文是从原Ansible官网的FAQ页面翻译而来，网站改版后该页面已无法访问，但可以从<a href="https://github.com/ansible/ansible.github.com/blob/4a2bf7f60a020f0d0a7b042056fc3dd8716588f2/faq.html" target="_blank" rel="external">Github历史提交</a>中获得。翻译这篇原始FAQ文档是因为它陈述了Ansible这款工具诞生的原因，设计思路和特性，以及与Puppet、Fabric等同类软件的比较，可以让我们对Ansible有一个整体的了解，所以值得使用者一读。</p>
 <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
@@ -1170,7 +1170,7 @@
     <link href="http://shzhangji.com/2013/05/25/apache-hadoop-yarn-background-and-an-overview/"/>
     <id>http://shzhangji.com/2013/05/25/apache-hadoop-yarn-background-and-an-overview/</id>
     <published>2013-05-25T02:57:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.543Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/" target="_blank" rel="external">http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/</a></p>
 <p>日前，Apache Hadoop YARN已被提升为Apache软件基金会的子项目，这是一个值得庆祝的里程碑。这里我们也第一时间为各位献上Apache Hadoop YARN项目的系列介绍文章。YARN是一个普适的、分布式的应用管理框架，运行于Hadoop集群之上，用以替代传统的Apache Hadoop MapReduce框架。</p>
@@ -1238,7 +1238,7 @@
     <link href="http://shzhangji.com/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/"/>
     <id>http://shzhangji.com/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/</id>
     <published>2013-05-01T10:01:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.542Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html" target="_blank" rel="external">http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html</a></p>
 <p>我非常兴奋地告诉大家，<a href="http://github.com/nathanmarz/cascalog" target="_blank" rel="external">Cascalog</a>开源了！Cascalog受<a href="http://en.wikipedia.org/wiki/Datalog" target="_blank" rel="external">Datalog</a>启发，是一种基于Clojure、运行于Hadoop平台上的查询语言。</p>
@@ -1364,7 +1364,7 @@
     <link href="http://shzhangji.com/2013/04/22/cia-storm/"/>
     <id>http://shzhangji.com/2013/04/22/cia-storm/</id>
     <published>2013-04-22T04:11:00.000Z</published>
-    <updated>2017-03-09T03:44:04.000Z</updated>
+    <updated>2017-03-09T22:24:58.540Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Storm简介"><a href="#Storm简介" class="headerlink" title="Storm简介"></a>Storm简介</h2><p>上一章介绍的Hadoop工具能够对海量数据进行批量处理，采用分布式的并行计算架构，只需使用其提供的MapReduce API编写脚本即可。但随着人们对数据实时性的要求越来越高，如实时日志分析、实时推荐系统等，Hadoop就无能为力了。</p>
 <p>这时，Storm诞生了。它的设计初衷就是提供一套分布式的实时计算框架，实现低延迟、高并发的海量数据处理，被誉为“Realtime Hadoop”。它提供了简单易用的API接口用于编写实时处理脚本；能够和现有各类消息系统整合；提供了HA、容错、事务、RPC等高级特性。</p>
@@ -1390,7 +1390,7 @@
 <figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">(<span class="name">defproject</span> cia-storm <span class="string">"0.1.0-SNAPSHOT"</span></div><div class="line">  ...</div><div class="line">  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string">"1.4.0"</span>]</div><div class="line">                 [org.clojure/tools.logging <span class="string">"0.2.6"</span>]]</div><div class="line">  <span class="symbol">:profiles</span> &#123;<span class="symbol">:dev</span> &#123;<span class="symbol">:dependencies</span> [[storm <span class="string">"0.8.2"</span>]]&#125;&#125;</div><div class="line">  <span class="symbol">:plugins</span> [[lein2-eclipse <span class="string">"2.0.0"</span>]]</div><div class="line">  <span class="symbol">:aot</span> [cia-storm.wordcount])</div></pre></td></tr></table></figure>
 <p>其中<code>:profiles</code>表示定义不同的用户配置文件。Leiningen有类似于Maven的配置文件体系（profile），每个配置文件中可以定义<code>project.clj</code>所支持的各种属性，执行时会进行合并。<code>lein</code>命令默认调用<code>:dev</code>、<code>:user</code>等配置文件，可以使用<code>lein with-profiles prod run</code>来指定配置文件。具体可以参考<a href="https://github.com/technomancy/leiningen/blob/master/doc/PROFILES.md" target="_blank" rel="external">这份文档</a>。</p>
 <p>这里将<code>[storm &quot;0.8.2&quot;]</code>依赖项定义在了<code>:dev</code>配置下，如果直接定义在外层的<code>:dependencies</code>下，那在使用<code>lein uberjar</code>进行打包时，会将<code>storm.jar</code>包含在最终的Jar包中，提交到Storm集群运行时就会报冲突。而<code>lein uberjar</code>默认会跳过<code>:dev</code>配置，所以才这样定义。</p>
-<p><code>:aot</code>表示<code>Ahead Of Time</code>，即预编译。我们在<a href="http://shzhangji.com/blog/2012/12/16/cia-noir-3/" target="_blank" rel="external">Clojure实战（3）</a>中提过<code>:gen-class</code>这个标识表示为当前<code>.clj</code>文件生成一个<code>.class</code>文件，从而能够作为<code>main</code>函数使用，因此也需要在<code>project.clj</code>中添加<code>:main</code>标识，指向这个<code>.clj</code>文件的命名空间。如果想为其它的命名空间也生成对应的<code>.class</code>文件，就需要用到<code>:aot</code>了。它的另一个用处是加速Clojure程序的启动速度。</p>
+<p><code>:aot</code>表示<code>Ahead Of Time</code>，即预编译。我们在<a href="http://shzhangji.com/blog/2012/12/16/cia-noir-3/">Clojure实战（3）</a>中提过<code>:gen-class</code>这个标识表示为当前<code>.clj</code>文件生成一个<code>.class</code>文件，从而能够作为<code>main</code>函数使用，因此也需要在<code>project.clj</code>中添加<code>:main</code>标识，指向这个<code>.clj</code>文件的命名空间。如果想为其它的命名空间也生成对应的<code>.class</code>文件，就需要用到<code>:aot</code>了。它的另一个用处是加速Clojure程序的启动速度。</p>
 <h3 id="sentence-spout"><a href="#sentence-spout" class="headerlink" title="sentence-spout"></a>sentence-spout</h3><figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">(<span class="name"><span class="builtin-name">ns</span></span> cia-storm.wordcount</div><div class="line">  ...</div><div class="line">  (<span class="symbol">:use</span> [backtype.storm clojure config]))</div><div class="line"></div><div class="line">(<span class="name">defspout</span> sentence-spout [<span class="string">"sentence"</span>]</div><div class="line">  [conf context collector]</div><div class="line">  (<span class="name"><span class="builtin-name">let</span></span> [sentences [<span class="string">"a little brown dog"</span></div><div class="line">                   <span class="string">"the man petted the dog"</span></div><div class="line">                   <span class="string">"four score and seven years ago"</span></div><div class="line">                   <span class="string">"an apple a day keeps the doctor away"</span>]]</div><div class="line">    (<span class="name">spout</span></div><div class="line">      (<span class="name">nextTuple</span> []</div><div class="line">        (<span class="name">Thread/sleep</span> <span class="number">1000</span>)</div><div class="line">        (<span class="name">emit-spout!</span> collector [(<span class="name">rand-nth</span> sentences)])))))</div></pre></td></tr></table></figure>
 <p><code>defspout</code>是定义在<code>backtype.storm.clojure</code>命名空间下的宏，可以<a href="https://github.com/nathanmarz/storm/blob/master/storm-core/src/clj/backtype/storm/clojure.clj#L93" target="_blank" rel="external">点此</a>查看源码。以下是各个部分的说明：</p>
 <ul>
@@ -1471,7 +1471,7 @@
     <link href="http://shzhangji.com/2013/03/28/perl-prime-in-action-jvm-monitoring-2/"/>
     <id>http://shzhangji.com/2013/03/28/perl-prime-in-action-jvm-monitoring-2/</id>
     <published>2013-03-28T07:28:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-03-09T22:24:58.539Z</updated>
     
     <content type="html"><![CDATA[<h2 id="套接字"><a href="#套接字" class="headerlink" title="套接字"></a>套接字</h2><p>使用套接字（Socket）进行网络通信的基本流程是：</p>
 <ul>
@@ -1509,7 +1509,7 @@
 <p>这里我们使用第二种方案，即打开子进程来处理请求。</p>
 <figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> IO::Socket::INET;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">sub</span> <span class="title">REAPER</span> </span>&#123;</div><div class="line">    <span class="keyword">my</span> $pid;</div><div class="line">    <span class="keyword">while</span> (($pid = <span class="keyword">waitpid</span>(-<span class="number">1</span>, <span class="string">'WNOHANG'</span>)) &gt; <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">print</span> <span class="string">"SIGCHLD $pid\n"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">my</span> $interrupted = <span class="number">0</span>;</div><div class="line"><span class="function"><span class="keyword">sub</span> <span class="title">INTERRUPTER</span> </span>&#123;</div><div class="line">    $interrupted = <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">$SIG<span class="string">&#123;CHLD&#125;</span> = \&amp;REAPER;</div><div class="line">$SIG<span class="string">&#123;TERM&#125;</span> = \&amp;INTERRUPTER;</div><div class="line">$SIG<span class="string">&#123;INT&#125;</span> = \&amp;INTERRUPTER;</div><div class="line"></div><div class="line"><span class="keyword">my</span> $server = ...;</div><div class="line"></div><div class="line"><span class="keyword">while</span> (!$interrupted) &#123;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (<span class="keyword">my</span> $client = $server-&gt;<span class="keyword">accept</span>()) &#123;</div><div class="line"></div><div class="line">        <span class="keyword">my</span> $pid = <span class="keyword">fork</span>();</div><div class="line"></div><div class="line">        <span class="keyword">if</span> ($pid &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">close</span>($client);</div><div class="line">            <span class="keyword">print</span> <span class="string">"PID $pid\n"</span>;</div><div class="line">        &#125; <span class="keyword">elsif</span> ($pid == <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">close</span>($server);</div><div class="line"></div><div class="line">            <span class="keyword">my</span> $line = &lt;$client&gt;;</div><div class="line">            ...</div><div class="line">            <span class="keyword">close</span>($client);</div><div class="line">            <span class="keyword">exit</span>;</div><div class="line"></div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">print</span> <span class="string">"fork()调用失败\n"</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">close</span>($server);</div></pre></td></tr></table></figure>
 <p>我们先看下半部分的代码。系统执行<code>fork()</code>函数后，会将当前进程的所有内容拷贝一份，以新的进程号来运行，即子进程。通过<code>fork()</code>的返回值可以知道当前进程是父进程还是子进程：大于0的是父进程；等于0的是子进程。子进程中的代码做了省略，执行完后直接<code>exit</code>。</p>
-<p>上半部分的信号处理是做什么用的呢？这就是在多进程模型中需要特别注意的问题：僵尸进程。具体可以参考<a href="http://shzhangji.com/blog/2013/03/27/fork-and-zombie-process/" target="_blank" rel="external">这篇文章</a>。</p>
+<p>上半部分的信号处理是做什么用的呢？这就是在多进程模型中需要特别注意的问题：僵尸进程。具体可以参考<a href="http://shzhangji.com/blog/2013/03/27/fork-and-zombie-process/">这篇文章</a>。</p>
 <p>而<code>$interrupted</code>变量则是用来控制程序是否继续执行的。当进程收到<code>SIGTERM</code>或<code>SIGINT</code>信号时，该变量就会置为真，使进程自然退出。</p>
 <p>为何不直接使用<code>while (my $client = $server-&gt;accept()) {...}</code>呢？因为子进程退出时会向父进程发送<code>SIGCHLD</code>信号，而<code>accept()</code>函数在接收到任何信号后都会中断并返回空，使得<code>while</code>语句退出。</p>
 <h2 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h2><p>这个服务脚本所监听的端口后是固写在脚本中的，如果想通过命令行指定呢？我们可以使用Perl的内置模块<code>Getopt::Long</code>。</p>
