@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/</loc>
+    
+    <lastmod>2017-06-18T02:41:59.980Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/</loc>
     
     <lastmod>2017-06-04T11:24:34.855Z</lastmod>

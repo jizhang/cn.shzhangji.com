@@ -66,7 +66,7 @@ ga('send', 'pageview');
         
           <a class="main-nav-link" href="/cnblogs/categories/Programming">编程</a>
         
-          <a class="main-nav-link" href="/cnblogs/categories/Reading">导读</a>
+          <a class="main-nav-link" href="/cnblogs/categories/Digest">摘译</a>
         
           <a class="main-nav-link" href="/cnblogs/archives">全部文章</a>
         
@@ -87,6 +87,59 @@ ga('send', 'pageview');
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-druid-machine-learning-spark" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2017/06/18/druid-machine-learning-spark/" class="article-date">
+  <time datetime="2017-06-18T02:41:59.000Z" itemprop="datePublished">2017-06-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Digest/">Digest</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/cnblogs/2017/06/18/druid-machine-learning-spark/">Hive+Druid实现快速查询；回归分析是机器学习吗；StructuredStreaming可用于生产环境</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="结合Apache-Hive和Druid实现高速OLAP查询"><a href="#结合Apache-Hive和Druid实现高速OLAP查询" class="headerlink" title="结合Apache Hive和Druid实现高速OLAP查询"></a>结合Apache Hive和Druid实现高速OLAP查询</h2><p><img src="https://2xbbhjxc6wk3v21p62t8n4d4-wpengine.netdna-ssl.com/wp-content/uploads/2017/05/Part1Image2.png" alt="使用HiveQL预汇总数据并保存至Druid"></p>
+<p>Hadoop生态中，我们使用Hive将SQL语句编译为MapReduce任务，对海量数据进行操作；Druid则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。</p>
+<p>Druid的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和Hive的主要区别。数据表中的维度字段越多，查询速度也会越快。不过Druid也有其不适用的场景，如无法支持大数据量的Join操作，对标准SQL的实现也十分有限。</p>
+<p>Druid和Hive的结合方式是这样的：首先使用Hive对数据进行预处理，生成OLAP Cube存入Druid；当发生查询时，使用Calcite优化器进行分析，使用合适的引擎（Hive或Druid）执行操作。如，Druid擅长执行维度汇总、TopN、时间序列查询，而Hive则能胜任Join、子查询、UDF等操作。</p>
+<p>原文：<a href="https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru">https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru</a></p>
+        
+          <p class="article-more-link">
+            <a href="/cnblogs/2017/06/18/druid-machine-learning-spark/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/" data-id="cj423x0b1002llim6rmj5weho" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/druid/">druid</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/hive/">hive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/machine-learning/">machine learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/stream-processing/">stream processing</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-top-5-frameworks" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -131,7 +184,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/" data-id="cj3imd1zs003nknm6h4ads4as" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/" data-id="cj423x0cy0049lim6vu3jfgjz" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -182,7 +235,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/" data-id="cj3imd1zn003lknm6jxefi4oa" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/" data-id="cj423x0aj002elim6l8o95kpu" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -232,7 +285,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/" data-id="cj3imd1z8003cknm65pax41dc" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/" data-id="cj423x0b4002plim6hr6a46a0" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -292,7 +345,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/" data-id="cj3imd1zb003gknm6sj36qbrn" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/" data-id="cj423x0aq002ilim6emozctqa" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -346,7 +399,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/" data-id="cj3imd1z4003aknm6azyuu03a" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/" data-id="cj423x0ae0028lim6mdvrcmcl" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -406,7 +459,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/" data-id="cj3imd1z10036knm69rtwulit" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/" data-id="cj423x0a80025lim6o4pfkgfg" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -459,7 +512,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/" data-id="cj3imd1yw0034knm6jpp16sku" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/" data-id="cj423x0a00022lim6klmihgfn" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -526,7 +579,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/" data-id="cj3imd1yk002yknm6l6enrroy" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/" data-id="cj423x09r001ulim6q50kf5yz" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -582,62 +635,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/" data-id="cj3imd1zk003iknm6u5ue3sjc" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/" data-id="cj423x0ah002blim6zdsf18vk" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/#disqus_thread" class="article-comment-link">留言</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-mysql-incorrent-utf8-value" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/cnblogs/2014/10/14/mysql-incorrent-utf8-value/" class="article-date">
-  <time datetime="2014-10-14T05:16:00.000Z" itemprop="datePublished">2014-10-14</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/cnblogs/categories/Notes/">Notes</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/cnblogs/2014/10/14/mysql-incorrent-utf8-value/">MySQL异常UTF-8字符的处理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>ETL流程中，我们会将Hive中的数据导入MySQL——先用Hive命令行将数据保存为文本文件，然后用MySQL的LOAD DATA语句进行加载。最近有一张表在加载到MySQL时会报以下错误：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Incorrect string value: &apos;\xF0\x9D\x8C\x86&apos; for column ...</div></pre></td></tr></table></figure>
-<p>经查，这个字段中保存的是用户聊天记录，因此会有一些表情符号。这些符号在UTF-8编码下需要使用4个字节来记录，而MySQL中的utf8编码只支持3个字节，因此无法导入。</p>
-<p>根据UTF-8的编码规范，3个字节支持的Unicode字符范围是U+0000–U+FFFF，因此可以在Hive中对数据做一下清洗：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> REGEXP_REPLACE(<span class="keyword">content</span>, <span class="string">'[^\\u0000-\\uFFFF]'</span>, <span class="string">''</span>) <span class="keyword">FROM</span> ...</div></pre></td></tr></table></figure>
-<p>这样就能排除那些需要使用3个以上字节来记录的字符了，从而成功导入MySQL。</p>
-<p>以下是一些详细说明和参考资料。</p>
-        
-          <p class="article-more-link">
-            <a href="/cnblogs/2014/10/14/mysql-incorrent-utf8-value/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/" data-id="cj3imd1xy002rknm6nqnv3o2p" class="article-share-link">分享</a>
-      
-        <a href="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/#disqus_thread" class="article-comment-link">留言</a>
       
       
     </footer>
@@ -660,7 +660,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/cnblogs/tags/aosa/" style="font-size: 13.33px;">aosa</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 16.67px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 10px;">hive</a> <a href="/cnblogs/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 16.67px;">noir</a> <a href="/cnblogs/tags/ops/" style="font-size: 10px;">ops</a> <a href="/cnblogs/tags/perl/" style="font-size: 13.33px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 10px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 10px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 10px;">spark</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/translation/" style="font-size: 13.33px;">translation</a>
+      <a href="/cnblogs/tags/aosa/" style="font-size: 13.33px;">aosa</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 16.67px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 13.33px;">hive</a> <a href="/cnblogs/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 16.67px;">noir</a> <a href="/cnblogs/tags/ops/" style="font-size: 10px;">ops</a> <a href="/cnblogs/tags/perl/" style="font-size: 13.33px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 10px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 10px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 13.33px;">spark</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 10px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 13.33px;">translation</a>
     </div>
   </div>
 
@@ -669,7 +669,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
     </div>
   </div>
 
@@ -680,6 +680,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/cnblogs/2017/06/18/druid-machine-learning-spark/">Hive+Druid实现快速查询；回归分析是机器学习吗；StructuredStreaming可用于生产环境</a>
+          </li>
         
           <li>
             <a href="/cnblogs/2016/03/13/top-5-frameworks/">开发人员必知的5种开源框架</a>
@@ -695,10 +699,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/">HotSpot JVM中的对象指针压缩</a>
-          </li>
-        
-          <li>
-            <a href="/cnblogs/2015/03/08/hbase-dos-and-donts/">Apache HBase的适用场景</a>
           </li>
         
       </ul>
@@ -727,7 +727,7 @@ ga('send', 'pageview');
   
     <a href="/cnblogs/categories/Programming" class="mobile-nav-link">编程</a>
   
-    <a href="/cnblogs/categories/Reading" class="mobile-nav-link">导读</a>
+    <a href="/cnblogs/categories/Digest" class="mobile-nav-link">摘译</a>
   
     <a href="/cnblogs/archives" class="mobile-nav-link">全部文章</a>
   

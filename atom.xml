@@ -5,7 +5,7 @@
   <link href="/cnblogs/atom.xml" rel="self"/>
   
   <link href="http://shzhangji.com/"/>
-  <updated>2017-03-09T22:24:58.563Z</updated>
+  <updated>2017-06-18T02:41:59.980Z</updated>
   <id>http://shzhangji.com/</id>
   
   <author>
@@ -14,6 +14,57 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Hive+Druid实现快速查询；回归分析是机器学习吗；StructuredStreaming可用于生产环境</title>
+    <link href="http://shzhangji.com/2017/06/18/druid-machine-learning-spark/"/>
+    <id>http://shzhangji.com/2017/06/18/druid-machine-learning-spark/</id>
+    <published>2017-06-18T02:41:59.000Z</published>
+    <updated>2017-06-18T02:41:59.980Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="结合Apache-Hive和Druid实现高速OLAP查询"><a href="#结合Apache-Hive和Druid实现高速OLAP查询" class="headerlink" title="结合Apache Hive和Druid实现高速OLAP查询"></a>结合Apache Hive和Druid实现高速OLAP查询</h2><p><img src="https://2xbbhjxc6wk3v21p62t8n4d4-wpengine.netdna-ssl.com/wp-content/uploads/2017/05/Part1Image2.png" alt="使用HiveQL预汇总数据并保存至Druid"></p>
+<p>Hadoop生态中，我们使用Hive将SQL语句编译为MapReduce任务，对海量数据进行操作；Druid则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。</p>
+<p>Druid的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和Hive的主要区别。数据表中的维度字段越多，查询速度也会越快。不过Druid也有其不适用的场景，如无法支持大数据量的Join操作，对标准SQL的实现也十分有限。</p>
+<p>Druid和Hive的结合方式是这样的：首先使用Hive对数据进行预处理，生成OLAP Cube存入Druid；当发生查询时，使用Calcite优化器进行分析，使用合适的引擎（Hive或Druid）执行操作。如，Druid擅长执行维度汇总、TopN、时间序列查询，而Hive则能胜任Join、子查询、UDF等操作。</p>
+<p>原文：<a href="https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru" target="_blank" rel="external">https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru</a></p>
+<a id="more"></a>
+<h2 id="回归分析是机器学习吗？"><a href="#回归分析是机器学习吗？" class="headerlink" title="回归分析是机器学习吗？"></a>回归分析是机器学习吗？</h2><p><img src="http://www.kdnuggets.com/wp-content/uploads/is-regression-machine-learning.jpg" alt=""></p>
+<p>作者认为纠结这个问题的人们其实是“将重点放在了森林而忽视了树木”。我们应该将统计分析和机器学习都用作是实现“理解数据”这一目标的工具。用哪种工具并不重要，如何用好工具、建立恰当的模型、增强对数据的认知，才是最重要的。</p>
+<p>过去人们也曾争论过数据挖掘和机器学习的区别。作者认为数据挖掘是一种 <em>过程</em> ，机器学习则是过程中使用的 <em>工具</em> 。因此，数据挖掘可以总结为 <em>对海量数据进行高效的统计分析</em> 。</p>
+<p>机器学习由三个元素组成：数据，模型，成本函数。假设我们有10个数据点，使用其中的9个来训练模型，最后一个用来测试，这个过程人工就可以解决。那当数据越来越多，或特征值增加，或使用计算机而非人工，是否就由统计学演变成机器学习了呢？所以说，传统统计学和机器学习之间是有一个过渡的，这个过渡过程我们无法衡量，也无需衡量。</p>
+<p>原文：<a href="http://www.kdnuggets.com/2017/06/regression-analysis-really-machine-learning.html" target="_blank" rel="external">http://www.kdnuggets.com/2017/06/regression-analysis-really-machine-learning.html</a></p>
+<h2 id="StructuredStreaming可用于生产环境"><a href="#StructuredStreaming可用于生产环境" class="headerlink" title="StructuredStreaming可用于生产环境"></a>StructuredStreaming可用于生产环境</h2><p><img src="https://spark.apache.org/docs/latest/img/structured-streaming-stream-as-a-table.png" alt="Data stream as an unbounded table"></p>
+<p>2016年中，Spark推出了StructredStreaming，随着时间的推移，这一创新的实时计算框架也日臻成熟。</p>
+<p>实时计算的复杂性在于三个方面：数据来源多样，且存在脏数据、乱序等情况；执行逻辑复杂，需要处理事件时间，结合机器学习等；运行平台也多种多样，需要应对各种系统失效。</p>
+<p>StructuredStreaming构建在Spark SQL之上，提供了统一的API，同时做到高效、可扩、容错。它的理念是 <em>实时计算无需考虑数据是否实时</em> ，将实时数据流当做一张没有边界的数据表来看待。</p>
+<p>传统ETL的流程是先将数据导出成文件，再将文件导入到表中使用，这个过程通常以小时计。而实时ETL则可以直接从数据源进入到表，过程以秒计。对于更为复杂的实时计算，StructuredStreaming也提供了相应方案，包括事件时间计算、有状态的聚合算子、水位线等。</p>
+<p>原文：<a href="https://spark-summit.org/east-2017/events/making-structured-streaming-ready-for-production-updates-and-future-directions/" target="_blank" rel="external">https://spark-summit.org/east-2017/events/making-structured-streaming-ready-for-production-updates-and-future-directions/</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;结合Apache-Hive和Druid实现高速OLAP查询&quot;&gt;&lt;a href=&quot;#结合Apache-Hive和Druid实现高速OLAP查询&quot; class=&quot;headerlink&quot; title=&quot;结合Apache Hive和Druid实现高速OLAP查询&quot;&gt;&lt;/a&gt;结合Apache Hive和Druid实现高速OLAP查询&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;https://2xbbhjxc6wk3v21p62t8n4d4-wpengine.netdna-ssl.com/wp-content/uploads/2017/05/Part1Image2.png&quot; alt=&quot;使用HiveQL预汇总数据并保存至Druid&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Hadoop生态中，我们使用Hive将SQL语句编译为MapReduce任务，对海量数据进行操作；Druid则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。&lt;/p&gt;
+&lt;p&gt;Druid的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和Hive的主要区别。数据表中的维度字段越多，查询速度也会越快。不过Druid也有其不适用的场景，如无法支持大数据量的Join操作，对标准SQL的实现也十分有限。&lt;/p&gt;
+&lt;p&gt;Druid和Hive的结合方式是这样的：首先使用Hive对数据进行预处理，生成OLAP Cube存入Druid；当发生查询时，使用Calcite优化器进行分析，使用合适的引擎（Hive或Druid）执行操作。如，Druid擅长执行维度汇总、TopN、时间序列查询，而Hive则能胜任Join、子查询、UDF等操作。&lt;/p&gt;
+&lt;p&gt;原文：&lt;a href=&quot;https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru&quot;&gt;https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru&lt;/a&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Digest" scheme="http://shzhangji.com/categories/Digest/"/>
+    
+    
+      <category term="hive" scheme="http://shzhangji.com/tags/hive/"/>
+    
+      <category term="spark" scheme="http://shzhangji.com/tags/spark/"/>
+    
+      <category term="druid" scheme="http://shzhangji.com/tags/druid/"/>
+    
+      <category term="machine learning" scheme="http://shzhangji.com/tags/machine-learning/"/>
+    
+      <category term="stream processing" scheme="http://shzhangji.com/tags/stream-processing/"/>
+    
+  </entry>
   
   <entry>
     <title>开发人员必知的5种开源框架</title>
@@ -1463,82 +1514,6 @@
       <category term="clojure" scheme="http://shzhangji.com/tags/clojure/"/>
     
       <category term="storm" scheme="http://shzhangji.com/tags/storm/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Perl入门实战：JVM监控脚本（下）</title>
-    <link href="http://shzhangji.com/2013/03/28/perl-prime-in-action-jvm-monitoring-2/"/>
-    <id>http://shzhangji.com/2013/03/28/perl-prime-in-action-jvm-monitoring-2/</id>
-    <published>2013-03-28T07:28:00.000Z</published>
-    <updated>2017-03-09T22:24:58.539Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="套接字"><a href="#套接字" class="headerlink" title="套接字"></a>套接字</h2><p>使用套接字（Socket）进行网络通信的基本流程是：</p>
-<ul>
-<li>服务端：监听端口、等待连接、接收请求、发送应答；</li>
-<li>客户端：连接服务端、发送请求、接收应答。</li>
-</ul>
-<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> IO::Socket::INET;</div><div class="line"></div><div class="line"><span class="keyword">my</span> $server = IO::Socket::INET-&gt;new(</div><div class="line">    <span class="string">LocalPort =&gt;</span> <span class="number">10060</span>,</div><div class="line">    <span class="string">Type =&gt;</span> SOCK_STREAM,</div><div class="line">    <span class="string">Reuse =&gt;</span> <span class="number">1</span>,</div><div class="line">    <span class="string">Listen =&gt;</span> SOMAXCONN</div><div class="line">) || <span class="keyword">die</span> <span class="string">"服务创建失败\n"</span>;</div><div class="line"></div><div class="line"><span class="keyword">while</span> (<span class="keyword">my</span> $client = $server-&gt;<span class="keyword">accept</span>()) &#123;</div><div class="line"></div><div class="line">    <span class="keyword">my</span> $line = &lt;$client&gt;;</div><div class="line">    <span class="keyword">chomp</span>($line);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> ($line =~ <span class="regexp">/^JVMPORT ([0-9]+)$/</span>) &#123;</div><div class="line">        <span class="keyword">print</span> <span class="string">"RECV $1\n"</span>;</div><div class="line">        <span class="keyword">print</span> $client <span class="string">"OK\n"</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">print</span> <span class="string">"ERROR $line\n"</span>;</div><div class="line">        <span class="keyword">print</span> $client <span class="string">"ERROR\n"</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">close</span>($client);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">close</span>($server);</div></pre></td></tr></table></figure>
-<a id="more"></a>
-<ul>
-<li><code>IO::Socket::INET</code>是一个内置模块，<code>::</code>符号用来分隔命名空间。</li>
-<li><code>-&gt;new</code>运算符是用来创建一个类的实例的，这涉及到面向对象编程，我们暂且忽略。</li>
-<li><code>(key1 =&gt; value1, key2 =&gt; value2)</code>是用来定义一个哈希表的，也就是键值对。这里是将哈系表作为参数传递给了<code>new</code>函数。请看以下示例。对于哈系表的进一步操作，我们这里暂不详述。</li>
-</ul>
-<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">sub</span> <span class="title">hello</span> </span>&#123;</div><div class="line">    <span class="keyword">my</span> %params = @_;</div><div class="line">    <span class="keyword">print</span> <span class="string">"Hello, $params&#123;'name'&#125;!\n"</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">hello(<span class="string">'name'</span> =&gt; <span class="string">'Jerry'</span>); <span class="comment"># 输出 Hello, Jerry!</span></div></pre></td></tr></table></figure>
-<ul>
-<li><code>while (...) {...}</code>是另一种循环结构，当圆括号的表达式为真就会执行大括号中的语句。</li>
-<li><code>$server-&gt;accept()</code>表示调用<code>$server</code>对象的<code>accept()</code>函数，用来接受一个连接。执行这个函数时进程会阻塞（进入睡眠），当有连接过来时才会唤醒，并将该连接赋值给<code>$client</code>变量。</li>
-<li><code>&lt;...&gt;</code>运算符表示从文件中读取一行，如：</li>
-</ul>
-<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">open</span> <span class="keyword">my</span> $fd, <span class="string">'&lt;'</span>, <span class="string">'/proc/diskstats'</span>;</div><div class="line"><span class="keyword">while</span> (<span class="keyword">my</span> $line = &lt;$fd&gt;) &#123;</div><div class="line">    <span class="keyword">print</span> $line;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>由于套接字也可以作为文件来看待，所以就能使用<code>&lt;...&gt;</code>运算符。关于<code>open</code>函数和其他文件操作，读者可参考<a href="http://perl5maven.com/open-and-read-from-files" target="_blank" rel="external">这篇文章</a>。</p>
-<ul>
-<li><code>chomp()</code>函数用来将字符串末尾的换行符去掉。它的用法也比较奇特，不是<code>$line = chomp($line)</code>，而是<code>chomp($line)</code>，这里<code>$line</code>是一次引用传递。</li>
-<li>细心的读者会发现，第二句<code>print</code>增加了<code>$client</code>，可以猜到它是用来指定<code>print</code>的输出目标。默认情况下是标准输出。</li>
-</ul>
-<p>我们打开两个终端，一个终端执行服务端，另一个终端直接用Bash去调用。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 客户端</span></div><div class="line">$ <span class="built_in">echo</span> <span class="string">'JVMPORT 2181'</span> | nc 127.0.0.1 10060</div><div class="line">OK</div><div class="line">$ <span class="built_in">echo</span> <span class="string">'hello'</span> | nc 127.0.0.1 10060</div><div class="line">ERROR</div><div class="line"></div><div class="line"><span class="comment"># 服务端</span></div><div class="line">$ ./socket-server.pl</div><div class="line">RECV 2181</div><div class="line">ERROR hello</div></pre></td></tr></table></figure>
-<p>至于客户端，还请读者自行完成，可参考<a href="http://perldoc.perl.org/IO/Socket/INET.html" target="_blank" rel="external">相关文档</a>。</p>
-<h2 id="子进程"><a href="#子进程" class="headerlink" title="子进程"></a>子进程</h2><p>上述代码中有这样一个问题：当客户端建立了连接，但迟迟没有发送内容，那么服务端就会阻塞在<code>$line = &lt;$client&gt;</code>这条语句，无法接收其他请求。有三种解决方案：</p>
-<ol>
-<li>服务端读取信息时采用一定的超时机制，如果3秒内还不能读到完整的一行就断开连接。可惜Perl中并没有提供边界的方法来实现这一机制，需要自行使用<code>IO::Select</code>这样的模块来编写，比较麻烦。</li>
-<li>接受新的连接后打开一个子进程或线程来处理连接，这样就不会因为一个连接挂起而使整个服务不可用。</li>
-<li>使用非阻塞事件机制，当有读写操作时才会去处理。</li>
-</ol>
-<p>这里我们使用第二种方案，即打开子进程来处理请求。</p>
-<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> IO::Socket::INET;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">sub</span> <span class="title">REAPER</span> </span>&#123;</div><div class="line">    <span class="keyword">my</span> $pid;</div><div class="line">    <span class="keyword">while</span> (($pid = <span class="keyword">waitpid</span>(-<span class="number">1</span>, <span class="string">'WNOHANG'</span>)) &gt; <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">print</span> <span class="string">"SIGCHLD $pid\n"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">my</span> $interrupted = <span class="number">0</span>;</div><div class="line"><span class="function"><span class="keyword">sub</span> <span class="title">INTERRUPTER</span> </span>&#123;</div><div class="line">    $interrupted = <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">$SIG<span class="string">&#123;CHLD&#125;</span> = \&amp;REAPER;</div><div class="line">$SIG<span class="string">&#123;TERM&#125;</span> = \&amp;INTERRUPTER;</div><div class="line">$SIG<span class="string">&#123;INT&#125;</span> = \&amp;INTERRUPTER;</div><div class="line"></div><div class="line"><span class="keyword">my</span> $server = ...;</div><div class="line"></div><div class="line"><span class="keyword">while</span> (!$interrupted) &#123;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (<span class="keyword">my</span> $client = $server-&gt;<span class="keyword">accept</span>()) &#123;</div><div class="line"></div><div class="line">        <span class="keyword">my</span> $pid = <span class="keyword">fork</span>();</div><div class="line"></div><div class="line">        <span class="keyword">if</span> ($pid &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">close</span>($client);</div><div class="line">            <span class="keyword">print</span> <span class="string">"PID $pid\n"</span>;</div><div class="line">        &#125; <span class="keyword">elsif</span> ($pid == <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">close</span>($server);</div><div class="line"></div><div class="line">            <span class="keyword">my</span> $line = &lt;$client&gt;;</div><div class="line">            ...</div><div class="line">            <span class="keyword">close</span>($client);</div><div class="line">            <span class="keyword">exit</span>;</div><div class="line"></div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">print</span> <span class="string">"fork()调用失败\n"</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">close</span>($server);</div></pre></td></tr></table></figure>
-<p>我们先看下半部分的代码。系统执行<code>fork()</code>函数后，会将当前进程的所有内容拷贝一份，以新的进程号来运行，即子进程。通过<code>fork()</code>的返回值可以知道当前进程是父进程还是子进程：大于0的是父进程；等于0的是子进程。子进程中的代码做了省略，执行完后直接<code>exit</code>。</p>
-<p>上半部分的信号处理是做什么用的呢？这就是在多进程模型中需要特别注意的问题：僵尸进程。具体可以参考<a href="http://shzhangji.com/blog/2013/03/27/fork-and-zombie-process/">这篇文章</a>。</p>
-<p>而<code>$interrupted</code>变量则是用来控制程序是否继续执行的。当进程收到<code>SIGTERM</code>或<code>SIGINT</code>信号时，该变量就会置为真，使进程自然退出。</p>
-<p>为何不直接使用<code>while (my $client = $server-&gt;accept()) {...}</code>呢？因为子进程退出时会向父进程发送<code>SIGCHLD</code>信号，而<code>accept()</code>函数在接收到任何信号后都会中断并返回空，使得<code>while</code>语句退出。</p>
-<h2 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h2><p>这个服务脚本所监听的端口后是固写在脚本中的，如果想通过命令行指定呢？我们可以使用Perl的内置模块<code>Getopt::Long</code>。</p>
-<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> Getopt::Long;</div><div class="line"><span class="keyword">use</span> Pod::Usage;</div><div class="line"></div><div class="line"><span class="keyword">my</span> $help = <span class="number">0</span>;</div><div class="line"><span class="keyword">my</span> $port = <span class="number">10060</span>;</div><div class="line"></div><div class="line">GetOptions(</div><div class="line">    <span class="string">'help|?'</span> =&gt; \$help,</div><div class="line">    <span class="string">'port=i'</span> =&gt; \$port</div><div class="line">) || pod2usage(<span class="number">2</span>);</div><div class="line">pod2usage(<span class="number">1</span>) <span class="keyword">if</span> $help;</div><div class="line"></div><div class="line"><span class="keyword">print</span> <span class="string">"PORT $port\n"</span>;</div><div class="line"></div><div class="line">__END_<span class="number">_</span></div><div class="line"></div><div class="line"><span class="comment">=head1 NAME</span></div><div class="line"></div><div class="line">getopt</div><div class="line"></div><div class="line">=head1 SYNOPSIS</div><div class="line"></div><div class="line">getopt.pl [options]</div><div class="line"></div><div class="line"> Options:</div><div class="line">   -help brief help message</div><div class="line">   -port bind to tcp port</div><div class="line"></div><div class="line">=cut</div></pre></td></tr></table></figure>
-<p>使用方法是：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ ./getopt.pl -h</div><div class="line">Usage:</div><div class="line">    getopt.pl [options]</div><div class="line">    ...</div><div class="line">$ ./getopt.pl</div><div class="line">PORT 10060</div><div class="line">$ ./getopt.pl -p 12345</div><div class="line">PORT 12345</div></pre></td></tr></table></figure>
-<p><code>&#39;port=i&#39; =&gt; \$port</code>表示从命令行中接收名为<code>-port</code>的参数，并将接收到的值转换为整数（<code>i</code>指整数）。<code>\$</code>又是一种引用传递了，这里暂不详述。</p>
-<p>至于<code>||</code>运算符，之前在建立<code>$server</code>时也遇到过，它实际上是一种逻辑运算符，表示“或”的关系。这里的作用则是“如果GetOptions返回的值不为真，则程序退出”。</p>
-<p><code>pod2usage(1) if $help</code>表示如果<code>$help</code>为真则执行<code>pod2usage(1)</code>。你也可以写为<code>$help &amp;&amp; pod2usage(1)</code>。</p>
-<p>我们再来看看<code>__END__</code>之后的代码，它是一种Pod文档（Plain Old Documentation），可以是单独的文件，也可以像这样直接附加到Perl脚本末尾。具体格式可以参考<a href="http://perldoc.perl.org/perlpod.html" target="_blank" rel="external">perlpod</a>。<code>pod2usage()</code>函数顾名思义是将附加的Pod文档转化成帮助信息显示在控制台上。</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>完整的脚本可以见这个链接<a href="https://github.com/jizhang/zabbix-templates/blob/master/jvm/jvm-service.pl" target="_blank" rel="external">jvm-service.pl</a>。调用该服务的脚本可以见<a href="https://github.com/jizhang/zabbix-templates/blob/master/jvm/jvm-check.pl" target="_blank" rel="external">jvm-check.pl</a>。</p>
-<p>Perl语言历史悠久，语法丰富，还需多使用、多积累才行。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;套接字&quot;&gt;&lt;a href=&quot;#套接字&quot; class=&quot;headerlink&quot; title=&quot;套接字&quot;&gt;&lt;/a&gt;套接字&lt;/h2&gt;&lt;p&gt;使用套接字（Socket）进行网络通信的基本流程是：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;服务端：监听端口、等待连接、接收请求、发送应答；&lt;/li&gt;
-&lt;li&gt;客户端：连接服务端、发送请求、接收应答。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight perl&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;10&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;11&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;12&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;13&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;14&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;15&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;16&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;17&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;18&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;19&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;20&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;21&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;22&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;23&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;24&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;25&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;26&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;use&lt;/span&gt; IO::Socket::INET;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;my&lt;/span&gt; $server = IO::Socket::INET-&amp;gt;new(&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;LocalPort =&amp;gt;&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;10060&lt;/span&gt;,&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;Type =&amp;gt;&lt;/span&gt; SOCK_STREAM,&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;Reuse =&amp;gt;&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;Listen =&amp;gt;&lt;/span&gt; SOMAXCONN&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;) || &lt;span class=&quot;keyword&quot;&gt;die&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot;服务创建失败\n&quot;&lt;/span&gt;;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;while&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;my&lt;/span&gt; $client = $server-&amp;gt;&lt;span class=&quot;keyword&quot;&gt;accept&lt;/span&gt;()) &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;my&lt;/span&gt; $line = &amp;lt;$client&amp;gt;;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;chomp&lt;/span&gt;($line);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ($line =~ &lt;span class=&quot;regexp&quot;&gt;/^JVMPORT ([0-9]+)$/&lt;/span&gt;) &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot;RECV $1\n&quot;&lt;/span&gt;;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt; $client &lt;span class=&quot;string&quot;&gt;&quot;OK\n&quot;&lt;/span&gt;;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#125; &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt; &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot;ERROR $line\n&quot;&lt;/span&gt;;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt; $client &lt;span class=&quot;string&quot;&gt;&quot;ERROR\n&quot;&lt;/span&gt;;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;close&lt;/span&gt;($client);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;close&lt;/span&gt;($server);&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-    
-    </summary>
-    
-      <category term="Tutorial" scheme="http://shzhangji.com/categories/Tutorial/"/>
-    
-    
-      <category term="perl" scheme="http://shzhangji.com/tags/perl/"/>
     
   </entry>
   
