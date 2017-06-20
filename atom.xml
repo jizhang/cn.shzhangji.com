@@ -5,7 +5,7 @@
   <link href="/cnblogs/atom.xml" rel="self"/>
   
   <link href="http://shzhangji.com/"/>
-  <updated>2017-06-18T11:02:15.806Z</updated>
+  <updated>2017-06-19T01:06:32.000Z</updated>
   <id>http://shzhangji.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://shzhangji.com/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/"/>
     <id>http://shzhangji.com/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/</id>
     <published>2017-06-18T10:59:53.000Z</published>
-    <updated>2017-06-18T11:02:15.806Z</updated>
+    <updated>2017-06-19T01:06:32.000Z</updated>
     
     <content type="html"><![CDATA[<p>在对多维数据集进行图表分析时，我们希望在图表之间建立联系，选择图表中的一部分数据后，其他图表也会相应变动。这项工作可以通过开发完成，即在服务端对数据进行过滤，并更新所有图表。此外，我们还可以借助 Crossfilter 和 dc.js 这两个工具，直接在浏览器中对数据进行操作。</p>
 <h2 id="航班延误统计"><a href="#航班延误统计" class="headerlink" title="航班延误统计"></a>航班延误统计</h2><p>这是 Crossfilter 官方网站提供的示例，基于 <a href="http://stat-computing.org/dataexpo/2009/" target="_blank" rel="external">ASA Data Expo</a> 数据集的航班延误统计。下面我们将介绍如何用 dc.js 来实现这份交互式报表。项目源码可以在 <a href="https://jsfiddle.net/zjerryj/gjao9sws/" target="_blank" rel="external">JSFiddle</a> 中浏览，演示的数据量减少到 1000 条。</p>
@@ -71,37 +71,37 @@
   </entry>
   
   <entry>
-    <title>Hive+Druid实现快速查询；回归分析是机器学习吗；StructuredStreaming可用于生产环境</title>
+    <title>Hive+Druid 实现快速查询；回归分析是机器学习吗；StructuredStreaming 可用于生产环境</title>
     <link href="http://shzhangji.com/2017/06/18/druid-machine-learning-spark/"/>
     <id>http://shzhangji.com/2017/06/18/druid-machine-learning-spark/</id>
     <published>2017-06-18T02:41:59.000Z</published>
-    <updated>2017-06-18T07:03:17.825Z</updated>
+    <updated>2017-06-20T06:31:40.000Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="结合Apache-Hive和Druid实现高速OLAP查询"><a href="#结合Apache-Hive和Druid实现高速OLAP查询" class="headerlink" title="结合Apache Hive和Druid实现高速OLAP查询"></a>结合Apache Hive和Druid实现高速OLAP查询</h2><p><img src="https://2xbbhjxc6wk3v21p62t8n4d4-wpengine.netdna-ssl.com/wp-content/uploads/2017/05/Part1Image2.png" alt="使用HiveQL预汇总数据并保存至Druid"></p>
-<p>Hadoop生态中，我们使用Hive将SQL语句编译为MapReduce任务，对海量数据进行操作；Druid则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。</p>
-<p>Druid的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和Hive的主要区别。数据表中的维度字段越多，查询速度也会越快。不过Druid也有其不适用的场景，如无法支持大数据量的Join操作，对标准SQL的实现也十分有限。</p>
-<p>Druid和Hive的结合方式是这样的：首先使用Hive对数据进行预处理，生成OLAP Cube存入Druid；当发生查询时，使用Calcite优化器进行分析，使用合适的引擎（Hive或Druid）执行操作。如，Druid擅长执行维度汇总、TopN、时间序列查询，而Hive则能胜任Join、子查询、UDF等操作。</p>
+    <content type="html"><![CDATA[<h2 id="结合-Apache-Hive-和-Druid-实现高速-OLAP-查询"><a href="#结合-Apache-Hive-和-Druid-实现高速-OLAP-查询" class="headerlink" title="结合 Apache Hive 和 Druid 实现高速 OLAP 查询"></a>结合 Apache Hive 和 Druid 实现高速 OLAP 查询</h2><p><img src="https://2xbbhjxc6wk3v21p62t8n4d4-wpengine.netdna-ssl.com/wp-content/uploads/2017/05/Part1Image2.png" alt="使用 HiveQL 预汇总数据并保存至 Druid"></p>
+<p>Hadoop 生态中，我们使用 Hive 将 SQL 语句编译为 MapReduce 任务，对海量数据进行操作；Druid 则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。</p>
+<p>Druid 的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和 Hive 的主要区别。数据表中的维度字段越多，查询速度也会越快。不过 Druid 也有其不适用的场景，如无法支持大数据量的 Join 操作，对标准 SQL 的实现也十分有限。</p>
+<p>Druid 和 Hive 的结合方式是这样的：首先使用 Hive 对数据进行预处理，生成 OLAP Cube 存入 Druid；当发生查询时，使用 Calcite 优化器进行分析，使用合适的引擎（Hive 或 Druid）执行操作。如，Druid 擅长执行维度汇总、TopN、时间序列查询，而 Hive 则能胜任 Join、子查询、UDF 等操作。</p>
 <p>原文：<a href="https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru" target="_blank" rel="external">https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru</a></p>
 <a id="more"></a>
 <h2 id="回归分析是机器学习吗？"><a href="#回归分析是机器学习吗？" class="headerlink" title="回归分析是机器学习吗？"></a>回归分析是机器学习吗？</h2><p><img src="http://www.kdnuggets.com/wp-content/uploads/is-regression-machine-learning.jpg" alt=""></p>
 <p>作者认为纠结这个问题的人们其实是“将重点放在了森林而忽视了树木”。我们应该将统计分析和机器学习都用作是实现“理解数据”这一目标的工具。用哪种工具并不重要，如何用好工具、建立恰当的模型、增强对数据的认知，才是最重要的。</p>
 <p>过去人们也曾争论过数据挖掘和机器学习的区别。作者认为数据挖掘是一种 <em>过程</em> ，机器学习则是过程中使用的 <em>工具</em> 。因此，数据挖掘可以总结为 <em>对海量数据进行高效的统计分析</em> 。</p>
-<p>机器学习由三个元素组成：数据，模型，成本函数。假设我们有10个数据点，使用其中的9个来训练模型，最后一个用来测试，这个过程人工就可以解决。那当数据越来越多，或特征值增加，或使用计算机而非人工，是否就由统计学演变成机器学习了呢？所以说，传统统计学和机器学习之间是有一个过渡的，这个过渡过程我们无法衡量，也无需衡量。</p>
+<p>机器学习由三个元素组成：数据，模型，成本函数。假设我们有 10 个数据点，使用其中的 9 个来训练模型，最后一个用来测试，这个过程人工就可以解决。那当数据越来越多，或特征值增加，或使用计算机而非人工，是否就由统计学演变成机器学习了呢？所以说，传统统计学和机器学习之间是有一个过渡的，这个过渡过程我们无法衡量，也无需衡量。</p>
 <p>原文：<a href="http://www.kdnuggets.com/2017/06/regression-analysis-really-machine-learning.html" target="_blank" rel="external">http://www.kdnuggets.com/2017/06/regression-analysis-really-machine-learning.html</a></p>
-<h2 id="StructuredStreaming可用于生产环境"><a href="#StructuredStreaming可用于生产环境" class="headerlink" title="StructuredStreaming可用于生产环境"></a>StructuredStreaming可用于生产环境</h2><p><img src="https://spark.apache.org/docs/latest/img/structured-streaming-stream-as-a-table.png" alt="将数据流看做一张无边界的表"></p>
-<p>2016年中，Spark推出了StructredStreaming，随着时间的推移，这一创新的实时计算框架也日臻成熟。</p>
+<h2 id="StructuredStreaming-可用于生产环境"><a href="#StructuredStreaming-可用于生产环境" class="headerlink" title="StructuredStreaming 可用于生产环境"></a>StructuredStreaming 可用于生产环境</h2><p><img src="https://spark.apache.org/docs/latest/img/structured-streaming-stream-as-a-table.png" alt="将数据流看做一张无边界的表"></p>
+<p>2016 年中，Spark 推出了 StructredStreaming，随着时间的推移，这一创新的实时计算框架也日臻成熟。</p>
 <p>实时计算的复杂性在于三个方面：数据来源多样，且存在脏数据、乱序等情况；执行逻辑复杂，需要处理事件时间，结合机器学习等；运行平台也多种多样，需要应对各种系统失效。</p>
-<p>StructuredStreaming构建在Spark SQL之上，提供了统一的API，同时做到高效、可扩、容错。它的理念是 <em>实时计算无需考虑数据是否实时</em> ，将实时数据流当做一张没有边界的数据表来看待。</p>
-<p>传统ETL的流程是先将数据导出成文件，再将文件导入到表中使用，这个过程通常以小时计。而实时ETL则可以直接从数据源进入到表，过程以秒计。对于更为复杂的实时计算，StructuredStreaming也提供了相应方案，包括事件时间计算、有状态的聚合算子、水位线等。</p>
+<p>StructuredStreaming 构建在 Spark SQL 之上，提供了统一的 API，同时做到高效、可扩、容错。它的理念是 <em>实时计算无需考虑数据是否实时</em> ，将实时数据流当做一张没有边界的数据表来看待。</p>
+<p>传统 ETL 的流程是先将数据导出成文件，再将文件导入到表中使用，这个过程通常以小时计。而实时 ETL 则可以直接从数据源进入到表，过程以秒计。对于更为复杂的实时计算，StructuredStreaming 也提供了相应方案，包括事件时间计算、有状态的聚合算子、水位线等。</p>
 <p>原文：<a href="https://spark-summit.org/east-2017/events/making-structured-streaming-ready-for-production-updates-and-future-directions/" target="_blank" rel="external">https://spark-summit.org/east-2017/events/making-structured-streaming-ready-for-production-updates-and-future-directions/</a></p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;h2 id=&quot;结合Apache-Hive和Druid实现高速OLAP查询&quot;&gt;&lt;a href=&quot;#结合Apache-Hive和Druid实现高速OLAP查询&quot; class=&quot;headerlink&quot; title=&quot;结合Apache Hive和Druid实现高速OLAP查询&quot;&gt;&lt;/a&gt;结合Apache Hive和Druid实现高速OLAP查询&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;https://2xbbhjxc6wk3v21p62t8n4d4-wpengine.netdna-ssl.com/wp-content/uploads/2017/05/Part1Image2.png&quot; alt=&quot;使用HiveQL预汇总数据并保存至Druid&quot;&gt;&lt;/p&gt;
-&lt;p&gt;Hadoop生态中，我们使用Hive将SQL语句编译为MapReduce任务，对海量数据进行操作；Druid则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。&lt;/p&gt;
-&lt;p&gt;Druid的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和Hive的主要区别。数据表中的维度字段越多，查询速度也会越快。不过Druid也有其不适用的场景，如无法支持大数据量的Join操作，对标准SQL的实现也十分有限。&lt;/p&gt;
-&lt;p&gt;Druid和Hive的结合方式是这样的：首先使用Hive对数据进行预处理，生成OLAP Cube存入Druid；当发生查询时，使用Calcite优化器进行分析，使用合适的引擎（Hive或Druid）执行操作。如，Druid擅长执行维度汇总、TopN、时间序列查询，而Hive则能胜任Join、子查询、UDF等操作。&lt;/p&gt;
+      &lt;h2 id=&quot;结合-Apache-Hive-和-Druid-实现高速-OLAP-查询&quot;&gt;&lt;a href=&quot;#结合-Apache-Hive-和-Druid-实现高速-OLAP-查询&quot; class=&quot;headerlink&quot; title=&quot;结合 Apache Hive 和 Druid 实现高速 OLAP 查询&quot;&gt;&lt;/a&gt;结合 Apache Hive 和 Druid 实现高速 OLAP 查询&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;https://2xbbhjxc6wk3v21p62t8n4d4-wpengine.netdna-ssl.com/wp-content/uploads/2017/05/Part1Image2.png&quot; alt=&quot;使用 HiveQL 预汇总数据并保存至 Druid&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Hadoop 生态中，我们使用 Hive 将 SQL 语句编译为 MapReduce 任务，对海量数据进行操作；Druid 则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。&lt;/p&gt;
+&lt;p&gt;Druid 的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和 Hive 的主要区别。数据表中的维度字段越多，查询速度也会越快。不过 Druid 也有其不适用的场景，如无法支持大数据量的 Join 操作，对标准 SQL 的实现也十分有限。&lt;/p&gt;
+&lt;p&gt;Druid 和 Hive 的结合方式是这样的：首先使用 Hive 对数据进行预处理，生成 OLAP Cube 存入 Druid；当发生查询时，使用 Calcite 优化器进行分析，使用合适的引擎（Hive 或 Druid）执行操作。如，Druid 擅长执行维度汇总、TopN、时间序列查询，而 Hive 则能胜任 Join、子查询、UDF 等操作。&lt;/p&gt;
 &lt;p&gt;原文：&lt;a href=&quot;https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru&quot;&gt;https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru&lt;/a&gt;&lt;/p&gt;
     
     </summary>
@@ -111,13 +111,13 @@
     
       <category term="hive" scheme="http://shzhangji.com/tags/hive/"/>
     
-      <category term="spark" scheme="http://shzhangji.com/tags/spark/"/>
-    
       <category term="druid" scheme="http://shzhangji.com/tags/druid/"/>
     
       <category term="machine learning" scheme="http://shzhangji.com/tags/machine-learning/"/>
     
       <category term="stream processing" scheme="http://shzhangji.com/tags/stream-processing/"/>
+    
+      <category term="spark" scheme="http://shzhangji.com/tags/spark/"/>
     
   </entry>
   
@@ -126,7 +126,7 @@
     <link href="http://shzhangji.com/2016/03/13/top-5-frameworks/"/>
     <id>http://shzhangji.com/2016/03/13/top-5-frameworks/</id>
     <published>2016-03-13T08:25:00.000Z</published>
-    <updated>2017-03-09T22:24:58.563Z</updated>
+    <updated>2017-03-09T04:26:46.000Z</updated>
     
     <content type="html"><![CDATA[<p>作者：<a href="https://opensource.com/business/15/12/top-5-frameworks" target="_blank" rel="external">John Esposito</a></p>
 <p>软件侵吞着世界<a href="http://www.wsj.com/articles/SB10001424053111903480904576512250915629460" target="_blank" rel="external">已经四年多了</a>，但开发人员看待软件的方式稍有不同。我们一直在致力于<a href="http://www.dougengelbart.org/pubs/augment-3906.html" target="_blank" rel="external">解决实际问题</a>，而<a href="http://worrydream.com/refs/Brooks-NoSilverBullet.pdf" target="_blank" rel="external">很少思考软件开发的基石</a>。当问题变得更庞大、解决方案更复杂时，一些实用的、不怎么<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html" target="_blank" rel="external">产生泄漏</a>的抽象工具就显得越来越重要。</p>
@@ -181,7 +181,7 @@
     <link href="http://shzhangji.com/2015/09/12/model-dependency-injection-with-spring-aop/"/>
     <id>http://shzhangji.com/2015/09/12/model-dependency-injection-with-spring-aop/</id>
     <published>2015-09-12T14:03:00.000Z</published>
-    <updated>2017-03-09T22:24:58.562Z</updated>
+    <updated>2017-03-09T03:37:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>在<a href="http://shzhangji.com/blog/2015/09/05/anemic-domain-model/">贫血领域模型</a>这篇译文中，Martin阐述了这种“反模式”的症状和问题，并引用了领域驱动设计中的话来说明领域模型和分层设计之间的关系。对于Spring项目的开发人员来说，贫血领域模型十分常见：模型（或实体）仅仅包含对数据表的映射，通常是一组私有属性和公有getter/setter，所有的业务逻辑都写在服务层中，领域模型仅仅用来传递数据。为了编写真正的领域模型，我们需要将业务逻辑移至模型对象中，这就引出另一个问题：业务逻辑通常需要调用其他服务或模型，而使用<code>new</code>关键字或由JPA创建的对象是不受Spring托管的，也就无法进行依赖注入。解决这个问题的方法有很多，比较之后我选择使用面向切面编程来实现。</p>
 <h2 id="面向切面编程"><a href="#面向切面编程" class="headerlink" title="面向切面编程"></a>面向切面编程</h2><p>面向切面编程，或<a href="https://en.wikipedia.org/wiki/Aspect-oriented_programming" target="_blank" rel="external">AOP</a>，是一种编程范式，和面向对象编程（<a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank" rel="external">OOP</a>）互为补充。简单来说，AOP可以在不修改既有代码的情况下改变代码的行为。开发者通过定义一组规则，在特定的类方法前后增加逻辑，如记录日志、性能监控、事务管理等。这些逻辑称为切面（Aspect），规则称为切点（Pointcut），在调用前还是调用后执行称为通知（Before advice, After advice）。最后，我们可以选择在编译期将这些逻辑写入类文件，或是在运行时动态加载这些逻辑，这是两种不同的织入方式（Compile-time weaving, Load-time weaving）。</p>
@@ -251,7 +251,7 @@
     <link href="http://shzhangji.com/2015/09/05/anemic-domain-model/"/>
     <id>http://shzhangji.com/2015/09/05/anemic-domain-model/</id>
     <published>2015-09-05T11:02:00.000Z</published>
-    <updated>2017-03-09T22:24:58.561Z</updated>
+    <updated>2017-03-09T03:37:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://www.martinfowler.com/bliki/AnemicDomainModel.html" target="_blank" rel="external">http://www.martinfowler.com/bliki/AnemicDomainModel.html</a></p>
 <p>贫血领域模型是一个存在已久的反模式，目前仍有许多拥趸者。一次我和Eric Evans聊天谈到它时，都觉得这个模型似乎越来越流行了。作为<a href="http://martinfowler.com/eaaCatalog/domainModel.html" target="_blank" rel="external">领域模型</a>的推广者，我们觉得这不是一件好事。</p>
@@ -293,7 +293,7 @@
     <link href="http://shzhangji.com/2015/06/25/compressed-oops-in-the-hotspot-jvm/"/>
     <id>http://shzhangji.com/2015/06/25/compressed-oops-in-the-hotspot-jvm/</id>
     <published>2015-06-25T09:41:00.000Z</published>
-    <updated>2017-03-09T22:24:58.559Z</updated>
+    <updated>2017-03-09T03:37:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="https://wiki.openjdk.java.net/display/HotSpot/CompressedOops" target="_blank" rel="external">https://wiki.openjdk.java.net/display/HotSpot/CompressedOops</a></p>
 <h2 id="什么是一般对象指针？"><a href="#什么是一般对象指针？" class="headerlink" title="什么是一般对象指针？"></a>什么是一般对象指针？</h2><p>一般对象指针（oop, ordinary object pointer）是HotSpot虚拟机的一个术语，表示受托管的对象指针。它的大小通常和本地指针是一样的。Java应用程序和GC子系统会非常小心地跟踪这些受托管的指针，以便在销毁对象时回收内存空间，或是在对空间进行整理时移动（复制）对象。</p>
@@ -395,7 +395,7 @@
     <link href="http://shzhangji.com/2015/03/08/hbase-dos-and-donts/"/>
     <id>http://shzhangji.com/2015/03/08/hbase-dos-and-donts/</id>
     <published>2015-03-08T00:03:00.000Z</published>
-    <updated>2017-03-09T22:24:58.558Z</updated>
+    <updated>2017-03-09T04:27:06.000Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/" target="_blank" rel="external">http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/</a></p>
 <p>最近我在<a href="http://www.meetup.com/LA-HUG/" target="_blank" rel="external">洛杉矶Hadoop用户组</a>做了一次关于<a href="http://www.meetup.com/LA-HUG/pages/Video_from_April_13th_HBASE_DO%27S_and_DON%27TS/" target="_blank" rel="external">HBase适用场景</a>的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分享中的主要内容做了一个整理。如果你没有时间阅读全文，以下是一些摘要：</p>
@@ -449,7 +449,7 @@
     <link href="http://shzhangji.com/2015/01/13/understand-reduce-side-join/"/>
     <id>http://shzhangji.com/2015/01/13/understand-reduce-side-join/</id>
     <published>2015-01-13T06:20:00.000Z</published>
-    <updated>2017-03-09T22:24:58.557Z</updated>
+    <updated>2017-03-09T07:25:39.000Z</updated>
     
     <content type="html"><![CDATA[<p>在《<a href="http://www.amazon.com/MapReduce-Design-Patterns-Effective-Algorithms/dp/1449327176" target="_blank" rel="external">MapReduce Design Patterns</a>》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：</p>
 <p><img src="/cnblogs/images/reduce-side-join/reduce-side-join.png" alt=""></p>
@@ -524,7 +524,7 @@
     <link href="http://shzhangji.com/2014/12/23/use-git-rebase-to-clarify-history/"/>
     <id>http://shzhangji.com/2014/12/23/use-git-rebase-to-clarify-history/</id>
     <published>2014-12-23T08:10:00.000Z</published>
-    <updated>2017-03-09T22:24:58.555Z</updated>
+    <updated>2017-03-09T07:25:39.000Z</updated>
     
     <content type="html"><![CDATA[<p>当多人协作开发一个分支时，历史记录通常如下方左图所示，比较凌乱。如果希望能像右图那样呈线性提交，就需要学习git rebase的用法。</p>
 <p><img src="/cnblogs/images/git-rebase/rebase-result.png" alt=""></p>
@@ -577,7 +577,7 @@
     <link href="http://shzhangji.com/2014/12/16/spark-quick-start/"/>
     <id>http://shzhangji.com/2014/12/16/spark-quick-start/</id>
     <published>2014-12-16T07:59:00.000Z</published>
-    <updated>2017-06-04T11:24:34.855Z</updated>
+    <updated>2017-06-06T03:12:23.000Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://spark.apache.org/images/spark-logo.png" alt=""></p>
 <p><a href="http://spark.apache.org" target="_blank" rel="external">Apache Spark</a>是新兴的一种快速通用的大规模数据处理引擎。它的优势有三个方面：</p>
@@ -694,7 +694,7 @@
     <link href="http://shzhangji.com/2014/11/07/sbt-offline/"/>
     <id>http://shzhangji.com/2014/11/07/sbt-offline/</id>
     <published>2014-11-07T07:02:00.000Z</published>
-    <updated>2017-03-09T22:24:58.553Z</updated>
+    <updated>2017-03-09T03:37:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>在公司网络中使用<a href="http://www.scala-sbt.org/" target="_blank" rel="external">sbt</a>、<a href="http://maven.apache.org/" target="_blank" rel="external">Maven</a>等项目构建工具时，我们通常会搭建一个公用的<a href="http://www.sonatype.org/nexus/" target="_blank" rel="external">Nexus</a>镜像服务，原因有以下几个：</p>
 <ul>
@@ -750,7 +750,7 @@
     <link href="http://shzhangji.com/2014/10/14/mysql-incorrent-utf8-value/"/>
     <id>http://shzhangji.com/2014/10/14/mysql-incorrent-utf8-value/</id>
     <published>2014-10-14T05:16:00.000Z</published>
-    <updated>2017-03-09T22:24:58.552Z</updated>
+    <updated>2017-03-09T03:37:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>ETL流程中，我们会将Hive中的数据导入MySQL——先用Hive命令行将数据保存为文本文件，然后用MySQL的LOAD DATA语句进行加载。最近有一张表在加载到MySQL时会报以下错误：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Incorrect string value: &apos;\xF0\x9D\x8C\x86&apos; for column ...</div></pre></td></tr></table></figure>
@@ -801,7 +801,7 @@
     <link href="http://shzhangji.com/2014/07/05/deploy-shark-0.9-with-cdh-4.5/"/>
     <id>http://shzhangji.com/2014/07/05/deploy-shark-0.9-with-cdh-4.5/</id>
     <published>2014-07-05T09:16:00.000Z</published>
-    <updated>2017-03-09T22:24:58.551Z</updated>
+    <updated>2017-03-09T03:37:13.000Z</updated>
     
     <content type="html"><![CDATA[<p><a href="http://spark.apache.org" target="_blank" rel="external">Spark</a>是一个新兴的大数据计算平台，它的优势之一是内存型计算，因此对于需要多次迭代的算法尤为适用。同时，它又能够很好地融合到现有的<a href="http://hadoop.apache.org" target="_blank" rel="external">Hadoop</a>生态环境中，包括直接存取HDFS上的文件，以及运行于YARN之上。对于<a href="http://hive.apache.org" target="_blank" rel="external">Hive</a>，Spark也有相应的替代项目——<a href="http://shark.cs.berkeley.edu/" target="_blank" rel="external">Shark</a>，能做到 <strong>drop-in replacement</strong> ，直接构建在现有集群之上。本文就将简要阐述如何在CDH4.5上搭建Shark0.9集群。</p>
 <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ul>
@@ -918,7 +918,7 @@
     <link href="http://shzhangji.com/2014/04/07/hive-small-files/"/>
     <id>http://shzhangji.com/2014/04/07/hive-small-files/</id>
     <published>2014-04-07T09:09:00.000Z</published>
-    <updated>2017-03-09T22:24:58.549Z</updated>
+    <updated>2017-03-09T03:37:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>Hive的后端存储是HDFS，它对大文件的处理是非常高效的，如果合理配置文件系统的块大小，NameNode可以支持很大的数据量。但是在数据仓库中，越是上层的表其汇总程度就越高，数据量也就越小。而且这些表通常会按日期进行分区，随着时间的推移，HDFS的文件数目就会逐渐增加。</p>
 <h2 id="小文件带来的问题"><a href="#小文件带来的问题" class="headerlink" title="小文件带来的问题"></a>小文件带来的问题</h2><p>关于这个问题的阐述可以读一读Cloudera的<a href="http://blog.cloudera.com/blog/2009/02/the-small-files-problem/" target="_blank" rel="external">这篇文章</a>。简单来说，HDFS的文件元信息，包括位置、大小、分块信息等，都是保存在NameNode的内存中的。每个对象大约占用150个字节，因此一千万个文件及分块就会占用约3G的内存空间，一旦接近这个量级，NameNode的性能就会开始下降了。</p>
@@ -970,7 +970,7 @@
     <link href="http://shzhangji.com/2014/01/25/java-reflection-tutorial/"/>
     <id>http://shzhangji.com/2014/01/25/java-reflection-tutorial/</id>
     <published>2014-01-25T01:42:00.000Z</published>
-    <updated>2017-03-09T22:24:58.548Z</updated>
+    <updated>2017-03-09T03:37:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://www.programcreek.com/2013/09/java-reflection-tutorial/" target="_blank" rel="external">http://www.programcreek.com/2013/09/java-reflection-tutorial/</a></p>
 <p>什么是反射？它有何用处？</p>
@@ -1057,7 +1057,7 @@
     <link href="http://shzhangji.com/2013/12/17/the-law-of-leaky-abstractions/"/>
     <id>http://shzhangji.com/2013/12/17/the-law-of-leaky-abstractions/</id>
     <published>2013-12-17T05:05:00.000Z</published>
-    <updated>2017-03-09T22:24:58.547Z</updated>
+    <updated>2017-03-09T03:37:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html" target="_blank" rel="external">http://www.joelonsoftware.com/articles/LeakyAbstractions.html</a></p>
 <p>TCP协议是互联网的基石，我们每天都需要依靠它来构建各类互联网应用。也正是在这一协议中，时刻发生着一件近乎神奇的事情。</p>
@@ -1115,7 +1115,7 @@
     <link href="http://shzhangji.com/2013/09/06/hive-deleteme-error/"/>
     <id>http://shzhangji.com/2013/09/06/hive-deleteme-error/</id>
     <published>2013-09-06T03:20:00.000Z</published>
-    <updated>2017-03-09T22:24:58.546Z</updated>
+    <updated>2017-03-09T07:25:39.000Z</updated>
     
     <content type="html"><![CDATA[<p>在每天运行的Hive脚本中，偶尔会抛出以下错误：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">2013-09-03 01:39:00,973 ERROR parse.SemanticAnalyzer (SemanticAnalyzer.java:getMetaData(1128)) - org.apache.hadoop.hive.ql.metadata.HiveException: Unable to fetch table dw_xxx_xxx</div><div class="line">        at org.apache.hadoop.hive.ql.metadata.Hive.getTable(Hive.java:896)</div><div class="line">        ...</div><div class="line">Caused by: javax.jdo.JDODataStoreException: Exception thrown obtaining schema column information from datastore</div><div class="line">NestedThrowables:</div><div class="line">com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table &apos;hive.DELETEME1378143540925&apos; doesn&apos;t exist</div><div class="line">        at org.datanucleus.jdo.NucleusJDOHelper.getJDOExceptionForNucleusException(NucleusJDOHelper.java:313)</div><div class="line">        ...</div></pre></td></tr></table></figure>
@@ -1176,7 +1176,7 @@
     <link href="http://shzhangji.com/2013/06/11/ansible-faq/"/>
     <id>http://shzhangji.com/2013/06/11/ansible-faq/</id>
     <published>2013-06-11T13:18:00.000Z</published>
-    <updated>2017-03-09T22:24:58.544Z</updated>
+    <updated>2017-03-09T03:37:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>本文是从原Ansible官网的FAQ页面翻译而来，网站改版后该页面已无法访问，但可以从<a href="https://github.com/ansible/ansible.github.com/blob/4a2bf7f60a020f0d0a7b042056fc3dd8716588f2/faq.html" target="_blank" rel="external">Github历史提交</a>中获得。翻译这篇原始FAQ文档是因为它陈述了Ansible这款工具诞生的原因，设计思路和特性，以及与Puppet、Fabric等同类软件的比较，可以让我们对Ansible有一个整体的了解，所以值得使用者一读。</p>
 <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
@@ -1276,7 +1276,7 @@
     <link href="http://shzhangji.com/2013/05/25/apache-hadoop-yarn-background-and-an-overview/"/>
     <id>http://shzhangji.com/2013/05/25/apache-hadoop-yarn-background-and-an-overview/</id>
     <published>2013-05-25T02:57:00.000Z</published>
-    <updated>2017-03-09T22:24:58.543Z</updated>
+    <updated>2017-03-09T03:37:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/" target="_blank" rel="external">http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/</a></p>
 <p>日前，Apache Hadoop YARN已被提升为Apache软件基金会的子项目，这是一个值得庆祝的里程碑。这里我们也第一时间为各位献上Apache Hadoop YARN项目的系列介绍文章。YARN是一个普适的、分布式的应用管理框架，运行于Hadoop集群之上，用以替代传统的Apache Hadoop MapReduce框架。</p>
@@ -1344,7 +1344,7 @@
     <link href="http://shzhangji.com/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/"/>
     <id>http://shzhangji.com/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/</id>
     <published>2013-05-01T10:01:00.000Z</published>
-    <updated>2017-03-09T22:24:58.542Z</updated>
+    <updated>2017-03-09T03:37:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html" target="_blank" rel="external">http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html</a></p>
 <p>我非常兴奋地告诉大家，<a href="http://github.com/nathanmarz/cascalog" target="_blank" rel="external">Cascalog</a>开源了！Cascalog受<a href="http://en.wikipedia.org/wiki/Datalog" target="_blank" rel="external">Datalog</a>启发，是一种基于Clojure、运行于Hadoop平台上的查询语言。</p>

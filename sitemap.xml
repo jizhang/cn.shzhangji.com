@@ -2,233 +2,233 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/</loc>
+    <loc>http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/</loc>
     
-    <lastmod>2017-06-18T11:02:15.806Z</lastmod>
+    <lastmod>2017-06-20T06:31:40.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/</loc>
+    <loc>http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/</loc>
     
-    <lastmod>2017-06-18T07:03:17.825Z</lastmod>
+    <lastmod>2017-06-19T01:06:32.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/</loc>
     
-    <lastmod>2017-06-04T11:24:34.855Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.563Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.562Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.561Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.559Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.558Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.557Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.555Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.553Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.552Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.551Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.549Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2014/01/25/java-reflection-tutorial/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.548Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2013/12/17/the-law-of-leaky-abstractions/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.547Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.546Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2013/06/11/ansible-faq/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.544Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2013/05/25/apache-hadoop-yarn-background-and-an-overview/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.543Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.542Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2013/04/22/cia-storm/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.540Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.539Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2013/03/27/fork-and-zombie-process/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.537Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.536Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2013/03/07/currying-and-partial-application/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.535Z</lastmod>
+    <lastmod>2017-06-06T03:12:23.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://shzhangji.com/cnblogs/2013/02/09/cia-hadoop/</loc>
     
-    <lastmod>2017-03-09T22:24:58.534Z</lastmod>
+    <lastmod>2017-03-09T07:25:39.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/</loc>
+    <loc>http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/</loc>
     
-    <lastmod>2017-03-09T22:24:58.532Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.531Z</lastmod>
+    <lastmod>2017-03-09T07:25:39.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/</loc>
+    <loc>http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/</loc>
     
-    <lastmod>2017-03-09T22:24:58.529Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.527Z</lastmod>
+    <lastmod>2017-03-09T07:25:39.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/</loc>
+    <loc>http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/</loc>
     
-    <lastmod>2017-03-09T22:24:58.526Z</lastmod>
+    <lastmod>2017-03-09T07:25:39.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/</loc>
+    <loc>http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/</loc>
     
-    <lastmod>2017-03-09T22:24:58.524Z</lastmod>
+    <lastmod>2017-03-09T04:27:06.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/</loc>
+    
+    <lastmod>2017-03-09T04:26:46.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://shzhangji.com/cnblogs/2012/11/16/aosa-git/</loc>
     
-    <lastmod>2017-03-09T22:24:58.521Z</lastmod>
+    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/</loc>
+    
+    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/</loc>
+    
+    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/04/22/cia-storm/</loc>
+    
+    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/</loc>
+    
+    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/</loc>
+    
+    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/03/27/fork-and-zombie-process/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2014/01/25/java-reflection-tutorial/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/12/17/the-law-of-leaky-abstractions/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/05/25/apache-hadoop-yarn-background-and-an-overview/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/03/07/currying-and-partial-application/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/06/11/ansible-faq/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
     
   </url>
   
