@@ -88,6 +88,64 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-cia-noir-2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2012/12/08/cia-noir-2/" class="article-date">
+  <time datetime="2012-12-08T04:09:00.000Z" itemprop="datePublished">2012-12-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Tutorial/">Tutorial</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/cnblogs/2012/12/08/cia-noir-2/">Clojure实战(2)：使用Noir框架开发博客(中)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="在Eclipse中编写Clojure代码"><a href="#在Eclipse中编写Clojure代码" class="headerlink" title="在Eclipse中编写Clojure代码"></a>在Eclipse中编写Clojure代码</h2><p>从这章起我们就要开始真正的编码了。Vim可能是很多程序员的选择，但如果你像我一样更喜欢GUI界面，那就来看看如何在Eclipse中编写Clojure代码吧。</p>
+<h3 id="安装Eclipse插件"><a href="#安装Eclipse插件" class="headerlink" title="安装Eclipse插件"></a>安装Eclipse插件</h3><p>Eclipse提供了一个Clojure插件：CounterClockwise，可以用来编写Clojure代码，进行语法高亮、调试等操作。打开Eclipse的Market Place，搜索counterclockwise关键字，点击Install即可。</p>
+<h3 id="将Leiningen项目导入Eclipse"><a href="#将Leiningen项目导入Eclipse" class="headerlink" title="将Leiningen项目导入Eclipse"></a>将Leiningen项目导入Eclipse</h3><p>由于CounterClockwise插件并没有默认使用Leiningen来管理项目，因此需要做一些额外的工作。</p>
+<p>在使用<code>lein new</code>命令创建项目后，在project.clj文件中增加如下一行：</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">(<span class="name">defproject</span> ...</div><div class="line">            <span class="symbol">:dev-dependencies</span> [[lein-eclipse <span class="string">"1.0.0"</span>]]</div><div class="line">            ...)</div></pre></td></tr></table></figure>
+<p>然后依次执行<code>lein deps</code>和<code>lein eclipse</code>，会看到项目根目录下生成了.project和.classpath文件。然后就可以进入Eclipse导入这个项目了。如果使用Git进行版本控制，<code>lein</code>已经为你生成好了.gitignore文件。执行了<code>git init</code>后，就能在Eclilpse中选择Share Project菜单项，进行可视化的版本控制。</p>
+<h2 id="使用表单"><a href="#使用表单" class="headerlink" title="使用表单"></a>使用表单</h2><p>我们现在需要编写一个新建文章的功能，它是一个简单的页面，页面上有“标题”和“内容”两个文本框，并有一个“提交”按钮。</p>
+<p>在src/blog/views目录下新建一个文件article.clj，输入以下内容：</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">(<span class="name"><span class="builtin-name">ns</span></span> blog.views.article</div><div class="line">  (<span class="symbol">:require</span> [blog.views.common <span class="symbol">:as</span> common])</div><div class="line">  (<span class="symbol">:use</span> [noir.core]</div><div class="line">        [hiccup.form-helpers]))</div><div class="line"></div><div class="line">(<span class="name">defpage</span> <span class="string">"/blog/add"</span> []</div><div class="line">  (<span class="name">common/layout</span></div><div class="line">    [<span class="symbol">:h1</span> <span class="string">"新建文章"</span>]</div><div class="line">    (<span class="name">form-to</span> [<span class="symbol">:post</span> <span class="string">"/blog/add"</span>]</div><div class="line">             (<span class="name">label</span> <span class="string">"title"</span> <span class="string">"标题："</span>)</div><div class="line">             (<span class="name">text-field</span> &#123;<span class="symbol">:size</span> <span class="number">50</span>&#125; <span class="string">"title"</span>) [<span class="symbol">:br</span>]</div><div class="line">             (<span class="name">label</span> <span class="string">"content"</span> <span class="string">"内容："</span>)</div><div class="line">             (<span class="name">text-area</span> &#123;<span class="symbol">:rows</span> <span class="number">20</span> <span class="symbol">:cols</span> <span class="number">50</span>&#125; <span class="string">"content"</span>) [<span class="symbol">:br</span>]</div><div class="line">             (<span class="name">submit-button</span> <span class="string">"提交"</span>))))</div></pre></td></tr></table></figure>
+<p><code>defpage</code>和<code>common/layout</code>我们之前已经见到过，前者定义了URL<code>/blog/add</code>指向的页面，后者则是套用了一个模板。<code>[:h1 ...]</code>和<code>[:br]</code>也应该熟悉，它们是Hiccup的语法，分别生成<code>&lt;h1&gt;...&lt;/h1&gt;</code>和<code>&lt;br&gt;</code>标签。</p>
+        
+          <p class="article-more-link">
+            <a href="/cnblogs/2012/12/08/cia-noir-2/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/" data-id="cj4i2mcum0008q4zjntza7sxl" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/noir/">noir</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-cia-noir-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/cnblogs/2012/11/25/cia-noir-1/" class="article-date">
@@ -126,7 +184,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/" data-id="cj3wcoxjt000l1zzj7x4wsbq1" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/" data-id="cj4i2mcuo000bq4zjngsh0bf7" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -180,7 +238,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/" data-id="cj3wcoxjx000o1zzje5ok4qg2" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/" data-id="cj4i2mcv0000dq4zjbk82y211" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -235,7 +293,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/" data-id="cj3wcoxjr000k1zzjrvjqjm4p" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/" data-id="cj4i2mcuj0007q4zj9tjxdqy4" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -262,7 +320,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/cnblogs/tags/analytics/" style="font-size: 10px;">analytics</a> <a href="/cnblogs/tags/aosa/" style="font-size: 13.33px;">aosa</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 16.67px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 13.33px;">hive</a> <a href="/cnblogs/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 16.67px;">noir</a> <a href="/cnblogs/tags/ops/" style="font-size: 10px;">ops</a> <a href="/cnblogs/tags/perl/" style="font-size: 13.33px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 10px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 10px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 13.33px;">spark</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 10px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 13.33px;">translation</a>
+      <a href="/cnblogs/tags/analytics/" style="font-size: 10px;">analytics</a> <a href="/cnblogs/tags/aosa/" style="font-size: 13.33px;">aosa</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 16.67px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 13.33px;">hive</a> <a href="/cnblogs/tags/javascript/" style="font-size: 13.33px;">javascript</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 16.67px;">noir</a> <a href="/cnblogs/tags/ops/" style="font-size: 10px;">ops</a> <a href="/cnblogs/tags/perl/" style="font-size: 13.33px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 10px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 10px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 13.33px;">spark</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 10px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 13.33px;">translation</a>
     </div>
   </div>
 
@@ -284,6 +342,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/">为什么不用 ES6 完全替换 Lodash</a>
+          </li>
+        
+          <li>
             <a href="/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/">使用 Crossfilter 和 dc.js 构建交互式报表</a>
           </li>
         
@@ -297,10 +359,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/">使用Spring AOP向领域模型注入依赖</a>
-          </li>
-        
-          <li>
-            <a href="/cnblogs/2015/09/05/anemic-domain-model/">贫血领域模型</a>
           </li>
         
       </ul>
