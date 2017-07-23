@@ -5,7 +5,7 @@
   <link href="/cnblogs/atom.xml" rel="self"/>
   
   <link href="http://shzhangji.com/"/>
-  <updated>2017-07-16T07:56:18.121Z</updated>
+  <updated>2017-07-23T12:59:18.214Z</updated>
   <id>http://shzhangji.com/</id>
   
   <author>
@@ -14,6 +14,92 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>通过 SQL 查询学习 Pandas 数据处理</title>
+    <link href="http://shzhangji.com/2017/07/23/learn-pandas-from-a-sql-perspective/"/>
+    <id>http://shzhangji.com/2017/07/23/learn-pandas-from-a-sql-perspective/</id>
+    <published>2017-07-23T12:57:00.000Z</published>
+    <updated>2017-07-23T12:59:18.214Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="http://pandas.pydata.org/" target="_blank" rel="external">Pandas</a> 是一款广泛使用的数据处理工具。结合 NumPy 和 Matplotlib 类库，我们可以在内存中进行高性能的数据清洗、转换、分析及可视化工作。虽然 Python 本身是一门非常容易学习的语言，但要熟练掌握 Pandas 丰富的 API 接口及正确的使用方式，还是需要投入一定时间的。对于数据开发工程师或分析师而言，SQL 语言是标准的数据查询工具。本文提供了一系列的示例，如何将常见的 SQL 查询语句使用 Pandas 来实现。</p>
+<p>Pandas 的安装和基本概念并不在本文讲述范围内，请读者到官网上阅读相关文档，或者阅读《<a href="https://book.douban.com/subject/25779298/" target="_blank" rel="external">利用 Python 进行数据分析</a>》一书。我推荐大家使用 <a href="https://www.continuum.io/downloads" target="_blank" rel="external">Anaconda</a> Python 套件，其中集成了 <a href="https://pythonhosted.org/spyder/" target="_blank" rel="external">Spyder</a> 集成开发环境。在运行下文的代码之前，请先引入 Pandas 和 NumPy 包：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div></pre></td></tr></table></figure>
+<h2 id="FROM-读取数据"><a href="#FROM-读取数据" class="headerlink" title="FROM - 读取数据"></a><code>FROM</code> - 读取数据</h2><p>首先，我们需要将数据加载到工作区（内存）。Pandas 原生支持非常多的数据格式，CSV 是较常见的一种。我们以航班延误时间数据集为例（<a href="/uploads/flights.csv">下载地址</a>）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">date,delay,distance,origin,destination</div><div class="line">02221605,3,358,BUR,SMF</div><div class="line">01022100,-5,239,HOU,DAL</div><div class="line">03210808,6,288,BWI,ALB</div></pre></td></tr></table></figure>
+<p>我们可以使用 <code>pd.read_csv</code> 函数加载它：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">df = pd.read_csv(<span class="string">'flights.csv'</span>, dtype=&#123;<span class="string">'date'</span>: str&#125;)</div><div class="line">df.head()</div></pre></td></tr></table></figure>
+<p>这条命令会将 <code>flights.csv</code> 文件读入内存，使用首行作为列名，并自动检测每一列的数据类型。其中，由于 <code>date</code> 一列的日期格式是 <code>%m%d%H%M</code>，自动转换成数字后会失去月份的前异零（02 月的 0），因此我们显式指定了该列的 <code>dtype</code>，告知 Pandas 保留原值。</p>
+<a id="more"></a>
+<p><code>df.head</code> 用于查看数据集的前 N 行，功能类似于 <code>LIMIT N</code>。如果要实现 <code>LIMIT 10, 100</code>，可以使用 <code>df.iloc[10:100]</code>。此外，IPython 终端默认只显示 60 行数据，我们可以通过以下方法修改设置：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">pd.options.display.max_rows = <span class="number">100</span></div><div class="line">df.iloc[<span class="number">10</span>:<span class="number">100</span>]</div></pre></td></tr></table></figure>
+<p>另外一种常见的数据源是关系型数据库，Pandas 也提供了内置支持：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">conn = pymysql.connect(host=<span class="string">'localhost'</span>, user=<span class="string">'root'</span>)</div><div class="line">df = pd.read_sql(<span class="string">"""</span></div><div class="line">select `date`, `delay`, `distance`, `origin`, `destination`</div><div class="line">from flights limit 1000</div><div class="line">""", conn)</div></pre></td></tr></table></figure>
+<p>如果要将 DataFrame 保存到文件或数据库中去，可以分别使用 <code>pd.to_csv</code> 和 <code>pd.to_sql</code> 函数。</p>
+<h2 id="SELECT-选择列"><a href="#SELECT-选择列" class="headerlink" title="SELECT - 选择列"></a><code>SELECT</code> - 选择列</h2><p><code>SELECT</code> 语句在 SQL 中用于选择需要的列，并对数据做清洗和转换。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">df[<span class="string">'date'</span>] <span class="comment"># SELECT `date`</span></div><div class="line">df[[<span class="string">'date'</span>, <span class="string">'delay'</span>]] <span class="comment"># SELECT `date`, `delay`</span></div><div class="line">df.loc[<span class="number">10</span>:<span class="number">100</span>, [<span class="string">'date'</span>, <span class="string">'delay'</span>]] <span class="comment"># SELECT `date, `delay` LIMIT 10, 100</span></div></pre></td></tr></table></figure>
+<p>SQL 提供了诸多函数，大部分都可以用 Pandas 来实现，而且我们也很容易用 Python 编写自定义函数。下面我将列举一些常用的函数。</p>
+<h3 id="字符串函数"><a href="#字符串函数" class="headerlink" title="字符串函数"></a>字符串函数</h3><p>Pandas 的字符串函数可以通过 DateFrame 和 Series 的 <code>str</code> 属性来调用，如 <code>df[&#39;origin&#39;].str.lower()</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># SELECT CONCAT(origin, ' to ', destination)</span></div><div class="line">df[<span class="string">'origin'</span>].str.cat(df[<span class="string">'destination'</span>], sep=<span class="string">' to '</span>)</div><div class="line"></div><div class="line">df[<span class="string">'origin'</span>].str.strip() <span class="comment"># TRIM(origin)</span></div><div class="line">df[<span class="string">'origin'</span>].str.len() <span class="comment"># LENGTH(origin)</span></div><div class="line">df[<span class="string">'origin'</span>].str.replace(<span class="string">'a'</span>, <span class="string">'b'</span>) <span class="comment"># REPLACE(origin, 'a', 'b')</span></div><div class="line"></div><div class="line"><span class="comment"># SELECT SUBSTRING(origin, 1, 1)</span></div><div class="line">df[<span class="string">'origin'</span>].str[<span class="number">0</span>:<span class="number">1</span>] <span class="comment"># 使用 Python 字符串索引</span></div><div class="line"></div><div class="line"><span class="comment"># SELECT SUBSTRING_INDEX(domain, '.', 2)</span></div><div class="line"><span class="comment"># www.example.com -&gt; www.example</span></div><div class="line">df[<span class="string">'domain'</span>].str.split(<span class="string">'.'</span>).str[:<span class="number">2</span>].str.join(<span class="string">'.'</span>)</div><div class="line">df[<span class="string">'domain'</span>].str.extract(<span class="string">r'^([^.]+\.[^.]+)'</span>)</div></pre></td></tr></table></figure>
+<p>Pandas 有一个名为广播的特性（broadcast），简单来说就是能够将低维数据（包括单个标量）和高维数据进行结合和处理。例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">df[<span class="string">'full_date'</span>] = <span class="string">'2001'</span> + df[<span class="string">'date'</span>] <span class="comment"># CONCAT('2001', `date`)</span></div><div class="line">df[<span class="string">'delay'</span>] / <span class="number">60</span></div><div class="line">df[<span class="string">'delay'</span>].div(<span class="number">60</span>) <span class="comment"># 同上</span></div></pre></td></tr></table></figure>
+<p>Pandas 还内置了很多字符串函数，它们的用法和 SQL 有一定区别，但功能更强。完整列表可以参考文档 <a href="https://pandas.pydata.org/pandas-docs/stable/text.html" target="_blank" rel="external">Working with Text Data</a>。</p>
+<h3 id="日期函数"><a href="#日期函数" class="headerlink" title="日期函数"></a>日期函数</h3><p><code>pd.to_datetime</code> 用于将各种日期字符串转换成标准的 <code>datetime64</code> 类型。日期类型的 Series 都会有一个 <code>dt</code> 属性，从中可以获取到有关日期时间的信息，具体请参考文档 <a href="https://pandas.pydata.org/pandas-docs/stable/timeseries.html" target="_blank" rel="external">Time Series / Date functionality</a>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># SELECT STR_TO_DATE(full_date, '%Y%m%d%H%i%s') AS `datetime`</span></div><div class="line">df[<span class="string">'datetime'</span>] = pd.to_datetime(df[<span class="string">'full_date'</span>], format=<span class="string">'%Y%m%d%H%M%S'</span>)</div><div class="line"></div><div class="line"><span class="comment"># SELECT DATE_FORMAT(`datetime`, '%Y-%m-%d')</span></div><div class="line">df[<span class="string">'datetime'</span>].dt.strftime(<span class="string">'%Y-%m-%d'</span>)</div><div class="line"></div><div class="line">df[<span class="string">'datetime'</span>].dt.month <span class="comment"># MONTH(`datetime`)</span></div><div class="line">df[<span class="string">'datetime'</span>].dt.hour <span class="comment"># HOUR(`datetime`)</span></div><div class="line"></div><div class="line"><span class="comment"># SELECT UNIX_TIMESTAMP(`datetime`)</span></div><div class="line">df[<span class="string">'datetime'</span>].view(<span class="string">'int64'</span>) // pd.Timedelta(<span class="number">1</span>, unit=<span class="string">'s'</span>).value</div><div class="line"></div><div class="line"><span class="comment"># SELECT FROM_UNIXTIME(`timestamp`)</span></div><div class="line">pd.to_datetime(df[<span class="string">'timestamp'</span>], unit=<span class="string">'s'</span>)</div><div class="line"></div><div class="line"><span class="comment"># SELECT `datetime` + INTERVAL 1 DAY</span></div><div class="line">df[<span class="string">'datetime'</span>] + pd.Timedelta(<span class="number">1</span>, unit=<span class="string">'D'</span>)</div></pre></td></tr></table></figure>
+<h2 id="WHERE-选择行"><a href="#WHERE-选择行" class="headerlink" title="WHERE - 选择行"></a><code>WHERE</code> - 选择行</h2><p>在 Pandas 中使用逻辑表达式后，会返回一个布尔型的 Series，通过它可以对数据集进行过滤：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">(df[<span class="string">'delay'</span>] &gt; <span class="number">0</span>).head()</div><div class="line"><span class="comment"># 0  True</span></div><div class="line"><span class="comment"># 1 False</span></div><div class="line"><span class="comment"># 2  True</span></div><div class="line"><span class="comment"># dtype: bool</span></div><div class="line"></div><div class="line"><span class="comment"># WHERE delay &gt; 0</span></div><div class="line">df[df[<span class="string">'delay'</span>] &gt; <span class="number">0</span>]</div></pre></td></tr></table></figure>
+<p>我们可以用位运算符来组合多个查询条件：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># WHERE delay &gt; 0 AND distance &lt;= 500</span></div><div class="line">df[(df[<span class="string">'delay'</span>] &gt; <span class="number">0</span>) &amp; (df[<span class="string">'distance'</span>] &lt;= <span class="number">500</span>)]</div><div class="line"></div><div class="line"><span class="comment"># WHERE delay &gt; 0 OR origin = 'BUR'</span></div><div class="line">df[(df[<span class="string">'delay'</span>] &gt; <span class="number">0</span>) | (df[<span class="string">'origin'</span>] == <span class="string">'BUR'</span>)]</div><div class="line"></div><div class="line"><span class="comment"># WHERE NOT (delay &gt; 0)</span></div><div class="line">df[~(df[<span class="string">'delay'</span>] &gt; <span class="number">0</span>)]</div></pre></td></tr></table></figure>
+<p>对于 <code>IS NULL</code> 和 <code>IS NOT NULL</code>，也提供了相应的内置函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">df[df[<span class="string">'delay'</span>].isnull()] <span class="comment"># delay IS NULL</span></div><div class="line">df[df[<span class="string">'delay'</span>].notnull()] <span class="comment"># delay IS NOT NUL</span></div></pre></td></tr></table></figure>
+<p>此外，Pandas 还提供了 <code>df.query</code> 方法，可以使用字符串表达式来编写过滤条件：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">df.query(<span class="string">'delay &gt; 0 and distaince &lt;= 500'</span>)</div><div class="line">df.query(<span class="string">'(delay &gt; 0) | (origin == "BUR")'</span>)</div></pre></td></tr></table></figure>
+<p>其实，Pandas 提供了功能强大的数据选取工具，很多是无法用 SQL 表达出来的，建议详细阅读 <a href="https://pandas.pydata.org/pandas-docs/stable/indexing.html" target="_blank" rel="external">Indexing and Selecting Data</a> 文档，其中包含了丰富的示例。</p>
+<h2 id="GROUP-BY-汇总"><a href="#GROUP-BY-汇总" class="headerlink" title="GROUP BY - 汇总"></a><code>GROUP BY</code> - 汇总</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># SELECT origin, COUNT(*) FROM flights GROUP BY origin</span></div><div class="line">df.groupby(<span class="string">'origin'</span>).size()</div><div class="line"><span class="comment"># origin</span></div><div class="line"><span class="comment"># ABQ    22</span></div><div class="line"><span class="comment"># ALB     4</span></div><div class="line"><span class="comment"># AMA     4</span></div><div class="line"><span class="comment"># dtype: int64</span></div></pre></td></tr></table></figure>
+<p>聚合运算包含了两个部分，一是分组字段，二是聚合函数。我们可以传递多个分组字段给 <code>df.groupby</code>，也能够指定多个聚合函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># SELECT origin, destination, SUM(delay), AVG(distance)</span></div><div class="line"><span class="comment"># GROUP BY origin, destination</span></div><div class="line">df.groupby([<span class="string">'origin'</span>, <span class="string">'destination'</span>]).agg(&#123;</div><div class="line">    <span class="string">'delay'</span>: np.sum,</div><div class="line">    <span class="string">'distance'</span>: np.mean</div><div class="line">&#125;)</div><div class="line"></div><div class="line"><span class="comment"># SELECT origin, MIN(delay), MAX(delay) GROUP BY origin</span></div><div class="line">df.groupby(<span class="string">'origin'</span>)[<span class="string">'delay'</span>].agg([<span class="string">'min'</span>, <span class="string">'max'</span>])</div></pre></td></tr></table></figure>
+<p>我们还可以将函数的运行结果作为分组条件。更多示例请见 <a href="https://pandas.pydata.org/pandas-docs/stable/groupby.html" target="_blank" rel="external">Group By: split-apply-combine</a>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># SELECT LENGTH(origin), COUNT(*) GROUP BY LENGTH(origin)</span></div><div class="line">df.set_index(<span class="string">'origin'</span>).groupby(len).size()</div></pre></td></tr></table></figure>
+<h2 id="ORDER-BY-排序"><a href="#ORDER-BY-排序" class="headerlink" title="ORDER BY - 排序"></a><code>ORDER BY</code> - 排序</h2><p>Pandas 中有两类排序，按索引和按数值。如果不了解 Pandas 的索引，还请自行查阅相关教程。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ORDER BY origin</span></div><div class="line">df.set_index(<span class="string">'origin'</span>).sort_index()</div><div class="line">df.sort_values(by=<span class="string">'origin'</span>)</div><div class="line"></div><div class="line"><span class="comment"># ORDER BY origin ASC, destination DESC</span></div><div class="line">df.sort_values(by=[<span class="string">'origin'</span>, <span class="string">'destination'</span>], ascending=[<span class="keyword">True</span>, <span class="keyword">False</span>])</div></pre></td></tr></table></figure>
+<h2 id="JOIN-关联查询"><a href="#JOIN-关联查询" class="headerlink" title="JOIN - 关联查询"></a><code>JOIN</code> - 关联查询</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># FROM product a LEFT JOIN category b ON a.cid = b.id</span></div><div class="line">pd.merge(df_product, df_category, left_on=<span class="string">'cid'</span>, right_on=<span class="string">'id'</span>, how=<span class="string">'left'</span>)</div></pre></td></tr></table></figure>
+<p>如果联合查询的键是同名的，可以直接使用 <code>on=[&#39;k1&#39;, &#39;k2&#39;]</code>。默认的关联方式是 <code>INNER JOIN</code>（<code>how=&#39;inner&#39;</code>），其它还有左外连接（<code>left</code>）、右外连接（<code>right</code>）、以及 <code>FULL OUTER JOIN</code>（<code>outer</code>)。</p>
+<p><code>pd.concat</code> 可用于实现 <code>UNION</code> 查询。 更多关联查询的示例请参考 <a href="https://pandas.pydata.org/pandas-docs/stable/merging.html" target="_blank" rel="external">Merge, join, and concatenate</a>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># SELECT * FROM a UNION SELECT * FROM b</span></div><div class="line">pd.concat([df_a, df_b]).drop_duplicates()</div></pre></td></tr></table></figure>
+<h1 id="分组排名"><a href="#分组排名" class="headerlink" title="分组排名"></a>分组排名</h1><p>最后，我们经常会需要在分组中按某以规则排序，并获得前几位的记录。MySQL 中需要通过变量来实现，Pandas 中则可以使用 <code>rank</code> 函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rnk = df.groupby(<span class="string">'origin'</span>)[<span class="string">'delay'</span>].rank(method=<span class="string">'first'</span>, ascending=<span class="keyword">False</span>)</div><div class="line">df.assign(rnk=rnk).query(<span class="string">'rnk &lt;= 3'</span>).sort_values([<span class="string">'origin'</span>, <span class="string">'rnk'</span>])</div></pre></td></tr></table></figure>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
+<li><a href="https://pandas.pydata.org/pandas-docs/stable/comparison_with_sql.html" target="_blank" rel="external">https://pandas.pydata.org/pandas-docs/stable/comparison_with_sql.html</a></li>
+<li><a href="http://www.gregreda.com/2013/01/23/translating-sql-to-pandas-part1/" target="_blank" rel="external">http://www.gregreda.com/2013/01/23/translating-sql-to-pandas-part1/</a></li>
+<li><a href="http://codingsight.com/pivot-tables-in-mysql/" target="_blank" rel="external">http://codingsight.com/pivot-tables-in-mysql/</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;http://pandas.pydata.org/&quot;&gt;Pandas&lt;/a&gt; 是一款广泛使用的数据处理工具。结合 NumPy 和 Matplotlib 类库，我们可以在内存中进行高性能的数据清洗、转换、分析及可视化工作。虽然 Python 本身是一门非常容易学习的语言，但要熟练掌握 Pandas 丰富的 API 接口及正确的使用方式，还是需要投入一定时间的。对于数据开发工程师或分析师而言，SQL 语言是标准的数据查询工具。本文提供了一系列的示例，如何将常见的 SQL 查询语句使用 Pandas 来实现。&lt;/p&gt;
+&lt;p&gt;Pandas 的安装和基本概念并不在本文讲述范围内，请读者到官网上阅读相关文档，或者阅读《&lt;a href=&quot;https://book.douban.com/subject/25779298/&quot;&gt;利用 Python 进行数据分析&lt;/a&gt;》一书。我推荐大家使用 &lt;a href=&quot;https://www.continuum.io/downloads&quot;&gt;Anaconda&lt;/a&gt; Python 套件，其中集成了 &lt;a href=&quot;https://pythonhosted.org/spyder/&quot;&gt;Spyder&lt;/a&gt; 集成开发环境。在运行下文的代码之前，请先引入 Pandas 和 NumPy 包：&lt;/p&gt;
+&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; pandas &lt;span class=&quot;keyword&quot;&gt;as&lt;/span&gt; pd&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; numpy &lt;span class=&quot;keyword&quot;&gt;as&lt;/span&gt; np&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;FROM-读取数据&quot;&gt;&lt;a href=&quot;#FROM-读取数据&quot; class=&quot;headerlink&quot; title=&quot;FROM - 读取数据&quot;&gt;&lt;/a&gt;&lt;code&gt;FROM&lt;/code&gt; - 读取数据&lt;/h2&gt;&lt;p&gt;首先，我们需要将数据加载到工作区（内存）。Pandas 原生支持非常多的数据格式，CSV 是较常见的一种。我们以航班延误时间数据集为例（&lt;a href=&quot;/uploads/flights.csv&quot;&gt;下载地址&lt;/a&gt;）：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;date,delay,distance,origin,destination&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;02221605,3,358,BUR,SMF&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;01022100,-5,239,HOU,DAL&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;03210808,6,288,BWI,ALB&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;我们可以使用 &lt;code&gt;pd.read_csv&lt;/code&gt; 函数加载它：&lt;/p&gt;
+&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;df = pd.read_csv(&lt;span class=&quot;string&quot;&gt;&#39;flights.csv&#39;&lt;/span&gt;, dtype=&amp;#123;&lt;span class=&quot;string&quot;&gt;&#39;date&#39;&lt;/span&gt;: str&amp;#125;)&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;df.head()&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;这条命令会将 &lt;code&gt;flights.csv&lt;/code&gt; 文件读入内存，使用首行作为列名，并自动检测每一列的数据类型。其中，由于 &lt;code&gt;date&lt;/code&gt; 一列的日期格式是 &lt;code&gt;%m%d%H%M&lt;/code&gt;，自动转换成数字后会失去月份的前异零（02 月的 0），因此我们显式指定了该列的 &lt;code&gt;dtype&lt;/code&gt;，告知 Pandas 保留原值。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Big Data" scheme="http://shzhangji.com/categories/Big-Data/"/>
+    
+    
+      <category term="python" scheme="http://shzhangji.com/tags/python/"/>
+    
+      <category term="pandas" scheme="http://shzhangji.com/tags/pandas/"/>
+    
+      <category term="sql" scheme="http://shzhangji.com/tags/sql/"/>
+    
+      <category term="analytics" scheme="http://shzhangji.com/tags/analytics/"/>
+    
+  </entry>
   
   <entry>
     <title>使用 WebSocket 和 Python 编写日志查看器</title>
@@ -235,13 +321,13 @@
     
       <category term="hive" scheme="http://shzhangji.com/tags/hive/"/>
     
-      <category term="spark" scheme="http://shzhangji.com/tags/spark/"/>
-    
       <category term="druid" scheme="http://shzhangji.com/tags/druid/"/>
     
       <category term="machine learning" scheme="http://shzhangji.com/tags/machine-learning/"/>
     
       <category term="stream processing" scheme="http://shzhangji.com/tags/stream-processing/"/>
+    
+      <category term="spark" scheme="http://shzhangji.com/tags/spark/"/>
     
   </entry>
   
@@ -1292,106 +1378,6 @@
     
     
       <category term="hive" scheme="http://shzhangji.com/tags/hive/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Ansible FAQ</title>
-    <link href="http://shzhangji.com/2013/06/11/ansible-faq/"/>
-    <id>http://shzhangji.com/2013/06/11/ansible-faq/</id>
-    <published>2013-06-11T13:18:00.000Z</published>
-    <updated>2017-03-09T22:24:58.544Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文是从原Ansible官网的FAQ页面翻译而来，网站改版后该页面已无法访问，但可以从<a href="https://github.com/ansible/ansible.github.com/blob/4a2bf7f60a020f0d0a7b042056fc3dd8716588f2/faq.html" target="_blank" rel="external">Github历史提交</a>中获得。翻译这篇原始FAQ文档是因为它陈述了Ansible这款工具诞生的原因，设计思路和特性，以及与Puppet、Fabric等同类软件的比较，可以让我们对Ansible有一个整体的了解，所以值得使用者一读。</p>
-<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
-<li>为什么命名为“Ansible”？</li>
-<li>Ansible受到了谁的启发？</li>
-<li>与同类软件比较<ul>
-<li>Func？</li>
-<li>Puppet？</li>
-<li>Chef？</li>
-<li>Capistrano/Fabric？</li>
-</ul>
-</li>
-<li>其它问题<ul>
-<li>Ansible的安全性如何？</li>
-<li>Ansible如何扩展？</li>
-<li>是否支持SSH以外的协议？</li>
-<li>Ansible的适用场景有哪些？</li>
-</ul>
-</li>
-</ul>
-<h2 id="为什么命名为“Ansible”？"><a href="#为什么命名为“Ansible”？" class="headerlink" title="为什么命名为“Ansible”？"></a>为什么命名为“Ansible”？</h2><p>我最喜爱的书籍之一是奥森·斯科特·卡特的《安德的游戏》。在这本书中，“Ansible”是一种能够跨越时空的即时通讯工具。强烈推荐这本书！</p>
-<a id="more"></a>
-<h2 id="Ansible受到了谁的启发？"><a href="#Ansible受到了谁的启发？" class="headerlink" title="Ansible受到了谁的启发？"></a>Ansible受到了谁的启发？</h2><p>我在Red Hat任职期间主要开发Cobbler，很快我和几个同事就发现在部署工具（Cobbler）和配置管理工具（cfengine、Puppet等）之间有一个空缺，即如何更高效地执行临时性的任务。虽然当时有一些并行调用SSH脚本的方案，但并没有形成统一的API。所以我们（Adrian Likins、Seth Vidal、我）就开发了一个SSH分布式脚本框架——Func。</p>
-<p>我一直想在Func的基础上开发一个配置管理工具，但因为忙于Cobbler和其他项目的开发，一直没有动手。在此期间，John Eckersberg开发了名为Taboot的自动化部署工具，它基于Func，采用YAML描述，和目前Ansible中的Playbooks很像。</p>
-<p>近期我在一家新公司尝试引入Func，但遇到一些SSL和DNS方面的问题，所以想要开发一个更为简单的工具，吸收Func中优秀的理念，并与我在Puppet Labs的工作经验相结合。我希望这一工具能够易于学习，且不需要进行任何安装步骤。使用它不需要引入一整套新的理论，像Puppet和Chef那样，从而降低被某些运维团队排挤的可能。</p>
-<p>我也曾参与过一些大型网站的应用部署，发觉现有的配置管理工具都太过复杂了，超过了这些公司的需求。程序发布的过程很繁复，需要一个简单的工具来帮助开发和运维人员。我不想教授他们Puppet或Chef，而且他们也不愿学习这些工具。</p>
-<p>于是我便思考，应用程序的部署就应该那么复杂吗？答案是否定的。</p>
-<p>我是否能开发一款工具，让运维人员能够在15分钟内学会使用，并用自己熟悉的语言来扩展它？这就是Ansible的由来。运维人员对自己的服务器设施最清楚，Ansible深知这一点，并将同类工具中最核心的功能提取出来，供我们使用。</p>
-<p>Ansible不仅易于学习和扩展，它更是集配置管理、应用部署、临时任务等功能于一身。它非常强大，甚至前所未有。</p>
-<p>我很想知道你对Ansible的看法，到邮件列表里发表一下意见吧。</p>
-<h2 id="与同类软件比较"><a href="#与同类软件比较" class="headerlink" title="与同类软件比较"></a>与同类软件比较</h2><h3 id="Func？"><a href="#Func？" class="headerlink" title="Func？"></a>Func？</h3><p>Ansible默认使用SSH，而非SSL和守护进程，无需在远程服务器上安装任何软件。你可以使用任何语言编写插件，只要它能够返回JSON格式即可。Ansible的API深受Func的影响，但它和Func相较提供了配置管理和多节点统一化部署（Playbooks）等功能。</p>
-<h3 id="Puppet？"><a href="#Puppet？" class="headerlink" title="Puppet？"></a>Puppet？</h3><p>首先我要强调的是，如果没有Puppet，就不会有Ansible。Puppet从cfengine中吸收了配置管理的概念，并更合理地加以实现。但是，我依旧认为它可以再简单一些。</p>
-<p>Ansible的playbook是一套完整的配置管理系统。和Puppet不同，playbook在编写时就隐含了执行顺序（和Chef类似），但同时也提供了事件机制（和Puppet类似），可以说是结合了两者的优点。</p>
-<p>Ansible没有中心节点的概念，从而避免了惊群效应。它一开始就是为多节点部署设计的，这点Puppet很难做到，因为它是一种“拉取”的架构。Ansible以“推送”为基础，从而能够定义执行顺序，同时只操作一部分服务器，无需关注它们的依赖关系。又因为Ansible可以用任何语言进行扩展，因此并不是只有专业的程序员才能为其开发插件。</p>
-<p>Ansible中资源的概念深受Puppet的启发，甚至“state”这一关键字直接来自Puppet的“ensure”一词。和Puppet不同的是，Ansbile可以用任何语言进行扩展，甚至是Bash，只需返回JSON格式的输出即可。你不需要懂得Ruby。</p>
-<p>和Puppet不同，Ansible若在配置某台服务器时发生错误，它会立即终止这台服务器的配置过程。它提倡的是“提前崩溃”，修正错误，而非最大化应用。这一点在我们需要配置包含依赖关系的服务器架构时尤为重要。</p>
-<p>Ansible的学习曲线非常平滑，你不需要掌握编程技能，更不需要学习新的语言。Ansible内置的功能应该能够满足超过80%的用户需求，而且它不会遇到扩展性方面的瓶颈（因为没有中心节点）。</p>
-<p>如果系统中安装了factor，Ansible同样支持从中获取系统信息。Ansible使用jinja2作为模板语言，类似于Puppet使用erb文件作为模板。Ansible可以使用自己的信息收集工具，因此factor并不是必需的。</p>
-<h3 id="Chef？"><a href="#Chef？" class="headerlink" title="Chef？"></a>Chef？</h3><p>Ansible与Chef的区别和Puppet类似。Chef的配置非常困难，而且需要你掌握Ruby语言。也因为如此，Chef在Rails使用者中很流行。</p>
-<p>Ansible是按照编写顺序来执行任务的，而不是显示地定义依赖关系，这点和Chef相似。但Ansible更进一步，它支持事件触发，比如修改了Apache的配置文件，Apache就会被重启。</p>
-<p>和Chef不同的是，Ansible的playbook不是一门编程语言，而是一种可以存储的数据结构。这就意味着你的运维工作不是一项开发型的任务，测试起来也相对简单。</p>
-<p>无论你有怎样的语言背景，都可以使用Ansible。Chef和Puppet有超过六万行的代码，而Ansible则是一段小巧简单的程序。我相信这一点会使得Ansible更加健壮和可靠，并汇聚一批活跃的社区贡献者——因为任何人都可以提交补丁或是模块。</p>
-<p>Ansible同样支持从ohai中获取系统信息，当然这同样不是必需的。</p>
-<h3 id="Capistrano-Fabric？"><a href="#Capistrano-Fabric？" class="headerlink" title="Capistrano/Fabric？"></a>Capistrano/Fabric？</h3><p>这些工具并不适合用作服务器配置工具，它们主要用于应用程序的部署。</p>
-<p>而Ansible则提供了完整的配置管理，以及在扩展性方面提供了一些高级特性。</p>
-<p>Ansible playbook的语法简介只占一个HTML页面，有着非常平缓的学习曲线。由于Ansible使用了“推送”的设计，因此对系统管理员（不仅仅是开发者）同样适用，并能用它处理各种临时性的任务。</p>
-<h2 id="其它问题"><a href="#其它问题" class="headerlink" title="其它问题"></a>其它问题</h2><h3 id="Ansible的安全性如何？"><a href="#Ansible的安全性如何？" class="headerlink" title="Ansible的安全性如何？"></a>Ansible的安全性如何？</h3><p>Ansible没有守护进程，主要使用OpenSSH进行通信，这是一款已被反复检验并广泛使用的软件。其它工具都会在远程服务器上以root用户运行守护进程，因此相较于这些工具，Ansible会更为安全，且无需担心网络方面的问题。</p>
-<p>如果你的中心节点遭到入侵（或是被恶意员工登录），只要你是使用SSH-agent、或是经过加密的密码，那你的密钥仍然是被锁定的，别人无法操控你的节点。而对于Chef、Puppet等工具来说，一旦配置文件遭到篡改，那危及的将是整个网络。</p>
-<p>此外，由于Ansible没有守护进程，可以节省下一部分内存和计算资源，这对需要最大化性能的用户来说也是一个优点。</p>
-<h3 id="Ansible如何扩展？"><a href="#Ansible如何扩展？" class="headerlink" title="Ansible如何扩展？"></a>Ansible如何扩展？</h3><p>无论是在单次执行模式还是playbook模式下，Ansible都可以并行执行任务，这要感谢Python提供的多进程处理模块。</p>
-<p>你可以自行决定要一次性配置5台还是50台服务器，这取决于服务器的计算能力，以及你想要多快完成任务。</p>
-<p>由于没有守护进程，所以平时不会占用任何资源，而且你不用担心一次性有太多节点一起从控制节点上获取信息。</p>
-<p>对于SSH，Ansible默认使用paramiko库，当然也能使用原始的openssh。Ansible可以利用SSH的ControlMaster特性来重用网络连接。</p>
-<p>当要维护上万个节点时，单个Ansible playbook可能不太合理，这时你就能使用Ansible的“拉取”模式。这种模式下需要配合git和cron，可以扩展到任意多台服务器。“拉取”模式可以使用本地连接，或是SSH。关于这个模式的详细说明可以在帮助文档的“Advanced Playbooks”一节查阅。即使在“拉取”模式下，你同样能够享受到Ansible的种种便利。</p>
-<p>如果你想进一步探讨扩展性，可以加入到邮件列表中。</p>
-<h3 id="是否支持SSH以外的协议？"><a href="#是否支持SSH以外的协议？" class="headerlink" title="是否支持SSH以外的协议？"></a>是否支持SSH以外的协议？</h3><p>目前Ansible支持SSH和本地连接，但它的接口实际上是非常易于扩展的，因此你可以编写补丁来使Ansible运行于消息系统或XMPP协议之上。</p>
-<p>如果你有任何建议，可以加入到邮件列表中一起探讨。Ansible中对于连接的管理都已单独抽象出来，有很强的可扩性。</p>
-<h3 id="Ansible的适用场景有哪些？"><a href="#Ansible的适用场景有哪些？" class="headerlink" title="Ansible的适用场景有哪些？"></a>Ansible的适用场景有哪些？</h3><p>最适场景？使用playbook进行多节点云主机部署；从一个初始的操作系统开始部署应用，或是配置一个现有的系统。</p>
-<p>Ansible同样适用于执行临时性的任务，能够用于各类 Unix-like 系统，因为它使用的就是系统本身自带的工具，无需安装额外软件。</p>
-<p>你还可以用Ansible来编写各类脚本，用于收集信息、执行各种任务，对QA、运维等团队均适用。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文是从原Ansible官网的FAQ页面翻译而来，网站改版后该页面已无法访问，但可以从&lt;a href=&quot;https://github.com/ansible/ansible.github.com/blob/4a2bf7f60a020f0d0a7b042056fc3dd8716588f2/faq.html&quot;&gt;Github历史提交&lt;/a&gt;中获得。翻译这篇原始FAQ文档是因为它陈述了Ansible这款工具诞生的原因，设计思路和特性，以及与Puppet、Fabric等同类软件的比较，可以让我们对Ansible有一个整体的了解，所以值得使用者一读。&lt;/p&gt;
-&lt;h2 id=&quot;目录&quot;&gt;&lt;a href=&quot;#目录&quot; class=&quot;headerlink&quot; title=&quot;目录&quot;&gt;&lt;/a&gt;目录&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;为什么命名为“Ansible”？&lt;/li&gt;
-&lt;li&gt;Ansible受到了谁的启发？&lt;/li&gt;
-&lt;li&gt;与同类软件比较&lt;ul&gt;
-&lt;li&gt;Func？&lt;/li&gt;
-&lt;li&gt;Puppet？&lt;/li&gt;
-&lt;li&gt;Chef？&lt;/li&gt;
-&lt;li&gt;Capistrano/Fabric？&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;其它问题&lt;ul&gt;
-&lt;li&gt;Ansible的安全性如何？&lt;/li&gt;
-&lt;li&gt;Ansible如何扩展？&lt;/li&gt;
-&lt;li&gt;是否支持SSH以外的协议？&lt;/li&gt;
-&lt;li&gt;Ansible的适用场景有哪些？&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&quot;为什么命名为“Ansible”？&quot;&gt;&lt;a href=&quot;#为什么命名为“Ansible”？&quot; class=&quot;headerlink&quot; title=&quot;为什么命名为“Ansible”？&quot;&gt;&lt;/a&gt;为什么命名为“Ansible”？&lt;/h2&gt;&lt;p&gt;我最喜爱的书籍之一是奥森·斯科特·卡特的《安德的游戏》。在这本书中，“Ansible”是一种能够跨越时空的即时通讯工具。强烈推荐这本书！&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Translation" scheme="http://shzhangji.com/categories/Translation/"/>
-    
-    
-      <category term="ops" scheme="http://shzhangji.com/tags/ops/"/>
     
   </entry>
   

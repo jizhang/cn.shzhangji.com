@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://shzhangji.com/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/</loc>
+    
+    <lastmod>2017-07-23T12:59:18.214Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://shzhangji.com/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/</loc>
     
     <lastmod>2017-07-16T07:56:18.121Z</lastmod>
