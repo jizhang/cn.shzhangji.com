@@ -5,25 +5,18 @@
   
   <title>Cascalog：基于Clojure的Hadoop查询语言 | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="原文：http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html
-我非常兴奋地告诉大家，Cascalog开源了！Cascalog受Datalog启发，是一种基于Clojure、运行于Hadoop平台上的查询语言。
-特点
-简单 - 使用相同的语法编写函数、过滤规则、聚合运算；">
+  <meta name="description" content="原文：http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html 我非常兴奋地告诉大家，Cascalog开源了！Cascalog受Datalog启发，是一种基于Clojure、运行于Hadoop平台上的查询语言。 特点 简单 - 使用相同的语法编写函数、过滤规则、聚合运算；">
+<meta name="keywords" content="clojure">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cascalog：基于Clojure的Hadoop查询语言">
 <meta property="og:url" content="http://shzhangji.com/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/index.html">
 <meta property="og:site_name" content="张吉的博客">
-<meta property="og:description" content="原文：http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html
-我非常兴奋地告诉大家，Cascalog开源了！Cascalog受Datalog启发，是一种基于Clojure、运行于Hadoop平台上的查询语言。
-特点
-简单 - 使用相同的语法编写函数、过滤规则、聚合运算；">
+<meta property="og:description" content="原文：http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html 我非常兴奋地告诉大家，Cascalog开源了！Cascalog受Datalog启发，是一种基于Clojure、运行于Hadoop平台上的查询语言。 特点 简单 - 使用相同的语法编写函数、过滤规则、聚合运算；">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2017-03-09T03:37:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cascalog：基于Clojure的Hadoop查询语言">
-<meta name="twitter:description" content="原文：http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html
-我非常兴奋地告诉大家，Cascalog开源了！Cascalog受Datalog启发，是一种基于Clojure、运行于Hadoop平台上的查询语言。
-特点
-简单 - 使用相同的语法编写函数、过滤规则、聚合运算；">
+<meta name="twitter:description" content="原文：http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html 我非常兴奋地告诉大家，Cascalog开源了！Cascalog受Datalog启发，是一种基于Clojure、运行于Hadoop平台上的查询语言。 特点 简单 - 使用相同的语法编写函数、过滤规则、聚合运算；">
 <meta name="twitter:creator" content="@zjerryj">
 <link rel="publisher" href="zhangji87@gmail.com">
   
@@ -93,7 +86,7 @@ ga('send', 'pageview');
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
       </div>
     </div>
   </div>
@@ -184,31 +177,31 @@ ga('send', 'pageview');
 <figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">(<span class="name"><span class="builtin-name">*</span></span> <span class="number">4</span> ?v2 <span class="symbol">:&gt;</span> <span class="number">100</span>)</div></pre></td></tr></table></figure>
 <p>这里使用了两个常量：4和100。4是一个输入变量，100则是作为一个过滤条件，只有满足<code>?v2</code>乘以4等于100的记录才会被筛选出来。字符串、数字、以及其他基本类型和对象类型，只要在Hadoop有对应的序列化操作，都可以被作为常量使用。</p>
 <p>让我们回到示例中。找出所有关注了比自己年龄小的用户的列表：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">user=&gt; (?&lt;- (stdout) [?person1 ?person2]</div><div class="line">            (age ?person1 ?age1) (follows ?person1 ?person2)</div><div class="line">            (age ?person2 ?age2) (&lt; ?age2 ?age1))</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">user=&gt; (?&lt;- (stdout) [?person1 ?person2]</div><div class="line">            (<span class="name">age</span> ?person1 ?age1) (<span class="name">follows</span> ?person1 ?person2)</div><div class="line">            (age ?person2 ?age2) (&lt; ?age2 ?age1))</div></pre></td></tr></table></figure>
 <p>同时，我们将年龄差异也输出出来：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">user=&gt; (?&lt;- (stdout) [?person1 ?person2 ?delta]</div><div class="line">            (age ?person1 ?age1) (follows ?person1 ?person2)</div><div class="line">            (age ?person2 ?age2) (- ?age2 ?age1 :&gt; ?delta)</div><div class="line">            (&lt; ?delta 0))</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">user=&gt; (?&lt;- (stdout) [?person1 ?person2 ?delta]</div><div class="line">            (<span class="name">age</span> ?person1 ?age1) (<span class="name">follows</span> ?person1 ?person2)</div><div class="line">            (<span class="name">age</span> ?person2 ?age2) (<span class="name"><span class="builtin-name">-</span></span> ?age2 ?age1 <span class="symbol">:&gt;</span> ?delta)</div><div class="line">            (&lt; ?delta 0))</div></pre></td></tr></table></figure>
 <h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><p>下面让我们看看聚合查询的使用方法。统计所有年龄小于30的用户人数：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">user=&gt; (?&lt;- (stdout) [?count] (age _ ?a) (&lt; ?a 30)</div><div class="line">            (c/count ?count))</div></pre></td></tr></table></figure>
 <p>这条查询会统计所有的记录。我们也可以只聚合部分记录。比如，让我们找出每个人所关注的用户的数量：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">user=&gt; (?&lt;- (stdout) [?person ?count] (follows ?person _)</div><div class="line">            (c/count ?count))</div></pre></td></tr></table></figure>
 <p>因为我们在输出结果中指定了<code>?person</code>这个变量，所以Cascalog会将数据记录按照用户来分组，然后使用<code>c/count</code>进行聚合运算。</p>
 <p>你可以在单个查询中使用多个聚合条件，它们的分组方式是一致的。例如，我们可以计算每个国家的用户的平均年龄，使用计数和求和这两种聚合方式：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">user=&gt; (?&lt;- (stdout) [?country ?avg]</div><div class="line">            (location ?person ?country _ _) (age ?person ?age)</div><div class="line">            (c/count ?count) (c/sum ?age :&gt; ?sum)</div><div class="line">            (div ?sum ?count :&gt; ?avg))</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">user=&gt; (?&lt;- (stdout) [?country ?avg]</div><div class="line">            (<span class="name">location</span> ?person ?country _ _) (<span class="name">age</span> ?person ?age)</div><div class="line">            (<span class="name">c/count</span> ?count) (<span class="name">c/sum</span> ?age <span class="symbol">:&gt;</span> ?sum)</div><div class="line">            (div ?sum ?count :&gt; ?avg))</div></pre></td></tr></table></figure>
 <p>可以看到，我们对<code>?sum</code>和<code>?count</code>这两个聚合结果执行了<code>div</code>操作，该操作会在聚合过程结束后进行。</p>
 <h2 id="自定义操作"><a href="#自定义操作" class="headerlink" title="自定义操作"></a>自定义操作</h2><p>下面我们来编写一个查询，统计几句话中每个单词的出现次数。首先，我们编写一个自定义操作：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">user=&gt; (defmapcatop split [sentence]</div><div class="line">         (seq (.split sentence "\\s+")))</div><div class="line">user=&gt; (?&lt;- (stdout) [?word ?count] (sentence ?s)</div><div class="line">            (split ?s :&gt; ?word) (c/count ?count))</div></pre></td></tr></table></figure>
 <p><code>defmapcatop split</code>定义了一个方法，这个方法接收一个参数<code>sentence</code>，并会输出0个或多个元组（tuple）。<code>deffilterop</code>可以用来定义一个返回布尔型的方法，用来筛选记录；<code>defmapop</code>定义的函数会返回一个元组；<code>defaggregateop</code>定义一个聚合函数。这些函数都能在Cascalog工作流API中使用，我会在另一篇博客中叙述。</p>
 <p>在上述查询中，如果单词字母大小写不一致，会被分别统计。我们用以下方法来修复这个问题：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">user=&gt; (defn lowercase [w] (.toLowerCase w))</div><div class="line">user=&gt; (?&lt;- (stdout) [?word ?count]</div><div class="line">            (sentence ?s) (split ?s :&gt; ?word1)</div><div class="line">            (lowercase ?word1 :&gt; ?word) (c/count ?count))</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">user=&gt; (defn lowercase [w] (.toLowerCase w))</div><div class="line">user=&gt; (?&lt;- (stdout) [?word ?count]</div><div class="line">            (<span class="name">sentence</span> ?s) (<span class="name">split</span> ?s <span class="symbol">:&gt;</span> ?word1)</div><div class="line">            (lowercase ?word1 :&gt; ?word) (c/count ?count))</div></pre></td></tr></table></figure>
 <p>可以看到，这里直接使用了纯Clojure编写的函数。当这个函数不包含输出变量时，会被作为过滤条件来执行；当包含一个返回值时，则会作为<code>defmapop</code>来解析。而对于返回0个或多个元组的函数，则必须使用<code>defmapcatop</code>来定义。</p>
 <p>下面这个查询会按照性别和年龄范围来统计用户数量：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">user=&gt; (defn agebucket [age]</div><div class="line">         (find-first (partial &lt;= age) [17 25 35 45 55 65 100 200]))</div><div class="line">user=&gt; (?&lt;- (stdout) [?bucket ?gender ?count]</div><div class="line">            (age ?person ?age) (gender ?person ?gender)</div><div class="line">            (agebucket ?age :&gt; ?bucket) (c/count ?count))</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">user=&gt; (defn agebucket [age]</div><div class="line">         (find-first (partial &lt;= age) [17 25 35 45 55 65 100 200]))</div><div class="line">user=&gt; (?&lt;- (stdout) [?bucket ?gender ?count]</div><div class="line">            (<span class="name">age</span> ?person ?age) (<span class="name">gender</span> ?person ?gender)</div><div class="line">            (agebucket ?age :&gt; ?bucket) (c/count ?count))</div></pre></td></tr></table></figure>
 <h2 id="非空变量"><a href="#非空变量" class="headerlink" title="非空变量"></a>非空变量</h2><p>Cascalog提供了“非空变量”这样的机制来帮助用户处理空值的情况。其实我们每个示例中都在使用这一特性。以<code>?</code>开头的变量都是非空变量，而以<code>!</code>开头的则是可空变量。Cascalog会在执行过程中将空值排除在外。</p>
 <p>为了体验非空变量的效果，让我们对比下面这两条查询语句：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">user=&gt; (?&lt;- (stdout) [?person ?city] (location ?person _ _ ?city)</div><div class="line">user=&gt; (?&lt;- (stdout) [?person !city] (location ?person _ _ !city)</div></pre></td></tr></table></figure>
 <p>第二组查询结果中会包含空值。</p>
 <h2 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h2><p>最后，我们来看看更为复杂的查询，我们会用到子查询这一特性。让我们找出关注了两人以上的用户列表，并找出这些用户之间的关注关系：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">user=&gt; (let [many-follows (&lt;- [?person] (follows ?person _)</div><div class="line">                              (c/count ?c) (&gt; ?c 2))]</div><div class="line">            (?&lt;- (stdout) [?person1 ?person2] (many-follows ?person1)</div><div class="line">                 (many-follows ?person2) (follows ?person1 ?person2)))</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">user=&gt; (let [many-follows (&lt;- [?person] (follows ?person _)</div><div class="line">                              (c/count ?c) (&gt; ?c 2))]</div><div class="line">            (<span class="name">?&lt;-</span> (<span class="name">stdout</span>) [?person1 ?person2] (<span class="name">many-follows</span> ?person1)</div><div class="line">                 (many-follows ?person2) (follows ?person1 ?person2)))</div></pre></td></tr></table></figure>
 <p>这里，我们使用<code>let</code>来定义了一个子查询<code>many-follows</code>。这个子查询是用<code>&lt;-</code>定义的。之后，我们便可以在后续查询中使用这个子查询了。</p>
 <p>我们还可以在一个查询中指定多个输出目的地。比如我们想要同时得到<code>many-follows</code>的查询结果：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">user=&gt; (let [many-follows (&lt;- [?person] (follows ?person _)</div><div class="line">                              (c/count ?c) (&gt; ?c 2))</div><div class="line">             active-follows (&lt;- [?p1 ?p2] (many-follows ?p1)</div><div class="line">                                (many-follows ?p2) (follows ?p1 ?p2))]</div><div class="line">            (?- (stdout) many-follows (stdout) active-follows))</div></pre></td></tr></table></figure>
@@ -220,9 +213,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/" data-id="cj5t40mg90010pmzjjzq4gypn" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/" data-id="cj5t86era0011b6zjfmvzy00u" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/clojure/">clojure</a></li></ul>
@@ -345,7 +338,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'jizhang';
   
-  var disqus_url = 'http://shzhangji.com/cnblogs/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/';
+  var disqus_url = 'http://shzhangji.com/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/';
   
   (function(){
     var dsq = document.createElement('script');

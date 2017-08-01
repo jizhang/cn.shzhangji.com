@@ -5,19 +5,18 @@
   
   <title>Nginx热升级 | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="系统管理员可以使用Nginx提供的信号机制来对其进行维护，比较常用的是kill -HUP &amp;lt;master pid&amp;gt;命令，它能通知Nginx使用新的配置文件启动工作进程，并逐个关闭旧进程，完成平滑切换。当需要对Nginx进行版本升级或增减模块时，为了不丢失请求，可以结合使用USR2、WINCH等信号进行平滑过度，达到热升级的目的。如果中途遇到问题，也能立刻回退至原版本。
-操作步骤1、备份">
+  <meta name="description" content="系统管理员可以使用Nginx提供的信号机制来对其进行维护，比较常用的是kill -HUP &amp;lt;master pid&amp;gt;命令，它能通知Nginx使用新的配置文件启动工作进程，并逐个关闭旧进程，完成平滑切换。当需要对Nginx进行版本升级或增减模块时，为了不丢失请求，可以结合使用USR2、WINCH等信号进行平滑过度，达到热升级的目的。如果中途遇到问题，也能立刻回退至原版本。 操作步骤1、备份">
+<meta name="keywords" content="nginx">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nginx热升级">
 <meta property="og:url" content="http://shzhangji.com/2012/12/23/nginx-live-upgrade/index.html">
 <meta property="og:site_name" content="张吉的博客">
-<meta property="og:description" content="系统管理员可以使用Nginx提供的信号机制来对其进行维护，比较常用的是kill -HUP &amp;lt;master pid&amp;gt;命令，它能通知Nginx使用新的配置文件启动工作进程，并逐个关闭旧进程，完成平滑切换。当需要对Nginx进行版本升级或增减模块时，为了不丢失请求，可以结合使用USR2、WINCH等信号进行平滑过度，达到热升级的目的。如果中途遇到问题，也能立刻回退至原版本。
-操作步骤1、备份">
+<meta property="og:description" content="系统管理员可以使用Nginx提供的信号机制来对其进行维护，比较常用的是kill -HUP &amp;lt;master pid&amp;gt;命令，它能通知Nginx使用新的配置文件启动工作进程，并逐个关闭旧进程，完成平滑切换。当需要对Nginx进行版本升级或增减模块时，为了不丢失请求，可以结合使用USR2、WINCH等信号进行平滑过度，达到热升级的目的。如果中途遇到问题，也能立刻回退至原版本。 操作步骤1、备份">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2017-03-09T03:37:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx热升级">
-<meta name="twitter:description" content="系统管理员可以使用Nginx提供的信号机制来对其进行维护，比较常用的是kill -HUP &amp;lt;master pid&amp;gt;命令，它能通知Nginx使用新的配置文件启动工作进程，并逐个关闭旧进程，完成平滑切换。当需要对Nginx进行版本升级或增减模块时，为了不丢失请求，可以结合使用USR2、WINCH等信号进行平滑过度，达到热升级的目的。如果中途遇到问题，也能立刻回退至原版本。
-操作步骤1、备份">
+<meta name="twitter:description" content="系统管理员可以使用Nginx提供的信号机制来对其进行维护，比较常用的是kill -HUP &amp;lt;master pid&amp;gt;命令，它能通知Nginx使用新的配置文件启动工作进程，并逐个关闭旧进程，完成平滑切换。当需要对Nginx进行版本升级或增减模块时，为了不丢失请求，可以结合使用USR2、WINCH等信号进行平滑过度，达到热升级的目的。如果中途遇到问题，也能立刻回退至原版本。 操作步骤1、备份">
 <meta name="twitter:creator" content="@zjerryj">
 <link rel="publisher" href="zhangji87@gmail.com">
   
@@ -87,7 +86,7 @@ ga('send', 'pageview');
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
       </div>
     </div>
   </div>
@@ -133,7 +132,7 @@ ga('send', 'pageview');
 <p>切换过程中，Nginx会将旧的<code>.pid</code>文件重命名为<code>.pid.oldbin</code>文件，并在旧进程退出后删除。</p>
 <h2 id="原理简介"><a href="#原理简介" class="headerlink" title="原理简介"></a>原理简介</h2><h3 id="多进程模式下的请求分配方式"><a href="#多进程模式下的请求分配方式" class="headerlink" title="多进程模式下的请求分配方式"></a>多进程模式下的请求分配方式</h3><p>Nginx默认工作在多进程模式下，即主进程（master process）启动后完成配置加载和端口绑定等动作，<code>fork</code>出指定数量的工作进程（worker process），这些子进程会持有监听端口的文件描述符（fd），并通过在该描述符上添加监听事件来接受连接（accept）。</p>
 <h3 id="信号的接收和处理"><a href="#信号的接收和处理" class="headerlink" title="信号的接收和处理"></a>信号的接收和处理</h3><p>Nginx主进程在启动完成后会进入等待状态，负责响应各类系统消息，如SIGCHLD、SIGHUP、SIGUSR2等。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// src/os/unix/ngx_process_cycle.c</span></div><div class="line"><span class="function"><span class="keyword">void</span></span></div><div class="line"><span class="title">ngx_master_process_cycle</span><span class="params">(<span class="keyword">ngx_cycle_t</span> *cycle)</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">sigset_t</span>           <span class="built_in">set</span>;</div><div class="line"></div><div class="line">    sigemptyset(&amp;<span class="built_in">set</span>);</div><div class="line">    sigaddset(&amp;<span class="built_in">set</span>, SIGCHLD);</div><div class="line">    sigaddset(&amp;<span class="built_in">set</span>, ngx_signal_value(NGX_RECONFIGURE_SIGNAL));</div><div class="line">    sigaddset(&amp;<span class="built_in">set</span>, ngx_signal_value(NGX_CHANGEBIN_SIGNAL));</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (sigprocmask(SIG_BLOCK, &amp;<span class="built_in">set</span>, <span class="literal">NULL</span>) == <span class="number">-1</span>) &#123;</div><div class="line">        ngx_log_error(NGX_LOG_ALERT, cycle-&gt;<span class="built_in">log</span>, ngx_errno,</div><div class="line">                      <span class="string">"sigprocmask() failed"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> ( ;; ) &#123;</div><div class="line"></div><div class="line">        sigsuspend(&amp;<span class="built_in">set</span>); <span class="comment">// 等待信号</span></div><div class="line"></div><div class="line">        <span class="comment">// 信号回调函数定义在 src/os/unix/ngx_process.c 中，</span></div><div class="line">        <span class="comment">// 它只负责设置全局变量，实际处理逻辑在这里。</span></div><div class="line">        <span class="keyword">if</span> (ngx_change_binary) &#123; </div><div class="line">            ngx_change_binary = <span class="number">0</span>;</div><div class="line">            ngx_log_error(NGX_LOG_NOTICE, cycle-&gt;<span class="built_in">log</span>, <span class="number">0</span>, <span class="string">"changing binary"</span>);</div><div class="line">            ngx_new_binary = ngx_exec_new_binary(cycle, ngx_argv);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// src/os/unix/ngx_process_cycle.c</span></div><div class="line"><span class="keyword">void</span></div><div class="line">ngx_master_process_cycle(<span class="keyword">ngx_cycle_t</span> *cycle)</div><div class="line">&#123;</div><div class="line">    <span class="keyword">sigset_t</span>           <span class="built_in">set</span>;</div><div class="line"></div><div class="line">    sigemptyset(&amp;<span class="built_in">set</span>);</div><div class="line">    sigaddset(&amp;<span class="built_in">set</span>, SIGCHLD);</div><div class="line">    sigaddset(&amp;<span class="built_in">set</span>, ngx_signal_value(NGX_RECONFIGURE_SIGNAL));</div><div class="line">    sigaddset(&amp;<span class="built_in">set</span>, ngx_signal_value(NGX_CHANGEBIN_SIGNAL));</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (sigprocmask(SIG_BLOCK, &amp;<span class="built_in">set</span>, <span class="literal">NULL</span>) == <span class="number">-1</span>) &#123;</div><div class="line">        ngx_log_error(NGX_LOG_ALERT, cycle-&gt;<span class="built_in">log</span>, ngx_errno,</div><div class="line">                      <span class="string">"sigprocmask() failed"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> ( ;; ) &#123;</div><div class="line"></div><div class="line">        sigsuspend(&amp;<span class="built_in">set</span>); <span class="comment">// 等待信号</span></div><div class="line"></div><div class="line">        <span class="comment">// 信号回调函数定义在 src/os/unix/ngx_process.c 中，</span></div><div class="line">        <span class="comment">// 它只负责设置全局变量，实际处理逻辑在这里。</span></div><div class="line">        <span class="keyword">if</span> (ngx_change_binary) &#123; </div><div class="line">            ngx_change_binary = <span class="number">0</span>;</div><div class="line">            ngx_log_error(NGX_LOG_NOTICE, cycle-&gt;<span class="built_in">log</span>, <span class="number">0</span>, <span class="string">"changing binary"</span>);</div><div class="line">            ngx_new_binary = ngx_exec_new_binary(cycle, ngx_argv);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>上述代码中的<code>ngx_exec_new_binary</code>函数会调用<code>execve</code>系统函数运行一个新的Nginx主进程，并将当前监听端口的文件描述符通过环境变量的方式传递给新的主进程，这样新的主进程<code>fork</code>出的子进程就同样能够对监听端口添加事件回调，接受连接，从而使得新老Nginx共同处理用户请求。</p>
 <h2 id="其它方式"><a href="#其它方式" class="headerlink" title="其它方式"></a>其它方式</h2><p>除了使用上述方式进行Nginx热升级，还可以选择以下两种方式：</p>
 <h3 id="Keepalived主备切换"><a href="#Keepalived主备切换" class="headerlink" title="Keepalived主备切换"></a>Keepalived主备切换</h3><p>Nginx用作LB时一般会用<a href="http://www.keepalived.org/" target="_blank" rel="external">Keepalived</a>做热备，即DNS解析指向一个虚拟IP（VIP），主备服务器上分别启动Keepalived进程，当Master健康检查失败，Slave会自动抢夺VIP，完成切换。</p>
@@ -168,14 +167,14 @@ ga('send', 'pageview');
 <li><code>reopen</code>: <code>USR1</code></li>
 <li><code>reload</code>: <code>HUP</code></li>
 </ul>
-<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sbin/nginx <span class="_">-s</span> reload</div><div class="line">$ <span class="built_in">kill</span> -HUP $(cat logs/nginx.pid)</div></pre></td></tr></table></figure>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sbin/nginx -s reload</div><div class="line">$ <span class="built_in">kill</span> -HUP $(cat logs/nginx.pid)</div></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/" data-id="cj5t40mfj0009pmzjtc5qri6p" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2012/12/23/nginx-live-upgrade/" data-id="cj5t86eqk000eb6zjr8oboyio" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2012/12/23/nginx-live-upgrade/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/nginx/">nginx</a></li></ul>
@@ -298,7 +297,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'jizhang';
   
-  var disqus_url = 'http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/';
+  var disqus_url = 'http://shzhangji.com/2012/12/23/nginx-live-upgrade/';
   
   (function(){
     var dsq = document.createElement('script');

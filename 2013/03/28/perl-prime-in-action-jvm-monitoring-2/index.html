@@ -5,31 +5,18 @@
   
   <title>Perl入门实战：JVM监控脚本（下） | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="套接字使用套接字（Socket）进行网络通信的基本流程是：
-
-服务端：监听端口、等待连接、接收请求、发送应答；
-客户端：连接服务端、发送请求、接收应答。
-
-1234567891011121314151617181920212223242526use IO::Socket::INET;my $server = IO::Socket::INET-&amp;gt;new(    LocalPort =&amp;gt;">
+  <meta name="description" content="套接字使用套接字（Socket）进行网络通信的基本流程是：  服务端：监听端口、等待连接、接收请求、发送应答； 客户端：连接服务端、发送请求、接收应答。  1234567891011121314151617181920212223242526use IO::Socket::INET;my $server = IO::Socket::INET-&amp;gt;new(    LocalPort =&amp;gt;">
+<meta name="keywords" content="perl">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Perl入门实战：JVM监控脚本（下）">
 <meta property="og:url" content="http://shzhangji.com/2013/03/28/perl-prime-in-action-jvm-monitoring-2/index.html">
 <meta property="og:site_name" content="张吉的博客">
-<meta property="og:description" content="套接字使用套接字（Socket）进行网络通信的基本流程是：
-
-服务端：监听端口、等待连接、接收请求、发送应答；
-客户端：连接服务端、发送请求、接收应答。
-
-1234567891011121314151617181920212223242526use IO::Socket::INET;my $server = IO::Socket::INET-&amp;gt;new(    LocalPort =&amp;gt;">
+<meta property="og:description" content="套接字使用套接字（Socket）进行网络通信的基本流程是：  服务端：监听端口、等待连接、接收请求、发送应答； 客户端：连接服务端、发送请求、接收应答。  1234567891011121314151617181920212223242526use IO::Socket::INET;my $server = IO::Socket::INET-&amp;gt;new(    LocalPort =&amp;gt;">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2017-03-09T03:37:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Perl入门实战：JVM监控脚本（下）">
-<meta name="twitter:description" content="套接字使用套接字（Socket）进行网络通信的基本流程是：
-
-服务端：监听端口、等待连接、接收请求、发送应答；
-客户端：连接服务端、发送请求、接收应答。
-
-1234567891011121314151617181920212223242526use IO::Socket::INET;my $server = IO::Socket::INET-&amp;gt;new(    LocalPort =&amp;gt;">
+<meta name="twitter:description" content="套接字使用套接字（Socket）进行网络通信的基本流程是：  服务端：监听端口、等待连接、接收请求、发送应答； 客户端：连接服务端、发送请求、接收应答。  1234567891011121314151617181920212223242526use IO::Socket::INET;my $server = IO::Socket::INET-&amp;gt;new(    LocalPort =&amp;gt;">
 <meta name="twitter:creator" content="@zjerryj">
 <link rel="publisher" href="zhangji87@gmail.com">
   
@@ -99,7 +86,7 @@ ga('send', 'pageview');
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
       </div>
     </div>
   </div>
@@ -171,7 +158,7 @@ ga('send', 'pageview');
 <p>而<code>$interrupted</code>变量则是用来控制程序是否继续执行的。当进程收到<code>SIGTERM</code>或<code>SIGINT</code>信号时，该变量就会置为真，使进程自然退出。</p>
 <p>为何不直接使用<code>while (my $client = $server-&gt;accept()) {...}</code>呢？因为子进程退出时会向父进程发送<code>SIGCHLD</code>信号，而<code>accept()</code>函数在接收到任何信号后都会中断并返回空，使得<code>while</code>语句退出。</p>
 <h2 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h2><p>这个服务脚本所监听的端口后是固写在脚本中的，如果想通过命令行指定呢？我们可以使用Perl的内置模块<code>Getopt::Long</code>。</p>
-<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> Getopt::Long;</div><div class="line"><span class="keyword">use</span> Pod::Usage;</div><div class="line"></div><div class="line"><span class="keyword">my</span> $help = <span class="number">0</span>;</div><div class="line"><span class="keyword">my</span> $port = <span class="number">10060</span>;</div><div class="line"></div><div class="line">GetOptions(</div><div class="line">    <span class="string">'help|?'</span> =&gt; \$help,</div><div class="line">    <span class="string">'port=i'</span> =&gt; \$port</div><div class="line">) || pod2usage(<span class="number">2</span>);</div><div class="line">pod2usage(<span class="number">1</span>) <span class="keyword">if</span> $help;</div><div class="line"></div><div class="line"><span class="keyword">print</span> <span class="string">"PORT $port\n"</span>;</div><div class="line"></div><div class="line">__END_<span class="number">_</span></div><div class="line"></div><div class="line"><span class="comment">=head1 NAME</span></div><div class="line"></div><div class="line">getopt</div><div class="line"></div><div class="line">=head1 SYNOPSIS</div><div class="line"></div><div class="line">getopt.pl [options]</div><div class="line"></div><div class="line"> Options:</div><div class="line">   -help brief help message</div><div class="line">   -port bind to tcp port</div><div class="line"></div><div class="line">=cut</div></pre></td></tr></table></figure>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> Getopt::Long;</div><div class="line"><span class="keyword">use</span> Pod::Usage;</div><div class="line"></div><div class="line"><span class="keyword">my</span> $help = <span class="number">0</span>;</div><div class="line"><span class="keyword">my</span> $port = <span class="number">10060</span>;</div><div class="line"></div><div class="line">GetOptions(</div><div class="line">    <span class="string">'help|?'</span> =&gt; \$help,</div><div class="line">    <span class="string">'port=i'</span> =&gt; \$port</div><div class="line">) || pod2usage(<span class="number">2</span>);</div><div class="line">pod2usage(<span class="number">1</span>) <span class="keyword">if</span> $help;</div><div class="line"></div><div class="line"><span class="keyword">print</span> <span class="string">"PORT $port\n"</span>;</div><div class="line"></div><div class="line">__END_<span class="number">_</span></div><div class="line"></div><div class="line"><span class="comment">=head1 NAME</span></div><div class="line"><span class="comment"></span></div><div class="line"><span class="comment">getopt</span></div><div class="line"><span class="comment"></span></div><div class="line"><span class="comment">=head1 SYNOPSIS</span></div><div class="line"><span class="comment"></span></div><div class="line"><span class="comment">getopt.pl [options]</span></div><div class="line"><span class="comment"></span></div><div class="line"><span class="comment"> Options:</span></div><div class="line"><span class="comment">   -help brief help message</span></div><div class="line"><span class="comment">   -port bind to tcp port</span></div><div class="line"><span class="comment"></span></div><div class="line"><span class="comment">=cut</span></div></pre></td></tr></table></figure>
 <p>使用方法是：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ ./getopt.pl -h</div><div class="line">Usage:</div><div class="line">    getopt.pl [options]</div><div class="line">    ...</div><div class="line">$ ./getopt.pl</div><div class="line">PORT 10060</div><div class="line">$ ./getopt.pl -p 12345</div><div class="line">PORT 12345</div></pre></td></tr></table></figure>
 <p><code>&#39;port=i&#39; =&gt; \$port</code>表示从命令行中接收名为<code>-port</code>的参数，并将接收到的值转换为整数（<code>i</code>指整数）。<code>\$</code>又是一种引用传递了，这里暂不详述。</p>
@@ -184,9 +171,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/" data-id="cj5t40mg6000vpmzjbd66dnj1" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/03/28/perl-prime-in-action-jvm-monitoring-2/" data-id="cj5t86eqz000rb6zja7yzht6i" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/03/28/perl-prime-in-action-jvm-monitoring-2/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/perl/">perl</a></li></ul>
@@ -309,7 +296,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'jizhang';
   
-  var disqus_url = 'http://shzhangji.com/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/';
+  var disqus_url = 'http://shzhangji.com/2013/03/28/perl-prime-in-action-jvm-monitoring-2/';
   
   (function(){
     var dsq = document.createElement('script');

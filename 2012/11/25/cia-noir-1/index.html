@@ -5,19 +5,18 @@
   
   <title>Clojure实战(1)：使用Noir框架开发博客(上) | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言为什么要学习一门新的语言？我的想法很简单，平时OO、PO代码写多了，却从未接触过函数式编程，不免有些遗憾。考察下来，Clojure可以用来尝尝鲜，所以就决定学一学。为了给自己的学习留下些记录，就有了这样一份教程。
-Clojure已经有一些不错的教程，如Mark Volkmann的Clojure - Functional Programming for the JVM，Storm的主要贡献者徐明">
+  <meta name="description" content="前言为什么要学习一门新的语言？我的想法很简单，平时OO、PO代码写多了，却从未接触过函数式编程，不免有些遗憾。考察下来，Clojure可以用来尝尝鲜，所以就决定学一学。为了给自己的学习留下些记录，就有了这样一份教程。 Clojure已经有一些不错的教程，如Mark Volkmann的Clojure - Functional Programming for the JVM，Storm的主要贡献者徐明">
+<meta name="keywords" content="clojure,noir">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Clojure实战(1)：使用Noir框架开发博客(上)">
 <meta property="og:url" content="http://shzhangji.com/2012/11/25/cia-noir-1/index.html">
 <meta property="og:site_name" content="张吉的博客">
-<meta property="og:description" content="前言为什么要学习一门新的语言？我的想法很简单，平时OO、PO代码写多了，却从未接触过函数式编程，不免有些遗憾。考察下来，Clojure可以用来尝尝鲜，所以就决定学一学。为了给自己的学习留下些记录，就有了这样一份教程。
-Clojure已经有一些不错的教程，如Mark Volkmann的Clojure - Functional Programming for the JVM，Storm的主要贡献者徐明">
+<meta property="og:description" content="前言为什么要学习一门新的语言？我的想法很简单，平时OO、PO代码写多了，却从未接触过函数式编程，不免有些遗憾。考察下来，Clojure可以用来尝尝鲜，所以就决定学一学。为了给自己的学习留下些记录，就有了这样一份教程。 Clojure已经有一些不错的教程，如Mark Volkmann的Clojure - Functional Programming for the JVM，Storm的主要贡献者徐明">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2017-03-09T03:44:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Clojure实战(1)：使用Noir框架开发博客(上)">
-<meta name="twitter:description" content="前言为什么要学习一门新的语言？我的想法很简单，平时OO、PO代码写多了，却从未接触过函数式编程，不免有些遗憾。考察下来，Clojure可以用来尝尝鲜，所以就决定学一学。为了给自己的学习留下些记录，就有了这样一份教程。
-Clojure已经有一些不错的教程，如Mark Volkmann的Clojure - Functional Programming for the JVM，Storm的主要贡献者徐明">
+<meta name="twitter:description" content="前言为什么要学习一门新的语言？我的想法很简单，平时OO、PO代码写多了，却从未接触过函数式编程，不免有些遗憾。考察下来，Clojure可以用来尝尝鲜，所以就决定学一学。为了给自己的学习留下些记录，就有了这样一份教程。 Clojure已经有一些不错的教程，如Mark Volkmann的Clojure - Functional Programming for the JVM，Storm的主要贡献者徐明">
 <meta name="twitter:creator" content="@zjerryj">
 <link rel="publisher" href="zhangji87@gmail.com">
   
@@ -87,7 +86,7 @@ ga('send', 'pageview');
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
       </div>
     </div>
   </div>
@@ -133,7 +132,7 @@ ga('send', 'pageview');
 <h3 id="安装Leiningen"><a href="#安装Leiningen" class="headerlink" title="安装Leiningen"></a>安装Leiningen</h3><p><code>lein</code>目前有1.x和2.x两个版本，后者还在alpha阶段。使用以下命令安装<code>lein</code> 1.x版本：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> ~/bin <span class="comment"># 假设$HOME/bin目录在系统的$PATH中</span></div><div class="line">$ wget https://raw.github.com/technomancy/leiningen/stable/bin/lein</div><div class="line">$ chmod 755 lein</div><div class="line">$ lein self-install</div><div class="line">$ lein repl</div><div class="line">REPL started; server listening on localhost port 1096</div><div class="line">user=&gt;</div></pre></td></tr></table></figure>
 <p>这样就已经安装好了<code>lein</code>和Clojure环境，并启动了一个REPL，可以直接运行Clojure代码：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">user=&gt; (+ 1 2)</div><div class="line">3</div><div class="line">user=&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">user=&gt; (+ 1 2)</div><div class="line"><span class="number">3</span></div><div class="line">user=&gt;</div></pre></td></tr></table></figure>
 <p>这里出现了Clojure的两个特点：圆括号和前缀表达式。Clojure的基本语法是<code>(fn1 arg1 (fn2 arg2 arg3))</code>。函数是Clojure中的“一等公民”，它即是可执行的代码，又是一种数据（类似闭包的概念）。以后我们会慢慢熟悉。</p>
 <h3 id="新建项目"><a href="#新建项目" class="headerlink" title="新建项目"></a>新建项目</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ lein new proj</div><div class="line">$ find proj</div><div class="line">proj</div><div class="line">proj/project.clj</div><div class="line">proj/src/proj/core.clj</div><div class="line">$ cat proj/project.clj</div><div class="line">(defproject proj <span class="string">"1.0.0-SNAPSHOT"</span></div><div class="line">  :description <span class="string">"FIXME: write description"</span></div><div class="line">  :dependencies [[org.clojure/clojure <span class="string">"1.3.0"</span>]])</div></pre></td></tr></table></figure>
 <p><code>lein new</code>命令用来创建一个Clojure项目骨架，最重要的文件是<code>project.clj</code>，它声明了项目的基本属性以及依赖包。</p>
@@ -155,14 +154,14 @@ ga('send', 'pageview');
 <p><code>server/load-views</code>表示调用<code>server</code>命名空间下的<code>load-views</code>函数，后面的<code>src/blog/views/</code>则是函数的参数。在大多数语言中，函数名称不能包含特殊字符，如<code>-</code>，但Clojure中的变量名、函数名、关键字等都可以包含诸如*、+、!、&gt;这样的特殊字符。其中一些字符是有特定含义的，如关键字必须以<code>:</code>开头，以<code>::</code>开头的则表示仅在当前命名空间中有效。这些约定需要注意。</p>
 <p>defn宏用来定义一个函数，基本用法是<code>(defn 函数名 [参数列表] 语句1 语句2)</code>。如果参数数量不定，可以使用这样的语法<code>[arg1 arg2 &amp; args]</code>，这样当函数接收四个参数时，后两个参数会作为一个向量赋值给args变量。</p>
 <p>关于let，它是继“宏”和“函数”之后出现的第三个术语，“特殊形式”(Special Form)。我们暂时不去了解它们之间的关系，先来看看let的作用。设想这样一个场景，我们在调用一个函数之前会准备一些参数传送给它，这些参数仅在函数内部可见，函数处理完后就会销毁。let则是将参数准备和函数调用这两步整合了起来。它的语法是<code>(let [变量1 表达式1 变量2 表达式2] 语句1 语句2)</code>，举例来说，尝试在REPL中执行以下命令，思考一下结果是如何得出的：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">user=&gt; (let [x 1 y (+ 2 3)] (+ x y))</div><div class="line">6</div><div class="line">user=&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">user=&gt; (let [x 1 y (+ 2 3)] (+ x y))</div><div class="line"><span class="number">6</span></div><div class="line">user=&gt;</div></pre></td></tr></table></figure>
 <p>入口文件中的表达式看起来有些复杂，但逐步拆解后就会明白：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">user=&gt; (def m []) ; 定义一个变量，它是一个空向量，正如不带参数调用-main函数时一样。Clojure中分号表示注释。</div><div class="line">user=&gt; (first m) ; 获取向量（序列）的第一个元素，这里为空。</div><div class="line">nil</div><div class="line">user=&gt; (or (first m) :dev) ; 从左往右执行参数，若结果不为空(nil)则停止执行，并返回该结果。</div><div class="line">:dev</div><div class="line">user=&gt; (keyword (or (first m) :dev)) ; 获取关键字。由于传入的参数可能是一个关键字、一个变量、或一个字符串，因此使用keyword函数返回一个关键字类型。</div><div class="line">:dev</div></pre></td></tr></table></figure>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">user=&gt; (def m []) ; 定义一个变量，它是一个空向量，正如不带参数调用-main函数时一样。Clojure中分号表示注释。</div><div class="line">user=&gt; (first m) ; 获取向量（序列）的第一个元素，这里为空。</div><div class="line"><span class="literal">nil</span></div><div class="line">user=&gt; (or (first m) :dev) ; 从左往右执行参数，若结果不为空(nil)则停止执行，并返回该结果。</div><div class="line"><span class="symbol">:dev</span></div><div class="line">user=&gt; (keyword (or (first m) :dev)) ; 获取关键字。由于传入的参数可能是一个关键字、一个变量、或一个字符串，因此使用keyword函数返回一个关键字类型。</div><div class="line"><span class="symbol">:dev</span></div></pre></td></tr></table></figure>
 <p>经过处理，mode变量包含了:dev这个关键字，且作用域仅在(let …)中有效。</p>
 <p>再来看看port变量，这里涉及到了与Java类的交互：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">user=&gt; (System/getenv) ; 这里的System不是一个命名空间，而是Java的一个类。通过这种方式我们调用了System类的静态方法getenv，并返回了一个Map类实例。</div><div class="line">java.util.Collections$UnmodifiableMap</div><div class="line">user=&gt; (get (System/getenv) "PORT" "8080") ; 这里的get不是Map实例的get方法，而是Clojure中的一个函数，用于返回哈希表(map)中的值，不存在则返回一个默认值。</div><div class="line">"8080"</div><div class="line">user=&gt; (.get (System/getenv) "PORT") ; 这才是调用Map实例的get方法，注意点号和函数的参数。</div><div class="line">nil</div><div class="line">user=&gt; (Integer. (get (System/getenv) "PORT" "8080")) ; 又是一个和Java交互的语法：创建实例。它和以下语法等价：</div><div class="line">8080</div><div class="line">user=&gt; (new Integer (get (System/getenv) "PORT" "8080"))</div><div class="line">8080</div></pre></td></tr></table></figure>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">user=&gt; (System/getenv) ; 这里的System不是一个命名空间，而是Java的一个类。通过这种方式我们调用了System类的静态方法getenv，并返回了一个Map类实例。</div><div class="line">java.util.Collections$UnmodifiableMap</div><div class="line">user=&gt; (get (System/getenv) "PORT" "8080") ; 这里的get不是Map实例的get方法，而是Clojure中的一个函数，用于返回哈希表(map)中的值，不存在则返回一个默认值。</div><div class="line"><span class="string">"8080"</span></div><div class="line">user=&gt; (.get (System/getenv) "PORT") ; 这才是调用Map实例的get方法，注意点号和函数的参数。</div><div class="line"><span class="literal">nil</span></div><div class="line">user=&gt; (Integer. (get (System/getenv) "PORT" "8080")) ; 又是一个和Java交互的语法：创建实例。它和以下语法等价：</div><div class="line"><span class="number">8080</span></div><div class="line">user=&gt; (new Integer (get (System/getenv) "PORT" "8080"))</div><div class="line"><span class="number">8080</span></div></pre></td></tr></table></figure>
 <p>关于map再补充一点，它虽然是Clojure的一种数据类型，但底层其实是Map接口一个实现，因此以下语法是合法的。类似的情况在Clojure中还有很多。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">user=&gt; (def m &#123;:a 1, :b 2&#125;) ; map的语法是&#123;键1 值1 键2 值2&#125;，为了加强可读性，这里使用了逗号分隔了两组键值，Clojure在编译时会将逗号转换成空格。</div><div class="line">user=&gt; (&lt; (get m :a) (.get m :b)) ; 1 &lt; 2</div><div class="line">true</div></pre></td></tr></table></figure>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">user=&gt; (def m &#123;:a 1, :b 2&#125;) ; map的语法是&#123;键1 值1 键2 值2&#125;，为了加强可读性，这里使用了逗号分隔了两组键值，Clojure在编译时会将逗号转换成空格。</div><div class="line">user=&gt; (&lt; (get m :a) (.get m :b)) ; 1 &lt; 2</div><div class="line"><span class="literal">true</span></div></pre></td></tr></table></figure>
 <p>参数的赋值就结束了，后面的代码也很好理解：调用server命名空间下的start函数，参数是监听端口和一组由map表示的参数。这里blog之前的单引号需要注意，表示其后的代码不需要进行解析(evaluate)，在表示命空间名时都需要加上（ns宏除外），如：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">user=&gt; (require 'noir.server) ; 引入一个命名空间，使用noir.server/start调用方法。</div><div class="line">user=&gt; (alias 'server 'noir.server) ; 设置别名。</div><div class="line">user=&gt; (refer 'noir.server) ; 将该命名空间下的变量导入当当前命名空间中，即可以直接使用(start ...)调用。</div><div class="line">user=&gt; (use 'noir.server) ; 同时完成require和refer。</div></pre></td></tr></table></figure>
 <p><strong>小贴士</strong></p>
@@ -191,9 +190,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/" data-id="cj5t40mf40001pmzj92pkodta" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2012/11/25/cia-noir-1/" data-id="cj5t86epl0005b6zjpsw6intw" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2012/11/25/cia-noir-1/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/noir/">noir</a></li></ul>
@@ -316,7 +315,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'jizhang';
   
-  var disqus_url = 'http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/';
+  var disqus_url = 'http://shzhangji.com/2012/11/25/cia-noir-1/';
   
   (function(){
     var dsq = document.createElement('script');

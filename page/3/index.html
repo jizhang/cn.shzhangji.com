@@ -9,6 +9,7 @@
 <meta property="og:title" content="张吉的博客">
 <meta property="og:url" content="http://shzhangji.com/page/3/index.html">
 <meta property="og:site_name" content="张吉的博客">
+<meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="张吉的博客">
 <meta name="twitter:creator" content="@zjerryj">
@@ -80,7 +81,7 @@ ga('send', 'pageview');
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
       </div>
     </div>
   </div>
@@ -128,9 +129,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/" data-id="cj5t40mgh001epmzj8a6803fp" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/09/06/hive-deleteme-error/" data-id="cj5t86erm001cb6zj18uoc5ah" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/09/06/hive-deleteme-error/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/hive/">hive</a></li></ul>
@@ -168,7 +169,7 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>本文是从原Ansible官网的FAQ页面翻译而来，网站改版后该页面已无法访问，但可以从<a href="https://github.com/ansible/ansible.github.com/blob/4a2bf7f60a020f0d0a7b042056fc3dd8716588f2/faq.html">Github历史提交</a>中获得。翻译这篇原始FAQ文档是因为它陈述了Ansible这款工具诞生的原因，设计思路和特性，以及与Puppet、Fabric等同类软件的比较，可以让我们对Ansible有一个整体的了解，所以值得使用者一读。</p>
+        <p>本文是从原Ansible官网的FAQ页面翻译而来，网站改版后该页面已无法访问，但可以从<a href="https://github.com/ansible/ansible.github.com/blob/4a2bf7f60a020f0d0a7b042056fc3dd8716588f2/faq.html" target="_blank" rel="external">Github历史提交</a>中获得。翻译这篇原始FAQ文档是因为它陈述了Ansible这款工具诞生的原因，设计思路和特性，以及与Puppet、Fabric等同类软件的比较，可以让我们对Ansible有一个整体的了解，所以值得使用者一读。</p>
 <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
 <li>为什么命名为“Ansible”？</li>
 <li>Ansible受到了谁的启发？</li>
@@ -196,9 +197,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/06/11/ansible-faq/" data-id="cj5t40mgf001apmzjgvtdjmoe" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/06/11/ansible-faq/" data-id="cj5t86eri0018b6zjp9xxyb0g" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/06/11/ansible-faq/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/06/11/ansible-faq/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/ops/">ops</a></li></ul>
@@ -236,7 +237,7 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>原文：<a href="http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/">http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/</a></p>
+        <p>原文：<a href="http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/" target="_blank" rel="external">http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/</a></p>
 <p>日前，Apache Hadoop YARN已被提升为Apache软件基金会的子项目，这是一个值得庆祝的里程碑。这里我们也第一时间为各位献上Apache Hadoop YARN项目的系列介绍文章。YARN是一个普适的、分布式的应用管理框架，运行于Hadoop集群之上，用以替代传统的Apache Hadoop MapReduce框架。</p>
 <h2 id="MapReduce-模式"><a href="#MapReduce-模式" class="headerlink" title="MapReduce 模式"></a>MapReduce 模式</h2><p>本质上来说，MapReduce模型包含两个部分：一是Map过程，将数据拆分成若干份，分别处理，彼此之间没有依赖关系；二是Reduce过程，将中间结果汇总计算成最终结果。这是一种简单而又条件苛刻的模型，但也促使它成为高效和极易扩展的并行计算方式。</p>
 <p>Apache Hadoop MapReduce是当下最流行的开源MapReduce模型。</p>
@@ -250,9 +251,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/05/25/apache-hadoop-yarn-background-and-an-overview/" data-id="cj5t40mge0017pmzjiqsqiwu8" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/05/25/apache-hadoop-yarn-background-and-an-overview/" data-id="cj5t86erd0014b6zjwjlqb230" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/05/25/apache-hadoop-yarn-background-and-an-overview/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/05/25/apache-hadoop-yarn-background-and-an-overview/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/hadoop/">hadoop</a></li></ul>
@@ -290,8 +291,8 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>原文：<a href="http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html">http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html</a></p>
-<p>我非常兴奋地告诉大家，<a href="http://github.com/nathanmarz/cascalog">Cascalog</a>开源了！Cascalog受<a href="http://en.wikipedia.org/wiki/Datalog">Datalog</a>启发，是一种基于Clojure、运行于Hadoop平台上的查询语言。</p>
+        <p>原文：<a href="http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html" target="_blank" rel="external">http://nathanmarz.com/blog/introducing-cascalog-a-clojure-based-query-language-for-hado.html</a></p>
+<p>我非常兴奋地告诉大家，<a href="http://github.com/nathanmarz/cascalog" target="_blank" rel="external">Cascalog</a>开源了！Cascalog受<a href="http://en.wikipedia.org/wiki/Datalog" target="_blank" rel="external">Datalog</a>启发，是一种基于Clojure、运行于Hadoop平台上的查询语言。</p>
 <h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
 <li><strong>简单</strong> - 使用相同的语法编写函数、过滤规则、聚合运算；数据联合（join）变得简单而自然。</li>
 <li><strong>表达能力强</strong> - 强大的逻辑组合条件，你可以在查询语句中任意编写Clojure函数。</li>
@@ -310,9 +311,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/" data-id="cj5t40mg90010pmzjjzq4gypn" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/" data-id="cj5t86era0011b6zjfmvzy00u" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/05/01/introducing-cascalog-a-clojure-based-query-language-for-hado/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/clojure/">clojure</a></li></ul>
@@ -352,9 +353,9 @@ ga('send', 'pageview');
       
         <h2 id="Storm简介"><a href="#Storm简介" class="headerlink" title="Storm简介"></a>Storm简介</h2><p>上一章介绍的Hadoop工具能够对海量数据进行批量处理，采用分布式的并行计算架构，只需使用其提供的MapReduce API编写脚本即可。但随着人们对数据实时性的要求越来越高，如实时日志分析、实时推荐系统等，Hadoop就无能为力了。</p>
 <p>这时，Storm诞生了。它的设计初衷就是提供一套分布式的实时计算框架，实现低延迟、高并发的海量数据处理，被誉为“Realtime Hadoop”。它提供了简单易用的API接口用于编写实时处理脚本；能够和现有各类消息系统整合；提供了HA、容错、事务、RPC等高级特性。</p>
-<p>Storm的官网是：<a href="http://storm-project.net/">storm-project.net</a>，它的<a href="https://github.com/nathanmarz/storm/wiki">Wiki</a>上有非常详尽的说明文档。</p>
-<h3 id="Storm与Clojure"><a href="#Storm与Clojure" class="headerlink" title="Storm与Clojure"></a>Storm与Clojure</h3><p>Storm的主要贡献者<a href="https://github.com/nathanmarz">Nathan Marz</a>和<a href="https://github.com/xumingming">徐明明</a>都是活跃的Clojure开发者，因此在Storm框架中也提供了原生的<a href="https://github.com/nathanmarz/storm/wiki/Clojure-DSL">Clojure DSL</a>。本文就将介绍如何使用这套DSL来编写Storm处理脚本。</p>
-<p>Storm集群的安装配置这里不会讲述，具体请参考<a href="https://github.com/nathanmarz/storm/wiki/Setting-up-a-Storm-cluster">这篇文档</a>。下文的脚本都运行在“本地模式”之下，因此即使不搭建集群也可以运行和调试。</p>
+<p>Storm的官网是：<a href="http://storm-project.net/" target="_blank" rel="external">storm-project.net</a>，它的<a href="https://github.com/nathanmarz/storm/wiki" target="_blank" rel="external">Wiki</a>上有非常详尽的说明文档。</p>
+<h3 id="Storm与Clojure"><a href="#Storm与Clojure" class="headerlink" title="Storm与Clojure"></a>Storm与Clojure</h3><p>Storm的主要贡献者<a href="https://github.com/nathanmarz" target="_blank" rel="external">Nathan Marz</a>和<a href="https://github.com/xumingming" target="_blank" rel="external">徐明明</a>都是活跃的Clojure开发者，因此在Storm框架中也提供了原生的<a href="https://github.com/nathanmarz/storm/wiki/Clojure-DSL" target="_blank" rel="external">Clojure DSL</a>。本文就将介绍如何使用这套DSL来编写Storm处理脚本。</p>
+<p>Storm集群的安装配置这里不会讲述，具体请参考<a href="https://github.com/nathanmarz/storm/wiki/Setting-up-a-Storm-cluster" target="_blank" rel="external">这篇文档</a>。下文的脚本都运行在“本地模式”之下，因此即使不搭建集群也可以运行和调试。</p>
         
           <p class="article-more-link">
             <a href="/cnblogs/2013/04/22/cia-storm/#more">阅读全文</a>
@@ -363,9 +364,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/04/22/cia-storm/" data-id="cj5t40mgc0012pmzj11s69via" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/04/22/cia-storm/" data-id="cj5t86er6000zb6zjwenw01v9" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/04/22/cia-storm/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/04/22/cia-storm/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/storm/">storm</a></li></ul>
@@ -417,9 +418,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/" data-id="cj5t40mg6000vpmzjbd66dnj1" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/03/28/perl-prime-in-action-jvm-monitoring-2/" data-id="cj5t86eqz000rb6zja7yzht6i" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/03/28/perl-prime-in-action-jvm-monitoring-2/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/perl/">perl</a></li></ul>
@@ -469,9 +470,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/03/27/fork-and-zombie-process/" data-id="cj5t40mg5000spmzjayhbh1vz" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/03/27/fork-and-zombie-process/" data-id="cj5t86eqv000nb6zjn5d50ibg" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/03/27/fork-and-zombie-process/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/03/27/fork-and-zombie-process/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/programming/">programming</a></li></ul>
@@ -527,9 +528,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/" data-id="cj5t40mg1000lpmzjdhfhpwiv" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/03/26/perl-prime-in-action-jvm-monitoring-1/" data-id="cj5t86er1000ub6zjnpo15vot" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/03/26/perl-prime-in-action-jvm-monitoring-1/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/perl/">perl</a></li></ul>
@@ -567,8 +568,8 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>原文：<a href="http://raganwald.com/2013/03/07/currying-and-partial-application.html">http://raganwald.com/2013/03/07/currying-and-partial-application.html</a></p>
-<p>上周末我参加了<a href="http://wrocloverb.com/">wroc_love.rb大会</a>，其间<a href="http://steveklabnik.com/">Steve Klabnik</a>的一张PPT中提到了<a href="https://en.wikipedia.org/wiki/Partial_application">偏应用（Partial Application）</a>和<a href="https://en.wikipedia.org/wiki/Currying">柯里化（Currying）</a>，并说这两者之间的区别如今已经不重要了。但是我不这么认为。</p>
+        <p>原文：<a href="http://raganwald.com/2013/03/07/currying-and-partial-application.html" target="_blank" rel="external">http://raganwald.com/2013/03/07/currying-and-partial-application.html</a></p>
+<p>上周末我参加了<a href="http://wrocloverb.com/" target="_blank" rel="external">wroc_love.rb大会</a>，其间<a href="http://steveklabnik.com/" target="_blank" rel="external">Steve Klabnik</a>的一张PPT中提到了<a href="https://en.wikipedia.org/wiki/Partial_application" target="_blank" rel="external">偏应用（Partial Application）</a>和<a href="https://en.wikipedia.org/wiki/Currying" target="_blank" rel="external">柯里化（Currying）</a>，并说这两者之间的区别如今已经不重要了。但是我不这么认为。</p>
 <p>在这周发布的博文中，我用五种方式对<code>this</code>和闭包做了解释，但只有三到四种提到了柯里化。所以这篇博文就重点来谈谈这个。</p>
 <h2 id="函数参数的个数"><a href="#函数参数的个数" class="headerlink" title="函数参数的个数"></a>函数参数的个数</h2><p>在讲解之前，我们先明确一些术语。函数定义时会写明它所接收的参数个数（Arity）。“一元函数”（Unary）接收一个参数，“多元函数”（Polyadic）接收多个参数。还有一些特殊的名称，如“二元函数”（Binary）接收两个参数，“三元函数”（Ternary）接收三个参数等。你可以对照希腊语或拉丁语词汇来创造这些特殊的名称。</p>
 <p>有些函数能够接收不定数量的参数，我们称之为“可变参数函数”（Variadic）。不过这类函数、以及不接收参数的函数并不是本文讨论的重点。</p>
@@ -580,9 +581,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/03/07/currying-and-partial-application/" data-id="cj5t40mg2000opmzjqd8yarms" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/03/07/currying-and-partial-application/" data-id="cj5t86eqs000lb6zjcb0et7ug" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/03/07/currying-and-partial-application/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/03/07/currying-and-partial-application/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/fp/">fp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/javascript/">javascript</a></li></ul>
@@ -620,8 +621,8 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Hadoop简介"><a href="#Hadoop简介" class="headerlink" title="Hadoop简介"></a>Hadoop简介</h2><p>众所周知，我们已经进入了大数据时代，每天都有PB级的数据需要处理、分析，从中提取出有用的信息。Hadoop就是这一时代背景下的产物。它是Apache基金会下的开源项目，受<a href="http://en.wikipedia.org/wiki/Apache_Hadoop#Papers">Google两篇论文</a>的启发，采用分布式的文件系统HDFS，以及通用的MapReduce解决方案，能够在数千台物理节点上进行分布式并行计算。</p>
-<p>对于Hadoop的介绍这里不再赘述，读者可以<a href="http://hadoop.apache.org/">访问其官网</a>，或阅读<a href="http://product.dangdang.com/main/product.aspx?product_id=21127813">Hadoop权威指南</a>。</p>
+        <h2 id="Hadoop简介"><a href="#Hadoop简介" class="headerlink" title="Hadoop简介"></a>Hadoop简介</h2><p>众所周知，我们已经进入了大数据时代，每天都有PB级的数据需要处理、分析，从中提取出有用的信息。Hadoop就是这一时代背景下的产物。它是Apache基金会下的开源项目，受<a href="http://en.wikipedia.org/wiki/Apache_Hadoop#Papers" target="_blank" rel="external">Google两篇论文</a>的启发，采用分布式的文件系统HDFS，以及通用的MapReduce解决方案，能够在数千台物理节点上进行分布式并行计算。</p>
+<p>对于Hadoop的介绍这里不再赘述，读者可以<a href="http://hadoop.apache.org/" target="_blank" rel="external">访问其官网</a>，或阅读<a href="http://product.dangdang.com/main/product.aspx?product_id=21127813" target="_blank" rel="external">Hadoop权威指南</a>。</p>
 <p>Hadoop项目是由Java语言编写的，运行在JVM之上，因此我们可以直接使用Clojure来编写MapReduce脚本，这也是本文的主题。Hadoop集群的搭建不在本文讨论范围内，而且运行MapReduce脚本也无需搭建测试环境。</p>
         
           <p class="article-more-link">
@@ -631,9 +632,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/02/09/cia-hadoop/" data-id="cj5t40mfx000gpmzj52z1g1rd" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/02/09/cia-hadoop/" data-id="cj5t86eqn000gb6zjj9jkb7ng" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/02/09/cia-hadoop/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/02/09/cia-hadoop/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/hadoop/">hadoop</a></li></ul>

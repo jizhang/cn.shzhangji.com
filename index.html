@@ -9,6 +9,7 @@
 <meta property="og:title" content="张吉的博客">
 <meta property="og:url" content="http://shzhangji.com/index.html">
 <meta property="og:site_name" content="张吉的博客">
+<meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="张吉的博客">
 <meta name="twitter:creator" content="@zjerryj">
@@ -80,7 +81,7 @@ ga('send', 'pageview');
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
       </div>
     </div>
   </div>
@@ -129,9 +130,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" data-id="cj5t40mhs0037pmzj4h5s3r22" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" data-id="cj5t86ety0036b6zj2mg424ge" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/kafka/">kafka</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/scala/">scala</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/spark-streaming/">spark streaming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/stream-processing/">stream processing</a></li></ul>
@@ -169,8 +170,8 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="http://pandas.pydata.org/">Pandas</a> 是一款广泛使用的数据处理工具。结合 NumPy 和 Matplotlib 类库，我们可以在内存中进行高性能的数据清洗、转换、分析及可视化工作。虽然 Python 本身是一门非常容易学习的语言，但要熟练掌握 Pandas 丰富的 API 接口及正确的使用方式，还是需要投入一定时间的。对于数据开发工程师或分析师而言，SQL 语言是标准的数据查询工具。本文提供了一系列的示例，如何将常见的 SQL 查询语句使用 Pandas 来实现。</p>
-<p>Pandas 的安装和基本概念并不在本文讲述范围内，请读者到官网上阅读相关文档，或者阅读《<a href="https://book.douban.com/subject/25779298/">利用 Python 进行数据分析</a>》一书。我推荐大家使用 <a href="https://www.continuum.io/downloads">Anaconda</a> Python 套件，其中集成了 <a href="https://pythonhosted.org/spyder/">Spyder</a> 集成开发环境。在运行下文的代码之前，请先引入 Pandas 和 NumPy 包：</p>
+        <p><a href="http://pandas.pydata.org/" target="_blank" rel="external">Pandas</a> 是一款广泛使用的数据处理工具。结合 NumPy 和 Matplotlib 类库，我们可以在内存中进行高性能的数据清洗、转换、分析及可视化工作。虽然 Python 本身是一门非常容易学习的语言，但要熟练掌握 Pandas 丰富的 API 接口及正确的使用方式，还是需要投入一定时间的。对于数据开发工程师或分析师而言，SQL 语言是标准的数据查询工具。本文提供了一系列的示例，如何将常见的 SQL 查询语句使用 Pandas 来实现。</p>
+<p>Pandas 的安装和基本概念并不在本文讲述范围内，请读者到官网上阅读相关文档，或者阅读《<a href="https://book.douban.com/subject/25779298/" target="_blank" rel="external">利用 Python 进行数据分析</a>》一书。我推荐大家使用 <a href="https://www.continuum.io/downloads" target="_blank" rel="external">Anaconda</a> Python 套件，其中集成了 <a href="https://pythonhosted.org/spyder/" target="_blank" rel="external">Spyder</a> 集成开发环境。在运行下文的代码之前，请先引入 Pandas 和 NumPy 包：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div></pre></td></tr></table></figure>
 <h2 id="FROM-读取数据"><a href="#FROM-读取数据" class="headerlink" title="FROM - 读取数据"></a><code>FROM</code> - 读取数据</h2><p>首先，我们需要将数据加载到工作区（内存）。Pandas 原生支持非常多的数据格式，CSV 是较常见的一种。我们以航班延误时间数据集为例（<a href="/uploads/flights.csv">下载地址</a>）：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">date,delay,distance,origin,destination</div><div class="line">02221605,3,358,BUR,SMF</div><div class="line">01022100,-5,239,HOU,DAL</div><div class="line">03210808,6,288,BWI,ALB</div></pre></td></tr></table></figure>
@@ -185,9 +186,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/" data-id="cj5t40mht003bpmzjpu6v6nb1" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2017/07/23/learn-pandas-from-a-sql-perspective/" data-id="cj5t86etv0032b6zjhl9sjo50" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2017/07/23/learn-pandas-from-a-sql-perspective/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/analytics/">analytics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/pandas/">pandas</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/sql/">sql</a></li></ul>
@@ -236,9 +237,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/" data-id="cj5t40mhq0034pmzj181d0cxx" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2017/07/16/log-tailer-with-websocket-and-python/" data-id="cj5t86ett002zb6zj4kq2s2vt" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2017/07/16/log-tailer-with-websocket-and-python/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/ops/">ops</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/websocket/">websocket</a></li></ul>
@@ -276,7 +277,7 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://lodash.com/">Lodash</a> 是一款非常知名的 JavaScript 工具库，能够让开发者十分便捷地操纵数组和对象。我则是非常喜欢用它提供的函数式编程风格来操作集合类型，特别是链式调用和惰性求值。然而，随着 <a href="http://www.ecma-international.org/ecma-262/6.0/">ECMAScript 2015 Standard (ES6)</a> 得到越来越多主流浏览器的支持，以及像 <a href="https://babeljs.io/">Babel</a> 这样，能够将 ES6 代码编译成 ES5 从而在旧浏览器上运行的工具日渐流行，人们会发现许多 Lodash 提供的功能已经可以用 ES6 来替换了。然而真的如此吗？我认为，Lodash 仍然会非常流行，因为它可以为程序员提供更多的便利，并且优化我们编程的方式。</p>
+        <p><a href="https://lodash.com/" target="_blank" rel="external">Lodash</a> 是一款非常知名的 JavaScript 工具库，能够让开发者十分便捷地操纵数组和对象。我则是非常喜欢用它提供的函数式编程风格来操作集合类型，特别是链式调用和惰性求值。然而，随着 <a href="http://www.ecma-international.org/ecma-262/6.0/" target="_blank" rel="external">ECMAScript 2015 Standard (ES6)</a> 得到越来越多主流浏览器的支持，以及像 <a href="https://babeljs.io/" target="_blank" rel="external">Babel</a> 这样，能够将 ES6 代码编译成 ES5 从而在旧浏览器上运行的工具日渐流行，人们会发现许多 Lodash 提供的功能已经可以用 ES6 来替换了。然而真的如此吗？我认为，Lodash 仍然会非常流行，因为它可以为程序员提供更多的便利，并且优化我们编程的方式。</p>
 <h2 id="map-和-Array-map-是有区别的"><a href="#map-和-Array-map-是有区别的" class="headerlink" title="_.map 和 Array#map 是有区别的"></a><code>_.map</code> 和 <code>Array#map</code> 是有区别的</h2><p>在处理集合对象时，<code>_.map</code>、<code>_.reduce</code>、<code>_.filter</code>、以及 <code>_.forEach</code> 的使用频率很高，而今 ES6 已经能够原生支持这些操作：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">_.map([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], (i) =&gt; i + <span class="number">1</span>)</div><div class="line">_.reduce([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], (sum, i) =&gt; sum + i, <span class="number">0</span>)</div><div class="line">_.filter([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], (i) =&gt; i &gt; <span class="number">1</span>)</div><div class="line">_.forEach([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], (i) =&gt; &#123; <span class="built_in">console</span>.log(i) &#125;)</div><div class="line"></div><div class="line"><span class="comment">// 使用 ES6 改写</span></div><div class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].map(<span class="function">(<span class="params">i</span>) =&gt;</span> i + <span class="number">1</span>)</div><div class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].reduce(<span class="function">(<span class="params">sum, i</span>) =&gt;</span> sum + i, <span class="number">0</span>)</div><div class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].filter(<span class="function">(<span class="params">i</span>) =&gt;</span> i &gt; <span class="number">1</span>)</div><div class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].forEach(<span class="function">(<span class="params">i</span>) =&gt;</span> &#123; <span class="built_in">console</span>.log(i) &#125;)</div></pre></td></tr></table></figure>
 <p>但是，Lodash 的 <code>_.map</code> 函数功能更强大，它能够操作对象类型，提供了遍历和过滤的快捷方式，能够惰性求值，对 <code>null</code> 值容错，并且有着更好的性能。</p>
@@ -288,9 +289,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/" data-id="cj5t40mho0031pmzjvwip8qos" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2017/06/29/why-use-lodash-when-es6-is-available/" data-id="cj5t86etp002xb6zjvy5efqbd" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2017/06/29/why-use-lodash-when-es6-is-available/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/es6/">es6</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/frontend/">frontend</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/javascript/">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/lodash/">lodash</a></li></ul>
@@ -329,7 +330,7 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p>在对多维数据集进行图表分析时，我们希望在图表之间建立联系，选择图表中的一部分数据后，其他图表也会相应变动。这项工作可以通过开发完成，即在服务端对数据进行过滤，并更新所有图表。此外，我们还可以借助 Crossfilter 和 dc.js 这两个工具，直接在浏览器中对数据进行操作。</p>
-<h2 id="航班延误统计"><a href="#航班延误统计" class="headerlink" title="航班延误统计"></a>航班延误统计</h2><p>这是 Crossfilter 官方网站提供的示例，基于 <a href="http://stat-computing.org/dataexpo/2009/">ASA Data Expo</a> 数据集的航班延误统计。下面我们将介绍如何用 dc.js 来实现这份交互式报表。项目源码可以在 <a href="https://jsfiddle.net/zjerryj/gjao9sws/">JSFiddle</a> 中浏览，演示的数据量减少到 1000 条。</p>
+<h2 id="航班延误统计"><a href="#航班延误统计" class="headerlink" title="航班延误统计"></a>航班延误统计</h2><p>这是 Crossfilter 官方网站提供的示例，基于 <a href="http://stat-computing.org/dataexpo/2009/" target="_blank" rel="external">ASA Data Expo</a> 数据集的航班延误统计。下面我们将介绍如何用 dc.js 来实现这份交互式报表。项目源码可以在 <a href="https://jsfiddle.net/zjerryj/gjao9sws/" target="_blank" rel="external">JSFiddle</a> 中浏览，演示的数据量减少到 1000 条。</p>
 <p><img src="/cnblogs/images/airline-ontime-performance.png" alt=""></p>
         
           <p class="article-more-link">
@@ -339,9 +340,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/" data-id="cj5t40mhg002ppmzj0oxdj74t" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/" data-id="cj5t86eth002qb6zj5t3pblpl" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/analytics/">analytics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/crossfilter/">crossfilter</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/dc-js/">dc.js</a></li></ul>
@@ -383,7 +384,7 @@ ga('send', 'pageview');
 <p>Hadoop 生态中，我们使用 Hive 将 SQL 语句编译为 MapReduce 任务，对海量数据进行操作；Druid 则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。</p>
 <p>Druid 的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和 Hive 的主要区别。数据表中的维度字段越多，查询速度也会越快。不过 Druid 也有其不适用的场景，如无法支持大数据量的 Join 操作，对标准 SQL 的实现也十分有限。</p>
 <p>Druid 和 Hive 的结合方式是这样的：首先使用 Hive 对数据进行预处理，生成 OLAP Cube 存入 Druid；当发生查询时，使用 Calcite 优化器进行分析，使用合适的引擎（Hive 或 Druid）执行操作。如，Druid 擅长执行维度汇总、TopN、时间序列查询，而 Hive 则能胜任 Join、子查询、UDF 等操作。</p>
-<p>原文：<a href="https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru">https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru</a></p>
+<p>原文：<a href="https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru" target="_blank" rel="external">https://dzone.com/articles/ultra-fast-olap-analytics-with-apache-hive-and-dru</a></p>
         
           <p class="article-more-link">
             <a href="/cnblogs/2017/06/18/druid-machine-learning-spark/#more">阅读全文</a>
@@ -392,9 +393,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/" data-id="cj5t40mhn002xpmzjdsozbd0x" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2017/06/18/druid-machine-learning-spark/" data-id="cj5t86etk002tb6zjvsdmdk7e" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2017/06/18/druid-machine-learning-spark/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/druid/">druid</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/hive/">hive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/machine-learning/">machine learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/stream-processing/">stream processing</a></li></ul>
@@ -432,15 +433,15 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>作者：<a href="https://opensource.com/business/15/12/top-5-frameworks">John Esposito</a></p>
-<p>软件侵吞着世界<a href="http://www.wsj.com/articles/SB10001424053111903480904576512250915629460">已经四年多了</a>，但开发人员看待软件的方式稍有不同。我们一直在致力于<a href="http://www.dougengelbart.org/pubs/augment-3906.html">解决实际问题</a>，而<a href="http://worrydream.com/refs/Brooks-NoSilverBullet.pdf">很少思考软件开发的基石</a>。当问题变得更庞大、解决方案更复杂时，一些实用的、不怎么<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html">产生泄漏</a>的抽象工具就显得越来越重要。</p>
+        <p>作者：<a href="https://opensource.com/business/15/12/top-5-frameworks" target="_blank" rel="external">John Esposito</a></p>
+<p>软件侵吞着世界<a href="http://www.wsj.com/articles/SB10001424053111903480904576512250915629460" target="_blank" rel="external">已经四年多了</a>，但开发人员看待软件的方式稍有不同。我们一直在致力于<a href="http://www.dougengelbart.org/pubs/augment-3906.html" target="_blank" rel="external">解决实际问题</a>，而<a href="http://worrydream.com/refs/Brooks-NoSilverBullet.pdf" target="_blank" rel="external">很少思考软件开发的基石</a>。当问题变得更庞大、解决方案更复杂时，一些实用的、不怎么<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html" target="_blank" rel="external">产生泄漏</a>的抽象工具就显得越来越重要。</p>
 <p>简单地来说，在那些追求生产效率的开发者眼中，<em>框架</em>正在吞食着世界。那究竟是哪些框架、各自又在吞食着哪一部分呢？</p>
 <p>开源界的开发框架实在太多了，多到近乎疯狂的地步。我从2015年各种领域的榜单中选取了最受欢迎的5种框架。对于前端框架（我所擅长的领域），我只选取那些真正的客户端框架，这是因为现今的浏览器和移动设备已经具备非常好的性能，越来越多的单页应用（SPA）正在避免和服务端交换数据。</p>
-<h2 id="1-展现层：Bootstrap"><a href="#1-展现层：Bootstrap" class="headerlink" title="1. 展现层：Bootstrap"></a>1. 展现层：Bootstrap</h2><p>我们从技术栈的顶端开始看——展现层，这一开发者和普通用户都会接触到的技术。展现层的赢家毫无疑问仍是<a href="http://getbootstrap.com/">Bootstrap</a>。Bootstrap的<a href="https://www.google.com/trends/explore#q=%2Fm%2F0j671ln">流行度</a>非常之惊人，<a href="https://www.google.com/trends/explore#q=%2Fm%2F0j671ln%2C%20%2Fm%2F0ll4n18%2C%20Material%20Design%20Lite&amp;cmpt=q&amp;tz=Etc%2FGMT%2B5">远远甩开</a>了它的老对手<a href="http://foundation.zurb.com/">Foundation</a>，以及新星<a href="http://www.getmdl.io/">Material Design Lite</a>。在<a href="http://trends.builtwith.com/docinfo/Twitter-Bootstrap">BuiltWith</a>上，Bootstrap占据主导地位；而在GitHub上则长期保持<a href="https://github.com/search?q=stars:%3E1&amp;s=stars&amp;type=Repositories">Star数</a>和<a href="https://github.com/search?o=desc&amp;q=stars:%3E1&amp;s=forks&amp;type=Repositories">Fork数</a>最多的记录。</p>
-<p>如今，Bootstrap仍然有着非常活跃的开发社区。8月，Bootstrap发布了<a href="http://v4-alpha.getbootstrap.com/">v4</a><a href="http://blog.getbootstrap.com/2015/08/19/bootstrap-4-alpha/">内测版</a>，庆祝它的四岁生日。这个版本是对现有功能的<a href="http://v4-alpha.getbootstrap.com/migration/">简化和扩充</a>，主要包括：增强可编程性；从Less迁移至Sass；将所有HTML重置代码集中到一个模块；大量自定义样式可直接通过Sass变量指定；所有JavaScript插件都改用ES6重写等。开发团队还开设了<a href="http://themes.getbootstrap.com/">官方主题市场</a>，进一步扩充现有的<a href="https://www.google.com/search?q=bootstrap+theme+sites">主题生态</a>。</p>
-<h2 id="2-网页MVC：AngularJS"><a href="#2-网页MVC：AngularJS" class="headerlink" title="2. 网页MVC：AngularJS"></a>2. 网页MVC：AngularJS</h2><p>随着网页平台技术越来越<a href="https://www.w3.org/blog/news/">成熟</a>，开发者们可以远离仍在使用标记语言进行着色的DOM对象，转而面对日渐完善的抽象层进行开发。这一趋势始于现代单页应用（SPA）对XMLHttpRequest的高度依赖，而其中<a href="https://www.google.com/trends/explore#q=%2Fm%2F0j45p7w%2C%20EmberJS%2C%20MeteorJS%2C%20BackboneJS&amp;cmpt=q&amp;tz=Etc%2FGMT%2B5">最</a><a href="https://www.pluralsight.com/browse#tab-courses-popular">流行</a>的SPA框架当属<a href="https://angularjs.org/">AngularJS</a>。</p>
-<p>AngularJS有什么特别之处呢？一个词：指令（<a href="https://docs.angularjs.org/guide/directive">directive</a>）。一个简单的<code>ng-</code>就能让标签“起死回生”（从静态的标记到动态的JS代码）。依赖注入也是很重要的功能，许多Angular特性都致力于简化维护成本，并进一步从DOM中抽象出来。其基本原则就是将声明式的展现层代码和命令式的领域逻辑充分隔离开来，这种做法对于使用过POM或ORM的人尤为熟悉（我们之中还有人体验过XAML）。这一思想令人振奋，解放了开发者，甚至让人第一眼看上去有些奇怪——因为它赋予了HTML所不该拥有的能力。</p>
-<p>有些遗憾的是，AngualrJS的“杀手锏”双向绑定（让视图和模型数据保持一致）将在<a href="https://www.quora.com/Why-is-the-two-way-data-binding-being-dropped-in-Angular-2">Angular2</a>中移除，已经<a href="http://angularjs.blogspot.com/2015/11/highlights-from-angularconnect-2015.html">临近公测</a>。虽然这一魔法般的特性即将消失，却带来了极大的性能提升，并降低了调试的难度（可以想象一下在悬崖边行走的感觉）。随着单页应用越来越庞大和复杂，这种权衡会变得更有价值。</p>
+<h2 id="1-展现层：Bootstrap"><a href="#1-展现层：Bootstrap" class="headerlink" title="1. 展现层：Bootstrap"></a>1. 展现层：Bootstrap</h2><p>我们从技术栈的顶端开始看——展现层，这一开发者和普通用户都会接触到的技术。展现层的赢家毫无疑问仍是<a href="http://getbootstrap.com/" target="_blank" rel="external">Bootstrap</a>。Bootstrap的<a href="https://www.google.com/trends/explore#q=%2Fm%2F0j671ln" target="_blank" rel="external">流行度</a>非常之惊人，<a href="https://www.google.com/trends/explore#q=%2Fm%2F0j671ln%2C%20%2Fm%2F0ll4n18%2C%20Material%20Design%20Lite&amp;cmpt=q&amp;tz=Etc%2FGMT%2B5" target="_blank" rel="external">远远甩开</a>了它的老对手<a href="http://foundation.zurb.com/" target="_blank" rel="external">Foundation</a>，以及新星<a href="http://www.getmdl.io/" target="_blank" rel="external">Material Design Lite</a>。在<a href="http://trends.builtwith.com/docinfo/Twitter-Bootstrap" target="_blank" rel="external">BuiltWith</a>上，Bootstrap占据主导地位；而在GitHub上则长期保持<a href="https://github.com/search?q=stars:%3E1&amp;s=stars&amp;type=Repositories" target="_blank" rel="external">Star数</a>和<a href="https://github.com/search?o=desc&amp;q=stars:%3E1&amp;s=forks&amp;type=Repositories" target="_blank" rel="external">Fork数</a>最多的记录。</p>
+<p>如今，Bootstrap仍然有着非常活跃的开发社区。8月，Bootstrap发布了<a href="http://v4-alpha.getbootstrap.com/" target="_blank" rel="external">v4</a><a href="http://blog.getbootstrap.com/2015/08/19/bootstrap-4-alpha/" target="_blank" rel="external">内测版</a>，庆祝它的四岁生日。这个版本是对现有功能的<a href="http://v4-alpha.getbootstrap.com/migration/" target="_blank" rel="external">简化和扩充</a>，主要包括：增强可编程性；从Less迁移至Sass；将所有HTML重置代码集中到一个模块；大量自定义样式可直接通过Sass变量指定；所有JavaScript插件都改用ES6重写等。开发团队还开设了<a href="http://themes.getbootstrap.com/" target="_blank" rel="external">官方主题市场</a>，进一步扩充现有的<a href="https://www.google.com/search?q=bootstrap+theme+sites" target="_blank" rel="external">主题生态</a>。</p>
+<h2 id="2-网页MVC：AngularJS"><a href="#2-网页MVC：AngularJS" class="headerlink" title="2. 网页MVC：AngularJS"></a>2. 网页MVC：AngularJS</h2><p>随着网页平台技术越来越<a href="https://www.w3.org/blog/news/" target="_blank" rel="external">成熟</a>，开发者们可以远离仍在使用标记语言进行着色的DOM对象，转而面对日渐完善的抽象层进行开发。这一趋势始于现代单页应用（SPA）对XMLHttpRequest的高度依赖，而其中<a href="https://www.google.com/trends/explore#q=%2Fm%2F0j45p7w%2C%20EmberJS%2C%20MeteorJS%2C%20BackboneJS&amp;cmpt=q&amp;tz=Etc%2FGMT%2B5" target="_blank" rel="external">最</a><a href="https://www.pluralsight.com/browse#tab-courses-popular" target="_blank" rel="external">流行</a>的SPA框架当属<a href="https://angularjs.org/" target="_blank" rel="external">AngularJS</a>。</p>
+<p>AngularJS有什么特别之处呢？一个词：指令（<a href="https://docs.angularjs.org/guide/directive" target="_blank" rel="external">directive</a>）。一个简单的<code>ng-</code>就能让标签“起死回生”（从静态的标记到动态的JS代码）。依赖注入也是很重要的功能，许多Angular特性都致力于简化维护成本，并进一步从DOM中抽象出来。其基本原则就是将声明式的展现层代码和命令式的领域逻辑充分隔离开来，这种做法对于使用过POM或ORM的人尤为熟悉（我们之中还有人体验过XAML）。这一思想令人振奋，解放了开发者，甚至让人第一眼看上去有些奇怪——因为它赋予了HTML所不该拥有的能力。</p>
+<p>有些遗憾的是，AngualrJS的“杀手锏”双向绑定（让视图和模型数据保持一致）将在<a href="https://www.quora.com/Why-is-the-two-way-data-binding-being-dropped-in-Angular-2" target="_blank" rel="external">Angular2</a>中移除，已经<a href="http://angularjs.blogspot.com/2015/11/highlights-from-angularconnect-2015.html" target="_blank" rel="external">临近公测</a>。虽然这一魔法般的特性即将消失，却带来了极大的性能提升，并降低了调试的难度（可以想象一下在悬崖边行走的感觉）。随着单页应用越来越庞大和复杂，这种权衡会变得更有价值。</p>
         
           <p class="article-more-link">
             <a href="/cnblogs/2016/03/13/top-5-frameworks/#more">阅读全文</a>
@@ -449,9 +450,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/" data-id="cj5t40mhj002tpmzjbxfpm763" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2016/03/13/top-5-frameworks/" data-id="cj5t86et8002mb6zji7see9l6" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2016/03/13/top-5-frameworks/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/translation/">translation</a></li></ul>
@@ -490,8 +491,8 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p>在<a href="http://shzhangji.com/blog/2015/09/05/anemic-domain-model/">贫血领域模型</a>这篇译文中，Martin阐述了这种“反模式”的症状和问题，并引用了领域驱动设计中的话来说明领域模型和分层设计之间的关系。对于Spring项目的开发人员来说，贫血领域模型十分常见：模型（或实体）仅仅包含对数据表的映射，通常是一组私有属性和公有getter/setter，所有的业务逻辑都写在服务层中，领域模型仅仅用来传递数据。为了编写真正的领域模型，我们需要将业务逻辑移至模型对象中，这就引出另一个问题：业务逻辑通常需要调用其他服务或模型，而使用<code>new</code>关键字或由JPA创建的对象是不受Spring托管的，也就无法进行依赖注入。解决这个问题的方法有很多，比较之后我选择使用面向切面编程来实现。</p>
-<h2 id="面向切面编程"><a href="#面向切面编程" class="headerlink" title="面向切面编程"></a>面向切面编程</h2><p>面向切面编程，或<a href="https://en.wikipedia.org/wiki/Aspect-oriented_programming">AOP</a>，是一种编程范式，和面向对象编程（<a href="https://en.wikipedia.org/wiki/Object-oriented_programming">OOP</a>）互为补充。简单来说，AOP可以在不修改既有代码的情况下改变代码的行为。开发者通过定义一组规则，在特定的类方法前后增加逻辑，如记录日志、性能监控、事务管理等。这些逻辑称为切面（Aspect），规则称为切点（Pointcut），在调用前还是调用后执行称为通知（Before advice, After advice）。最后，我们可以选择在编译期将这些逻辑写入类文件，或是在运行时动态加载这些逻辑，这是两种不同的织入方式（Compile-time weaving, Load-time weaving）。</p>
-<p>对于领域模型的依赖注入，我们要做的就是使用AOP在对象创建后调用Spring框架来注入依赖。幸运的是，<a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#aop">Spring AOP</a>已经提供了<code>@Configurable</code>注解来帮助我们实现这一需求。</p>
+<h2 id="面向切面编程"><a href="#面向切面编程" class="headerlink" title="面向切面编程"></a>面向切面编程</h2><p>面向切面编程，或<a href="https://en.wikipedia.org/wiki/Aspect-oriented_programming" target="_blank" rel="external">AOP</a>，是一种编程范式，和面向对象编程（<a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank" rel="external">OOP</a>）互为补充。简单来说，AOP可以在不修改既有代码的情况下改变代码的行为。开发者通过定义一组规则，在特定的类方法前后增加逻辑，如记录日志、性能监控、事务管理等。这些逻辑称为切面（Aspect），规则称为切点（Pointcut），在调用前还是调用后执行称为通知（Before advice, After advice）。最后，我们可以选择在编译期将这些逻辑写入类文件，或是在运行时动态加载这些逻辑，这是两种不同的织入方式（Compile-time weaving, Load-time weaving）。</p>
+<p>对于领域模型的依赖注入，我们要做的就是使用AOP在对象创建后调用Spring框架来注入依赖。幸运的是，<a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#aop" target="_blank" rel="external">Spring AOP</a>已经提供了<code>@Configurable</code>注解来帮助我们实现这一需求。</p>
         
           <p class="article-more-link">
             <a href="/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/#more">阅读全文</a>
@@ -500,9 +501,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/" data-id="cj5t40mhe002mpmzj0myhu68f" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2015/09/12/model-dependency-injection-with-spring-aop/" data-id="cj5t86et4002jb6zjdgdzifcw" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2015/09/12/model-dependency-injection-with-spring-aop/#disqus_thread" class="article-comment-link">留言</a>
       
       
     </footer>
@@ -538,8 +539,8 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>原文：<a href="http://www.martinfowler.com/bliki/AnemicDomainModel.html">http://www.martinfowler.com/bliki/AnemicDomainModel.html</a></p>
-<p>贫血领域模型是一个存在已久的反模式，目前仍有许多拥趸者。一次我和Eric Evans聊天谈到它时，都觉得这个模型似乎越来越流行了。作为<a href="http://martinfowler.com/eaaCatalog/domainModel.html">领域模型</a>的推广者，我们觉得这不是一件好事。</p>
+        <p>原文：<a href="http://www.martinfowler.com/bliki/AnemicDomainModel.html" target="_blank" rel="external">http://www.martinfowler.com/bliki/AnemicDomainModel.html</a></p>
+<p>贫血领域模型是一个存在已久的反模式，目前仍有许多拥趸者。一次我和Eric Evans聊天谈到它时，都觉得这个模型似乎越来越流行了。作为<a href="http://martinfowler.com/eaaCatalog/domainModel.html" target="_blank" rel="external">领域模型</a>的推广者，我们觉得这不是一件好事。</p>
 <p>贫血领域模型的最初症状是：它第一眼看起来还真像这么回事儿。项目中有许多对象，它们的命名都是根据领域来的。对象之间有着丰富的连接方式，和真正的领域模型非常相似。但当你检视这些对象的行为时，会发现它们基本上没有任何行为，仅仅是一堆getter和setter的集合。其实这些对象在设计之初就被定义为只能包含数据，不能加入领域逻辑。这些逻辑要全部写入一组叫Service的对象中。这些Service构建在领域模型之上，使用这些模型来传递数据。</p>
 <p>这种反模式的恐怖之处在于，它完全是和面向对象设计背道而驰。面向对象设计主张将数据和行为绑定在一起，而贫血领域模型则更像是一种面向过程设计，我和Eric在Smalltalk时就极力反对这种做法。更糟糕的时，很多人认为这些贫血领域对象是真正的对象，从而彻底误解了面向对象设计的涵义。</p>
         
@@ -550,9 +551,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/" data-id="cj5t40mhc002ipmzjqd5obp06" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2015/09/05/anemic-domain-model/" data-id="cj5t86et0002eb6zjnz7p9u2p" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2015/09/05/anemic-domain-model/#disqus_thread" class="article-comment-link">留言</a>
       
       
     </footer>
@@ -588,17 +589,17 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>原文：<a href="https://wiki.openjdk.java.net/display/HotSpot/CompressedOops">https://wiki.openjdk.java.net/display/HotSpot/CompressedOops</a></p>
+        <p>原文：<a href="https://wiki.openjdk.java.net/display/HotSpot/CompressedOops" target="_blank" rel="external">https://wiki.openjdk.java.net/display/HotSpot/CompressedOops</a></p>
 <h2 id="什么是一般对象指针？"><a href="#什么是一般对象指针？" class="headerlink" title="什么是一般对象指针？"></a>什么是一般对象指针？</h2><p>一般对象指针（oop, ordinary object pointer）是HotSpot虚拟机的一个术语，表示受托管的对象指针。它的大小通常和本地指针是一样的。Java应用程序和GC子系统会非常小心地跟踪这些受托管的指针，以便在销毁对象时回收内存空间，或是在对空间进行整理时移动（复制）对象。</p>
 <p>在一些从Smalltalk和Self演变而来的虚拟机实现中都有一般对象指针这个术语，包括：</p>
 <ul>
-<li><a href="https://github.com/russellallen/self/blob/master/vm/src/any/objects/oop.hh">Self</a>：一门基于原型的语言，是Smalltalk的近亲</li>
-<li><a href="http://code.google.com/p/strongtalk/wiki/VMTypesForSmalltalkObjects">Strongtalk</a>：Smalltalk的一种实现</li>
-<li><a href="http://hg.openjdk.java.net/hsx/hotspot-main/hotspot/file/0/src/share/vm/oops/oop.hpp">Hotspot</a></li>
-<li><a href="http://code.google.com/p/v8/source/browse/trunk/src/objects.h">V8</a></li>
+<li><a href="https://github.com/russellallen/self/blob/master/vm/src/any/objects/oop.hh" target="_blank" rel="external">Self</a>：一门基于原型的语言，是Smalltalk的近亲</li>
+<li><a href="http://code.google.com/p/strongtalk/wiki/VMTypesForSmalltalkObjects" target="_blank" rel="external">Strongtalk</a>：Smalltalk的一种实现</li>
+<li><a href="http://hg.openjdk.java.net/hsx/hotspot-main/hotspot/file/0/src/share/vm/oops/oop.hpp" target="_blank" rel="external">Hotspot</a></li>
+<li><a href="http://code.google.com/p/v8/source/browse/trunk/src/objects.h" target="_blank" rel="external">V8</a></li>
 </ul>
 <p>部分系统中会使用小整型（smi, small integers）这个名称，表示一个指向30位整型的虚拟指针。这个术语在Smalltalk的V8实现中也可以看到。</p>
-<h2 id="为什么需要压缩？"><a href="#为什么需要压缩？" class="headerlink" title="为什么需要压缩？"></a>为什么需要压缩？</h2><p>在<a href="http://docs.oracle.com/cd/E19620-01/805-3024/lp64-1/index.html">LP64</a>系统中，指针需要使用64位来表示；<a href="http://docs.oracle.com/cd/E19620-01/805-3024/lp64-1/index.html">ILP32</a>系统中则只需要32位。在ILP32系统中，堆内存的大小只能支持到4Gb，这对很多应用程序来说是不够的。在LP64系统中，所有应用程序运行时占用的空间都会比ILP32大1.5倍左右，这是因为指针占用的空间增加了。虽然内存是比较廉价的，但网络带宽和缓存容量是紧张的。所以，为了解决4Gb的限制而增加堆内存的占用空间，就有些得不偿失了。</p>
+<h2 id="为什么需要压缩？"><a href="#为什么需要压缩？" class="headerlink" title="为什么需要压缩？"></a>为什么需要压缩？</h2><p>在<a href="http://docs.oracle.com/cd/E19620-01/805-3024/lp64-1/index.html" target="_blank" rel="external">LP64</a>系统中，指针需要使用64位来表示；<a href="http://docs.oracle.com/cd/E19620-01/805-3024/lp64-1/index.html" target="_blank" rel="external">ILP32</a>系统中则只需要32位。在ILP32系统中，堆内存的大小只能支持到4Gb，这对很多应用程序来说是不够的。在LP64系统中，所有应用程序运行时占用的空间都会比ILP32大1.5倍左右，这是因为指针占用的空间增加了。虽然内存是比较廉价的，但网络带宽和缓存容量是紧张的。所以，为了解决4Gb的限制而增加堆内存的占用空间，就有些得不偿失了。</p>
 <p>在x86芯片中，ILP32模式可用的寄存器数量是LP64模式的一半。SPARC没有此限制；RISC芯片本来就提供了很多寄存器，LP64模式下会提供更多。</p>
 <p>压缩后的一般对象指针在使用时需要将32位整型按因数8进行扩展，并加到一个64位的基础地址上，从而找到所指向的对象。这种方法可以表示四十亿个对象，相当于32Gb的堆内存。同时，使用此法压缩数据结构也能达到和ILP32系统相近的效果。</p>
 <p>我们使用<em>解码</em>来表示从32位对象指针转换成64位地址的过程，其反过程则称为<em>编码</em>。</p>
@@ -610,9 +611,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/" data-id="cj5t40mha002gpmzj3f03uxm6" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2015/06/25/compressed-oops-in-the-hotspot-jvm/" data-id="cj5t86esx002bb6zj44yu2mfq" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2015/06/25/compressed-oops-in-the-hotspot-jvm/#disqus_thread" class="article-comment-link">留言</a>
       
       
     </footer>

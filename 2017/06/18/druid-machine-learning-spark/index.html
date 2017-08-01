@@ -5,25 +5,21 @@
   
   <title>Hive+Druid 实现快速查询；回归分析是机器学习吗；StructuredStreaming 可用于生产环境 | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="结合 Apache Hive 和 Druid 实现高速 OLAP 查询
-Hadoop 生态中，我们使用 Hive 将 SQL 语句编译为 MapReduce 任务，对海量数据进行操作；Druid 则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。
-Druid 的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和 Hive 的主要区别。数据表中的维度字段越多，查询速">
+  <meta name="description" content="结合 Apache Hive 和 Druid 实现高速 OLAP 查询 Hadoop 生态中，我们使用 Hive 将 SQL 语句编译为 MapReduce 任务，对海量数据进行操作；Druid 则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。 Druid 的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和 Hive 的主要区别。数据表中的维度字段越多，查询速">
+<meta name="keywords" content="hive,spark,druid,machine learning,stream processing">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hive+Druid 实现快速查询；回归分析是机器学习吗；StructuredStreaming 可用于生产环境">
 <meta property="og:url" content="http://shzhangji.com/2017/06/18/druid-machine-learning-spark/index.html">
 <meta property="og:site_name" content="张吉的博客">
-<meta property="og:description" content="结合 Apache Hive 和 Druid 实现高速 OLAP 查询
-Hadoop 生态中，我们使用 Hive 将 SQL 语句编译为 MapReduce 任务，对海量数据进行操作；Druid 则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。
-Druid 的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和 Hive 的主要区别。数据表中的维度字段越多，查询速">
+<meta property="og:description" content="结合 Apache Hive 和 Druid 实现高速 OLAP 查询 Hadoop 生态中，我们使用 Hive 将 SQL 语句编译为 MapReduce 任务，对海量数据进行操作；Druid 则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。 Druid 的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和 Hive 的主要区别。数据表中的维度字段越多，查询速">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://2xbbhjxc6wk3v21p62t8n4d4-wpengine.netdna-ssl.com/wp-content/uploads/2017/05/Part1Image2.png">
 <meta property="og:image" content="http://www.kdnuggets.com/wp-content/uploads/is-regression-machine-learning.jpg">
 <meta property="og:image" content="https://spark.apache.org/docs/latest/img/structured-streaming-stream-as-a-table.png">
 <meta property="og:updated_time" content="2017-06-20T06:31:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hive+Druid 实现快速查询；回归分析是机器学习吗；StructuredStreaming 可用于生产环境">
-<meta name="twitter:description" content="结合 Apache Hive 和 Druid 实现高速 OLAP 查询
-Hadoop 生态中，我们使用 Hive 将 SQL 语句编译为 MapReduce 任务，对海量数据进行操作；Druid 则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。
-Druid 的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和 Hive 的主要区别。数据表中的维度字段越多，查询速">
+<meta name="twitter:description" content="结合 Apache Hive 和 Druid 实现高速 OLAP 查询 Hadoop 生态中，我们使用 Hive 将 SQL 语句编译为 MapReduce 任务，对海量数据进行操作；Druid 则是一款独立的分布式列式存储系统，通常用于执行面向最终用户的即席查询和实时分析。 Druid 的高速查询主要得益于列式存储和倒排索引，其中倒排索引是和 Hive 的主要区别。数据表中的维度字段越多，查询速">
 <meta name="twitter:image" content="https://2xbbhjxc6wk3v21p62t8n4d4-wpengine.netdna-ssl.com/wp-content/uploads/2017/05/Part1Image2.png">
 <meta name="twitter:creator" content="@zjerryj">
 <link rel="publisher" href="zhangji87@gmail.com">
@@ -94,7 +90,7 @@ ga('send', 'pageview');
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
       </div>
     </div>
   </div>
@@ -147,9 +143,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/" data-id="cj5t40mhn002xpmzjdsozbd0x" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2017/06/18/druid-machine-learning-spark/" data-id="cj5t86etk002tb6zjvsdmdk7e" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2017/06/18/druid-machine-learning-spark/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/druid/">druid</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/hive/">hive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/machine-learning/">machine learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/stream-processing/">stream processing</a></li></ul>
@@ -272,7 +268,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'jizhang';
   
-  var disqus_url = 'http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/';
+  var disqus_url = 'http://shzhangji.com/2017/06/18/druid-machine-learning-spark/';
   
   (function(){
     var dsq = document.createElement('script');

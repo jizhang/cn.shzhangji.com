@@ -5,35 +5,19 @@
   
   <title>深入理解Reduce-side Join | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在《MapReduce Design Patterns》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：
-
-
-使用MultipleInputs指定不同的来源表和相应的Mapper类；
-Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录；
-Reducer在接收到同一个Key的记录后，执行以下两步：
-遍历Values，根据标签将来源表的记录分别放">
+  <meta name="description" content="在《MapReduce Design Patterns》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：   使用MultipleInputs指定不同的来源表和相应的Mapper类； Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录； Reducer在接收到同一个Key的记录后，执行以下两步： 遍历Values，根据标签将来源表的记录分别放">
+<meta name="keywords" content="hadoop,mapreduce">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深入理解Reduce-side Join">
 <meta property="og:url" content="http://shzhangji.com/2015/01/13/understand-reduce-side-join/index.html">
 <meta property="og:site_name" content="张吉的博客">
-<meta property="og:description" content="在《MapReduce Design Patterns》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：
-
-
-使用MultipleInputs指定不同的来源表和相应的Mapper类；
-Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录；
-Reducer在接收到同一个Key的记录后，执行以下两步：
-遍历Values，根据标签将来源表的记录分别放">
+<meta property="og:description" content="在《MapReduce Design Patterns》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：   使用MultipleInputs指定不同的来源表和相应的Mapper类； Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录； Reducer在接收到同一个Key的记录后，执行以下两步： 遍历Values，根据标签将来源表的记录分别放">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/reduce-side-join/reduce-side-join.png">
 <meta property="og:updated_time" content="2017-03-09T07:25:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Reduce-side Join">
-<meta name="twitter:description" content="在《MapReduce Design Patterns》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：
-
-
-使用MultipleInputs指定不同的来源表和相应的Mapper类；
-Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录；
-Reducer在接收到同一个Key的记录后，执行以下两步：
-遍历Values，根据标签将来源表的记录分别放">
+<meta name="twitter:description" content="在《MapReduce Design Patterns》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：   使用MultipleInputs指定不同的来源表和相应的Mapper类； Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录； Reducer在接收到同一个Key的记录后，执行以下两步： 遍历Values，根据标签将来源表的记录分别放">
 <meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/reduce-side-join/reduce-side-join.png">
 <meta name="twitter:creator" content="@zjerryj">
 <link rel="publisher" href="zhangji87@gmail.com">
@@ -104,7 +88,7 @@ ga('send', 'pageview');
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
       </div>
     </div>
   </div>
@@ -160,7 +144,7 @@ ga('send', 'pageview');
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TaggedJoiningGroupingComparator</span> <span class="keyword">extends</span> <span class="title">WritableComparator</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TaggedJoiningGroupingComparator</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(TaggedKey.class, <span class="keyword">true</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"rawtypes"</span>)</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(WritableComparable a, WritableComparable b)</span> </span>&#123;</div><div class="line">        TaggedKey taggedKey1 = (TaggedKey) a;</div><div class="line">        TaggedKey taggedKey2 = (TaggedKey) b;</div><div class="line">        <span class="keyword">return</span> taggedKey1.getJoinKey().compareTo(taggedKey2.getJoinKey());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="配置Job"><a href="#配置Job" class="headerlink" title="配置Job"></a>配置Job</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">job.setMapOutputKeyClass(TaggedKey.class);</div><div class="line">job.setMapOutputValueClass(Text.class);</div><div class="line"></div><div class="line">job.setPartitionerClass(TaggedJoiningPartitioner.class);</div><div class="line">job.setGroupingComparatorClass(TaggedJoiningGroupingComparator.class);</div></pre></td></tr></table></figure>
 <h3 id="MapReduce过程"><a href="#MapReduce过程" class="headerlink" title="MapReduce过程"></a>MapReduce过程</h3><p>最后，我们在Mapper阶段使用TaggedKey，在Reducer阶段按照tag进行不同的操作就可以了：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">reduce</span><span class="params">(TaggedKey key, Iterable&lt;Text&gt; values, Context context)</span></span></div><div class="line">        <span class="keyword">throws</span> IOException, InterruptedException &#123;</div><div class="line"></div><div class="line">    List&lt;String&gt; products = <span class="keyword">new</span> ArrayList&lt;String&gt;();</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (Text value : values) &#123;</div><div class="line">        <span class="keyword">switch</span> (key.getTag().get()) &#123;</div><div class="line">        <span class="keyword">case</span> <span class="number">1</span>: <span class="comment">// Product</span></div><div class="line">            products.add(value.toString());</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">case</span> <span class="number">2</span>: <span class="comment">// Order</span></div><div class="line">            String[] order = value.toString().split(<span class="string">","</span>);</div><div class="line">            <span class="keyword">for</span> (String productString : products) &#123;</div><div class="line">                String[] product = productString.split(<span class="string">","</span>);</div><div class="line">                List&lt;String&gt; output = <span class="keyword">new</span> ArrayList&lt;String&gt;();</div><div class="line">                output.add(order[<span class="number">0</span>]);</div><div class="line">                <span class="comment">// ...</span></div><div class="line">                context.write(NullWritable.get(), <span class="keyword">new</span> Text(StringUtils.join(output, <span class="string">","</span>)));</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">assert</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">reduce</span><span class="params">(TaggedKey key, Iterable&lt;Text&gt; values, Context context)</span></span></div><div class="line"><span class="function">        <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</div><div class="line"></div><div class="line">    List&lt;String&gt; products = <span class="keyword">new</span> ArrayList&lt;String&gt;();</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (Text value : values) &#123;</div><div class="line">        <span class="keyword">switch</span> (key.getTag().get()) &#123;</div><div class="line">        <span class="keyword">case</span> <span class="number">1</span>: <span class="comment">// Product</span></div><div class="line">            products.add(value.toString());</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">case</span> <span class="number">2</span>: <span class="comment">// Order</span></div><div class="line">            String[] order = value.toString().split(<span class="string">","</span>);</div><div class="line">            <span class="keyword">for</span> (String productString : products) &#123;</div><div class="line">                String[] product = productString.split(<span class="string">","</span>);</div><div class="line">                List&lt;String&gt; output = <span class="keyword">new</span> ArrayList&lt;String&gt;();</div><div class="line">                output.add(order[<span class="number">0</span>]);</div><div class="line">                <span class="comment">// ...</span></div><div class="line">                context.write(NullWritable.get(), <span class="keyword">new</span> Text(StringUtils.join(output, <span class="string">","</span>)));</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">assert</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>遍历values时，开始都是tag=1的记录，之后都是tag=2的记录。以上代码可以<a href="https://github.com/jizhang/mapred-sandbox/blob/master/src/main/java/com/shzhangji/mapred_sandbox/join/ReduceSideJoinJob.java" target="_blank" rel="external">在这里</a>查看。</p>
 <p>对于第二个问题，超过缓存大小的记录（默认25000条）就会存入临时文件，由Hive的RowContainer类实现，具体可以看<a href="http://grepcode.com/file/repository.cloudera.com/content/repositories/releases/org.apache.hive/hive-exec/0.10.0-cdh4.5.0/org/apache/hadoop/hive/ql/exec/persistence/RowContainer.java#RowContainer.add%28java.util.List%29" target="_blank" rel="external">这个链接</a>。</p>
 <p>需要注意的是，Hive默认是按SQL中表的书写顺序来决定排序的，因此应该将大表放在最后。如果要人工改变顺序，可以使用STREAMTABLE配置：</p>
@@ -174,9 +158,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/" data-id="cj5t40mh50029pmzjwg4c9nrh" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2015/01/13/understand-reduce-side-join/" data-id="cj5t86esl0025b6zjhr79oy68" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2015/01/13/understand-reduce-side-join/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/hadoop/">hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/mapreduce/">mapreduce</a></li></ul>
@@ -299,7 +283,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'jizhang';
   
-  var disqus_url = 'http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/';
+  var disqus_url = 'http://shzhangji.com/2015/01/13/understand-reduce-side-join/';
   
   (function(){
     var dsq = document.createElement('script');

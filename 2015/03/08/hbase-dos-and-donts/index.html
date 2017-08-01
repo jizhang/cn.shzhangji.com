@@ -5,19 +5,18 @@
   
   <title>Apache HBase的适用场景 | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="原文：http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/
-最近我在洛杉矶Hadoop用户组做了一次关于HBase适用场景的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分">
+  <meta name="description" content="原文：http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/ 最近我在洛杉矶Hadoop用户组做了一次关于HBase适用场景的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分">
+<meta name="keywords" content="translation">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Apache HBase的适用场景">
 <meta property="og:url" content="http://shzhangji.com/2015/03/08/hbase-dos-and-donts/index.html">
 <meta property="og:site_name" content="张吉的博客">
-<meta property="og:description" content="原文：http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/
-最近我在洛杉矶Hadoop用户组做了一次关于HBase适用场景的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分">
+<meta property="og:description" content="原文：http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/ 最近我在洛杉矶Hadoop用户组做了一次关于HBase适用场景的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2017-03-09T04:27:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Apache HBase的适用场景">
-<meta name="twitter:description" content="原文：http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/
-最近我在洛杉矶Hadoop用户组做了一次关于HBase适用场景的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分">
+<meta name="twitter:description" content="原文：http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/ 最近我在洛杉矶Hadoop用户组做了一次关于HBase适用场景的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分">
 <meta name="twitter:creator" content="@zjerryj">
 <link rel="publisher" href="zhangji87@gmail.com">
   
@@ -87,7 +86,7 @@ ga('send', 'pageview');
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
       </div>
     </div>
   </div>
@@ -148,9 +147,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/" data-id="cj5t40mh8002cpmzj86grrl6a" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2015/03/08/hbase-dos-and-donts/" data-id="cj5t86esp0027b6zjz4afcu2z" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2015/03/08/hbase-dos-and-donts/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/translation/">translation</a></li></ul>
@@ -273,7 +272,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'jizhang';
   
-  var disqus_url = 'http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/';
+  var disqus_url = 'http://shzhangji.com/2015/03/08/hbase-dos-and-donts/';
   
   (function(){
     var dsq = document.createElement('script');

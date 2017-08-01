@@ -5,22 +5,18 @@
   
   <title>Clojure 代码规范 | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="原文地址：https://github.com/bbatsov/clojure-style-guide
-这份Clojure代码规范旨在提供一系列的最佳实践，让现实工作中的Clojure程序员能够写出易于维护的代码，并能与他人协作和共享。一份反应真实需求的代码规范才能被人接收，而那些理想化的、甚至部分观点遭到程序员拒绝的代码规范注定不会长久——无论它有多出色。
-这份规范由多个章节组成，每个章节包含一">
+  <meta name="description" content="原文地址：https://github.com/bbatsov/clojure-style-guide 这份Clojure代码规范旨在提供一系列的最佳实践，让现实工作中的Clojure程序员能够写出易于维护的代码，并能与他人协作和共享。一份反应真实需求的代码规范才能被人接收，而那些理想化的、甚至部分观点遭到程序员拒绝的代码规范注定不会长久——无论它有多出色。 这份规范由多个章节组成，每个章节包含一">
+<meta name="keywords" content="clojure">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Clojure 代码规范">
 <meta property="og:url" content="http://shzhangji.com/2013/01/04/clojure-style-guide/index.html">
 <meta property="og:site_name" content="张吉的博客">
-<meta property="og:description" content="原文地址：https://github.com/bbatsov/clojure-style-guide
-这份Clojure代码规范旨在提供一系列的最佳实践，让现实工作中的Clojure程序员能够写出易于维护的代码，并能与他人协作和共享。一份反应真实需求的代码规范才能被人接收，而那些理想化的、甚至部分观点遭到程序员拒绝的代码规范注定不会长久——无论它有多出色。
-这份规范由多个章节组成，每个章节包含一">
+<meta property="og:description" content="原文地址：https://github.com/bbatsov/clojure-style-guide 这份Clojure代码规范旨在提供一系列的最佳实践，让现实工作中的Clojure程序员能够写出易于维护的代码，并能与他人协作和共享。一份反应真实需求的代码规范才能被人接收，而那些理想化的、甚至部分观点遭到程序员拒绝的代码规范注定不会长久——无论它有多出色。 这份规范由多个章节组成，每个章节包含一">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2017-03-09T03:37:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Clojure 代码规范">
-<meta name="twitter:description" content="原文地址：https://github.com/bbatsov/clojure-style-guide
-这份Clojure代码规范旨在提供一系列的最佳实践，让现实工作中的Clojure程序员能够写出易于维护的代码，并能与他人协作和共享。一份反应真实需求的代码规范才能被人接收，而那些理想化的、甚至部分观点遭到程序员拒绝的代码规范注定不会长久——无论它有多出色。
-这份规范由多个章节组成，每个章节包含一">
+<meta name="twitter:description" content="原文地址：https://github.com/bbatsov/clojure-style-guide 这份Clojure代码规范旨在提供一系列的最佳实践，让现实工作中的Clojure程序员能够写出易于维护的代码，并能与他人协作和共享。一份反应真实需求的代码规范才能被人接收，而那些理想化的、甚至部分观点遭到程序员拒绝的代码规范注定不会长久——无论它有多出色。 这份规范由多个章节组成，每个章节包含一">
 <meta name="twitter:creator" content="@zjerryj">
 <link rel="publisher" href="zhangji87@gmail.com">
   
@@ -90,7 +86,7 @@ ga('send', 'pageview');
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
       </div>
     </div>
   </div>
@@ -171,7 +167,7 @@ ga('send', 'pageview');
 <ul>
 <li>跨行的文档说明字符串每行都要缩进。</li>
 </ul>
-<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">;; 正确</span></div><div class="line">(<span class="name"><span class="builtin-name">defn</span></span> foo</div><div class="line">  <span class="string">"Hello there. This is</span></div><div class="line">  a multi-line docstring."</div><div class="line">  []</div><div class="line">  (<span class="name">bar</span>))</div><div class="line"></div><div class="line"><span class="comment">;; 错误</span></div><div class="line">(<span class="name"><span class="builtin-name">defn</span></span> foo</div><div class="line">  <span class="string">"Hello there. This is</span></div><div class="line">a multi-line docstring."</div><div class="line">  []</div><div class="line">  (<span class="name">bar</span>))</div></pre></td></tr></table></figure>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">;; 正确</span></div><div class="line">(<span class="name"><span class="builtin-name">defn</span></span> foo</div><div class="line">  <span class="string">"Hello there. This is</span></div><div class="line"><span class="string">  a multi-line docstring."</span></div><div class="line">  []</div><div class="line">  (<span class="name">bar</span>))</div><div class="line"></div><div class="line"><span class="comment">;; 错误</span></div><div class="line">(<span class="name"><span class="builtin-name">defn</span></span> foo</div><div class="line">  <span class="string">"Hello there. This is</span></div><div class="line"><span class="string">a multi-line docstring."</span></div><div class="line">  []</div><div class="line">  (<span class="name">bar</span>))</div></pre></td></tr></table></figure>
 <ul>
 <li>使用Unix风格的换行符（*BSD、Solaris、Linux、OSX用户无需设置，Windows用户则需要格外注意了）<ul>
 <li>如果你使用Git，为了防止项目中意外引入Windows风格的换行符，不妨添加如下设置：</li>
@@ -267,11 +263,11 @@ ga('send', 'pageview');
 <ul>
 <li>当匿名函数只有一个参数时，优先使用<code>%</code>，而非<code>%1</code>。</li>
 </ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">;; 正确</div><div class="line">#(Math/round %)</div><div class="line"></div><div class="line">;; 错误</div><div class="line">#(Math/round %1)</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">;; 正确</span></div><div class="line">#(Math/round %)</div><div class="line"></div><div class="line"><span class="comment">;; 错误</span></div><div class="line">#(Math/round %1)</div></pre></td></tr></table></figure>
 <ul>
 <li>当匿名函数有多个参数时，优先使用<code>%1</code>，而非<code>%</code>。</li>
 </ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">;; 正确</div><div class="line">#(Math/pow %1 %2)</div><div class="line"></div><div class="line">;; 错误</div><div class="line">#(Math/pow % %2)</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">;; 正确</span></div><div class="line">#(Math/pow %1 %2)</div><div class="line"></div><div class="line"><span class="comment">;; 错误</span></div><div class="line">#(Math/pow % %2)</div></pre></td></tr></table></figure>
 <ul>
 <li>只有在必要的时候才使用匿名函数。</li>
 </ul>
@@ -279,7 +275,7 @@ ga('send', 'pageview');
 <ul>
 <li>当匿名函数包含多行语句时，使用<code>fn</code>来定义，而非<code>#(do ...)</code>。</li>
 </ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">;; 正确</div><div class="line">(fn [x]</div><div class="line">  (println x)</div><div class="line">  (* x 2))</div><div class="line"></div><div class="line">;; 错误（你不得不使用`do`）</div><div class="line">#(do (println %)</div><div class="line">     (* % 2))</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">;; 正确</span></div><div class="line">(<span class="name"><span class="builtin-name">fn</span></span> [x]</div><div class="line">  (<span class="name">println</span> x)</div><div class="line">  (<span class="name"><span class="builtin-name">*</span></span> x <span class="number">2</span>))</div><div class="line"></div><div class="line"><span class="comment">;; 错误（你不得不使用`do`）</span></div><div class="line">#(do (println %)</div><div class="line">     (* % 2))</div></pre></td></tr></table></figure>
 <ul>
 <li>在特定情况下优先使用<code>complement</code>，而非匿名函数。</li>
 </ul>
@@ -304,7 +300,7 @@ ga('send', 'pageview');
 <ul>
 <li>在<code>cond</code>和<code>condp</code>中，使用<code>:else</code>来处理不满足条件的情况。</li>
 </ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">;; 正确</div><div class="line">(cond</div><div class="line">  (&lt; n 0) "negative"</div><div class="line">  (&gt; n 0) "positive"</div><div class="line">  :else "zero"))</div><div class="line"></div><div class="line">;; 错误</div><div class="line">(cond</div><div class="line">  (&lt; n 0) "negative"</div><div class="line">  (&gt; n 0) "positive"</div><div class="line">  true "zero"))</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">;; 正确</span></div><div class="line">(<span class="name"><span class="builtin-name">cond</span></span></div><div class="line">  (<span class="name"><span class="builtin-name">&lt;</span></span> n <span class="number">0</span>) <span class="string">"negative"</span></div><div class="line">  (<span class="name"><span class="builtin-name">&gt;</span></span> n <span class="number">0</span>) <span class="string">"positive"</span></div><div class="line">  :else "zero"))</div><div class="line"></div><div class="line"><span class="comment">;; 错误</span></div><div class="line">(<span class="name"><span class="builtin-name">cond</span></span></div><div class="line">  (<span class="name"><span class="builtin-name">&lt;</span></span> n <span class="number">0</span>) <span class="string">"negative"</span></div><div class="line">  (<span class="name"><span class="builtin-name">&gt;</span></span> n <span class="number">0</span>) <span class="string">"positive"</span></div><div class="line">  true "zero"))</div></pre></td></tr></table></figure>
 <ul>
 <li>当比较的变量和方式相同时，优先使用<code>condp</code>，而非<code>cond</code>。</li>
 </ul>
@@ -325,7 +321,7 @@ ga('send', 'pageview');
 <li><p>进行Java操作时，优先使用Clojure提供的语法糖。</p>
 </li>
 </ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">;;; 创建对象</div><div class="line">;; 正确</div><div class="line">(java.util.ArrayList. 100)</div><div class="line"></div><div class="line">;; 错误</div><div class="line">(new java.util.ArrayList 100)</div><div class="line"></div><div class="line">;;; 调用静态方法</div><div class="line">;; 正确</div><div class="line">(Math/pow 2 10)</div><div class="line"></div><div class="line">;; 错误</div><div class="line">(. Math pow 2 10)</div><div class="line"></div><div class="line">;;; 调用实例方法</div><div class="line">;; 正确</div><div class="line">(.substring "hello" 1 3)</div><div class="line"></div><div class="line">;; 错误</div><div class="line">(. "hello" substring 1 3)</div><div class="line"></div><div class="line">;;; 访问静态属性</div><div class="line">;; 正确</div><div class="line">Integer/MAX_VALUE</div><div class="line"></div><div class="line">;; 错误</div><div class="line">(. Integer MAX_VALUE)</div><div class="line"></div><div class="line">;;; 访问实例属性</div><div class="line">;; 正确</div><div class="line">(.someField some-object)</div><div class="line"></div><div class="line">;; 错误</div><div class="line">(. some-object some-field)</div></pre></td></tr></table></figure>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="comment">;;; 创建对象</span></div><div class="line"><span class="comment">;; 正确</span></div><div class="line">(<span class="name">java.util.ArrayList.</span> <span class="number">100</span>)</div><div class="line"></div><div class="line"><span class="comment">;; 错误</span></div><div class="line">(<span class="name"><span class="builtin-name">new</span></span> java.util.ArrayList <span class="number">100</span>)</div><div class="line"></div><div class="line"><span class="comment">;;; 调用静态方法</span></div><div class="line"><span class="comment">;; 正确</span></div><div class="line">(<span class="name">Math/pow</span> <span class="number">2</span> <span class="number">10</span>)</div><div class="line"></div><div class="line"><span class="comment">;; 错误</span></div><div class="line">(<span class="name"><span class="builtin-name">.</span></span> Math pow <span class="number">2</span> <span class="number">10</span>)</div><div class="line"></div><div class="line"><span class="comment">;;; 调用实例方法</span></div><div class="line"><span class="comment">;; 正确</span></div><div class="line">(<span class="name">.substring</span> <span class="string">"hello"</span> <span class="number">1</span> <span class="number">3</span>)</div><div class="line"></div><div class="line"><span class="comment">;; 错误</span></div><div class="line">(<span class="name"><span class="builtin-name">.</span></span> <span class="string">"hello"</span> substring <span class="number">1</span> <span class="number">3</span>)</div><div class="line"></div><div class="line"><span class="comment">;;; 访问静态属性</span></div><div class="line"><span class="comment">;; 正确</span></div><div class="line">Integer/MAX_VALUE</div><div class="line"></div><div class="line"><span class="comment">;; 错误</span></div><div class="line">(<span class="name"><span class="builtin-name">.</span></span> Integer MAX_VALUE)</div><div class="line"></div><div class="line"><span class="comment">;;; 访问实例属性</span></div><div class="line"><span class="comment">;; 正确</span></div><div class="line">(<span class="name">.someField</span> some-object)</div><div class="line"></div><div class="line"><span class="comment">;; 错误</span></div><div class="line">(<span class="name"><span class="builtin-name">.</span></span> some-object some-field)</div></pre></td></tr></table></figure>
 <h2 id="命名"><a href="#命名" class="headerlink" title="命名"></a><a name="naming"></a>命名</h2><blockquote>
 <p>编程中真正的难点只有两个：验证缓存的有效性；命名。<br><br>—— Phil Karlton</p>
 </blockquote>
@@ -379,7 +375,7 @@ ga('send', 'pageview');
 <ul>
 <li>编写集合时，优先使用内置的语法形式，而非构造函数。但是，在定义唯一值集合（set）时，只有当元素都是常量时才可使用内置语法，否则应使用构造函数，如下所示：</li>
 </ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">;; 正确</div><div class="line">[1 2 3]</div><div class="line">#&#123;1 2 3&#125;</div><div class="line">(hash-set (func1) (func2)) ; 元素在运行时确定</div><div class="line"></div><div class="line">;; bad</div><div class="line">(vector 1 2 3)</div><div class="line">(hash-set 1 2 3)</div><div class="line">#&#123;(func1) (func2)&#125; ; 若(func1)和(func2)的值相等，则会抛出运行时异常。</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">;; 正确</span></div><div class="line">[<span class="number">1</span> <span class="number">2</span> <span class="number">3</span>]</div><div class="line">#&#123;1 2 3&#125;</div><div class="line">(<span class="name"><span class="builtin-name">hash-set</span></span> (<span class="name">func1</span>) (<span class="name">func2</span>)) <span class="comment">; 元素在运行时确定</span></div><div class="line"></div><div class="line"><span class="comment">;; bad</span></div><div class="line">(<span class="name"><span class="builtin-name">vector</span></span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span>)</div><div class="line">(<span class="name"><span class="builtin-name">hash-set</span></span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span>)</div><div class="line">#&#123;(func1) (func2)&#125; ; 若(func1)和(func2)的值相等，则会抛出运行时异常。</div></pre></td></tr></table></figure>
 <ul>
 <li><p>避免使用数值索引来访问集合元素。</p>
 </li>
@@ -503,9 +499,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/" data-id="cj5t40mfv000epmzjhm9b5k2s" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2013/01/04/clojure-style-guide/" data-id="cj5t86eq5000bb6zj6jpzqcq5" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2013/01/04/clojure-style-guide/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/clojure/">clojure</a></li></ul>
@@ -628,7 +624,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'jizhang';
   
-  var disqus_url = 'http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/';
+  var disqus_url = 'http://shzhangji.com/2013/01/04/clojure-style-guide/';
   
   (function(){
     var dsq = document.createElement('script');

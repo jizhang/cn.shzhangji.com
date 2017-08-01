@@ -5,22 +5,17 @@
   
   <title>贫血领域模型 | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="原文：http://www.martinfowler.com/bliki/AnemicDomainModel.html
-贫血领域模型是一个存在已久的反模式，目前仍有许多拥趸者。一次我和Eric Evans聊天谈到它时，都觉得这个模型似乎越来越流行了。作为领域模型的推广者，我们觉得这不是一件好事。
-贫血领域模型的最初症状是：它第一眼看起来还真像这么回事儿。项目中有许多对象，它们的命名都是根据领域来的">
+  <meta name="description" content="原文：http://www.martinfowler.com/bliki/AnemicDomainModel.html 贫血领域模型是一个存在已久的反模式，目前仍有许多拥趸者。一次我和Eric Evans聊天谈到它时，都觉得这个模型似乎越来越流行了。作为领域模型的推广者，我们觉得这不是一件好事。 贫血领域模型的最初症状是：它第一眼看起来还真像这么回事儿。项目中有许多对象，它们的命名都是根据领域来的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="贫血领域模型">
 <meta property="og:url" content="http://shzhangji.com/2015/09/05/anemic-domain-model/index.html">
 <meta property="og:site_name" content="张吉的博客">
-<meta property="og:description" content="原文：http://www.martinfowler.com/bliki/AnemicDomainModel.html
-贫血领域模型是一个存在已久的反模式，目前仍有许多拥趸者。一次我和Eric Evans聊天谈到它时，都觉得这个模型似乎越来越流行了。作为领域模型的推广者，我们觉得这不是一件好事。
-贫血领域模型的最初症状是：它第一眼看起来还真像这么回事儿。项目中有许多对象，它们的命名都是根据领域来的">
+<meta property="og:description" content="原文：http://www.martinfowler.com/bliki/AnemicDomainModel.html 贫血领域模型是一个存在已久的反模式，目前仍有许多拥趸者。一次我和Eric Evans聊天谈到它时，都觉得这个模型似乎越来越流行了。作为领域模型的推广者，我们觉得这不是一件好事。 贫血领域模型的最初症状是：它第一眼看起来还真像这么回事儿。项目中有许多对象，它们的命名都是根据领域来的">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2017-03-09T03:37:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="贫血领域模型">
-<meta name="twitter:description" content="原文：http://www.martinfowler.com/bliki/AnemicDomainModel.html
-贫血领域模型是一个存在已久的反模式，目前仍有许多拥趸者。一次我和Eric Evans聊天谈到它时，都觉得这个模型似乎越来越流行了。作为领域模型的推广者，我们觉得这不是一件好事。
-贫血领域模型的最初症状是：它第一眼看起来还真像这么回事儿。项目中有许多对象，它们的命名都是根据领域来的">
+<meta name="twitter:description" content="原文：http://www.martinfowler.com/bliki/AnemicDomainModel.html 贫血领域模型是一个存在已久的反模式，目前仍有许多拥趸者。一次我和Eric Evans聊天谈到它时，都觉得这个模型似乎越来越流行了。作为领域模型的推广者，我们觉得这不是一件好事。 贫血领域模型的最初症状是：它第一眼看起来还真像这么回事儿。项目中有许多对象，它们的命名都是根据领域来的">
 <meta name="twitter:creator" content="@zjerryj">
 <link rel="publisher" href="zhangji87@gmail.com">
   
@@ -90,7 +85,7 @@ ga('send', 'pageview');
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
       </div>
     </div>
   </div>
@@ -145,9 +140,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/" data-id="cj5t40mhc002ipmzjqd5obp06" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/2015/09/05/anemic-domain-model/" data-id="cj5t86et0002eb6zjnz7p9u2p" class="article-share-link">分享</a>
       
-        <a href="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/#disqus_thread" class="article-comment-link">留言</a>
+        <a href="http://shzhangji.com/2015/09/05/anemic-domain-model/#disqus_thread" class="article-comment-link">留言</a>
       
       
     </footer>
@@ -268,7 +263,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = 'jizhang';
   
-  var disqus_url = 'http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/';
+  var disqus_url = 'http://shzhangji.com/2015/09/05/anemic-domain-model/';
   
   (function(){
     var dsq = document.createElement('script');
