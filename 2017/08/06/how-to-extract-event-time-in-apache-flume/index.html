@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Apache Flume 如何解析消息中的事件时间 | 张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="数据开发工作中，从上游消息队列抽取数据是一项常规的 ETL 流程。在基于 Hadoop 构建的数据仓库体系中，我们通常会使用 Flume 将事件日志从 Kafka 抽取到 HDFS，然后针对其开发 MapReduce 脚本，或直接创建以时间分区的 Hive 外部表。这项流程中的关键一环是提取日志中的事件时间，因为实时数据通常会包含延迟，且在系统临时宕机的情况下，我们需要追回遗漏的数据，因而使用的时">
+<meta name="keywords" content="flume,etl,java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Apache Flume 如何解析消息中的事件时间">
+<meta property="og:url" content="http://shzhangji.com/2017/08/06/how-to-extract-event-time-in-apache-flume/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta property="og:description" content="数据开发工作中，从上游消息队列抽取数据是一项常规的 ETL 流程。在基于 Hadoop 构建的数据仓库体系中，我们通常会使用 Flume 将事件日志从 Kafka 抽取到 HDFS，然后针对其开发 MapReduce 脚本，或直接创建以时间分区的 Hive 外部表。这项流程中的关键一环是提取日志中的事件时间，因为实时数据通常会包含延迟，且在系统临时宕机的情况下，我们需要追回遗漏的数据，因而使用的时">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/flume.png">
+<meta property="og:updated_time" content="2017-08-06T01:09:06.810Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Apache Flume 如何解析消息中的事件时间">
+<meta name="twitter:description" content="数据开发工作中，从上游消息队列抽取数据是一项常规的 ETL 流程。在基于 Hadoop 构建的数据仓库体系中，我们通常会使用 Flume 将事件日志从 Kafka 抽取到 HDFS，然后针对其开发 MapReduce 脚本，或直接创建以时间分区的 Hive 外部表。这项流程中的关键一环是提取日志中的事件时间，因为实时数据通常会包含延迟，且在系统临时宕机的情况下，我们需要追回遗漏的数据，因而使用的时">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/flume.png">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/cnblogs/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/cnblogs/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/cnblogs/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/cnblogs/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/cnblogs/">首页</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Digest">摘译</a>
+        
+          <a class="main-nav-link" href="/cnblogs/archives">全部文章</a>
+        
+          <a class="main-nav-link" href="http://shzhangji.com/">English</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/cnblogs/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-how-to-extract-event-time-in-apache-flume" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/" class="article-date">
+  <time datetime="2017-08-06T01:09:06.000Z" itemprop="datePublished">2017-08-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Big-Data/">Big Data</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Apache Flume 如何解析消息中的事件时间
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>数据开发工作中，从上游消息队列抽取数据是一项常规的 ETL 流程。在基于 Hadoop 构建的数据仓库体系中，我们通常会使用 Flume 将事件日志从 Kafka 抽取到 HDFS，然后针对其开发 MapReduce 脚本，或直接创建以时间分区的 Hive 外部表。这项流程中的关键一环是提取日志中的事件时间，因为实时数据通常会包含延迟，且在系统临时宕机的情况下，我们需要追回遗漏的数据，因而使用的时间戳必须是事件产生的时间。Flume 提供的诸多工具能帮助我们非常便捷地实现这一点。</p>
+<p><img src="/cnblogs/images/flume.png" alt="Apache Flume"></p>
+<h2 id="HDFS-Sink-和时间戳头信息"><a href="#HDFS-Sink-和时间戳头信息" class="headerlink" title="HDFS Sink 和时间戳头信息"></a>HDFS Sink 和时间戳头信息</h2><p>以下是一个基本的 HDFS Sink 配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">a1.sinks = k1</div><div class="line">a1.sinks.k1.type = hdfs</div><div class="line">a1.sinks.k1.hdfs.path = /user/flume/ds_alog/dt=%Y%m%d</div></pre></td></tr></table></figure>
+<p><code>%Y%m%d</code> 是该 Sink 支持的时间占位符，它会使用头信息中 <code>timestamp</code> 的值来替换这些占位符。HDFS Sink 还提供了 <code>hdfs.useLocalTimeStamp</code> 选项，直接使用当前系统时间来替换时间占位符，但这并不是我们想要达到的目的。</p>
+<p>我们还可以使用 Hive Sink 直接将事件日志导入成 Hive 表，它能直接和 Hive 元数据库通信，自动创建表分区，并支持分隔符分隔和 JSON 两种序列化形式。当然，它同样需要一个 <code>timestamp</code> 头信息。不过，我们没有选择 Hive Sink，主要出于以下原因：</p>
+<ul>
+<li>它不支持正则表达式，因此我们无法从类似访问日志这样的数据格式中提取字段列表；</li>
+<li>它所提取的字段列表是根据 Hive 表信息产生的。假设上游数据源在 JSON 日志中加入了新的键值，直至我们主动更新 Hive 元信息，这些新增字段将被直接丢弃。对于数据仓库来说，完整保存原始数据是很有必要的。</li>
+</ul>
+<a id="more"></a>
+<h2 id="正则表达式拦截器"><a href="#正则表达式拦截器" class="headerlink" title="正则表达式拦截器"></a>正则表达式拦截器</h2><p>Flume 提供了拦截器机制，我们可以在 Source 之后接上一系列操作，对数据进行基础的转换。例如，<code>TimestampInterceptor</code> 拦截器可以在消息头信息中增加当前时间。在本节中，我将演示如何借助拦截器来提取访问日志型和 JSON 型消息中的事件时间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">0.123 [2017-06-27 09:08:00] GET /</div><div class="line">0.234 [2017-06-27 09:08:01] GET /</div></pre></td></tr></table></figure>
+<p><a href="http://flume.apache.org/FlumeUserGuide.html#regex-extractor-interceptor" target="_blank" rel="external"><code>RegexExtractorInterceptor</code></a> 可以基于正则表达式来提取字符串，配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">a1.sources.r1.interceptors = i1</div><div class="line">a1.sources.r1.interceptors.i1.type = regex_extractor</div><div class="line">a1.sources.r1.interceptors.i1.regex = \\[(.*?)\\]</div><div class="line">a1.sources.r1.interceptors.i1.serializers = s1</div><div class="line">a1.sources.r1.interceptors.i1.serializers.s1.type = org.apache.flume.interceptor.RegexExtractorInterceptorMillisSerializer</div><div class="line">a1.sources.r1.interceptors.i1.serializers.s1.name = timestamp</div><div class="line">a1.sources.r1.interceptors.i1.serializers.s1.pattern = yyyy-MM-dd HH:mm:ss</div></pre></td></tr></table></figure>
+<p>它会搜索字符串中满足 <code>\[(.*?)\]</code> 模式的子串，将第一个子模式即 <code>s1</code> 作为日期字符串进行解析，并将其转化成毫秒级时间戳，存入头信息 <code>timestamp</code>。</p>
+<h3 id="搜索与替换拦截器"><a href="#搜索与替换拦截器" class="headerlink" title="搜索与替换拦截器"></a>搜索与替换拦截器</h3><p>对于 JSON 数据:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&#123;<span class="attr">"actionTime"</span>:<span class="number">1498525680.023</span>,<span class="attr">"actionType"</span>:<span class="string">"pv"</span>&#125;</div><div class="line">&#123;<span class="attr">"actionTime"</span>:<span class="number">1498525681.349</span>,<span class="attr">"actionType"</span>:<span class="string">"pv"</span>&#125;</div></pre></td></tr></table></figure>
+<p>我们同样可以用正则拦截器将 <code>actionTime</code> 提取出来，但要注意的是该字段的单位是秒，而 HDFS Sink 要求的是毫秒，这就需要我们在提取之间对其进行转换，如直接将 <code>.</code> 去掉。<code>SearchAndReplaceInterceptor</code> 可以做到这一点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">a1.sources.r1.interceptors = i1 i2</div><div class="line">a1.sources.r1.interceptors.i1.type = search_replace</div><div class="line">a1.sources.r1.interceptors.i1.searchPattern = \&quot;actionTime\&quot;:(\\d+)\\.(\\d+)</div><div class="line">a1.sources.r1.interceptors.i1.replaceString = \&quot;actionTime\&quot;:$1$2</div><div class="line">a1.sources.r1.interceptors.i2.type = regex_extractor</div><div class="line">a1.sources.r1.interceptors.i2.regex = \&quot;actionTime\&quot;:(\\d+)</div><div class="line">a1.sources.r1.interceptors.i2.serializers = s1</div><div class="line">a1.sources.r1.interceptors.i2.serializers.s1.name = timestamp</div></pre></td></tr></table></figure>
+<p>这里我们串联了两个拦截器。首先使用正则替换将 <code>1498525680.023</code> 转换成 <code>1498525680023</code>，再用正则提取出 <code>actionTime</code> 并存入头信息。</p>
+<h3 id="自定义拦截器"><a href="#自定义拦截器" class="headerlink" title="自定义拦截器"></a>自定义拦截器</h3><p>我们还可以编写自定义的拦截器，从而一次性完成提取、转换和更新操作。我们只需实现 <code>org.apache.flume.interceptor.Interceptor</code> 接口的 <code>intercept</code> 方法即可，源代码可以在 GitHub（<a href="https://github.com/jizhang/java-sandbox/blob/blog-flume/src/main/java/com/shzhangji/javasandbox/flume/ActionTimeInterceptor.java" target="_blank" rel="external">链接</a>）中找到，记得需要添加 <code>flume-ng-core</code> 依赖：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ActionTimeInterceptor</span> <span class="keyword">implements</span> <span class="title">Interceptor</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> ObjectMapper mapper = <span class="keyword">new</span> ObjectMapper();</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Event <span class="title">intercept</span><span class="params">(Event event)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            JsonNode node = mapper.readTree(<span class="keyword">new</span> ByteArrayInputStream(event.getBody()));</div><div class="line">            <span class="keyword">long</span> timestamp = (<span class="keyword">long</span>) (node.get(<span class="string">"actionTime"</span>).getDoubleValue() * <span class="number">1000</span>);</div><div class="line">            event.getHeaders().put(<span class="string">"timestamp"</span>, Long.toString(timestamp));</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            <span class="comment">// no-op</span></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> event;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="使用-Kafka-Channel-直接导入数据"><a href="#使用-Kafka-Channel-直接导入数据" class="headerlink" title="使用 Kafka Channel 直接导入数据"></a>使用 Kafka Channel 直接导入数据</h2><p>当上游消息系统是 Kafka，并且你能够完全控制消息的数据格式，那就可以省去 Source 一环，直接用 Kafka Channel 将数据导入至 HDFS。其中的关键在于要使用 <code>AvroFlumeEvent</code> 格式来存储消息，这样 <a href="http://flume.apache.org/FlumeUserGuide.html#kafka-channel" target="_blank" rel="external">Kafka Channel</a> 才能从消息体中解析出 <code>timestamp</code> 头信息。如果消息内容是纯文本，那下游的 HDFS Sink 就会报时间戳找不到的错误了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 构建 AvroFlumeEvent 消息，该类可以在 flume-ng-sdk 依赖中找到</span></div><div class="line">Map&lt;CharSequence, CharSequence&gt; headers = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">headers.put(<span class="string">"timestamp"</span>, <span class="string">"1498525680023"</span>);</div><div class="line">String body = <span class="string">"some message"</span>;</div><div class="line">AvroFlumeEvent event = <span class="keyword">new</span> AvroFlumeEvent(headers, ByteBuffer.wrap(body.getBytes()));</div><div class="line"></div><div class="line"><span class="comment">// 使用 Avro 编码器对消息进行序列化</span></div><div class="line">ByteArrayOutputStream out = <span class="keyword">new</span> ByteArrayOutputStream();</div><div class="line">BinaryEncoder encoder = EncoderFactory.get().directBinaryEncoder(out, <span class="keyword">null</span>);</div><div class="line">SpecificDatumWriter&lt;AvroFlumeEvent&gt; writer = <span class="keyword">new</span> SpecificDatumWriter&lt;&gt;(AvroFlumeEvent.class);</div><div class="line">writer.write(event, encoder);</div><div class="line">encoder.flush();</div><div class="line"></div><div class="line"><span class="comment">// 发送字节码至 Kafka</span></div><div class="line">producer.send(<span class="keyword">new</span> ProducerRecord&lt;String, <span class="keyword">byte</span>[]&gt;(<span class="string">"alog"</span>, out.toByteArray()));</div></pre></td></tr></table></figure>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://flume.apache.org/FlumeUserGuide.html" target="_blank" rel="external">http://flume.apache.org/FlumeUserGuide.html</a></li>
+<li><a href="https://github.com/apache/flume" target="_blank" rel="external">https://github.com/apache/flume</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/2017/08/06/how-to-extract-event-time-in-apache-flume/" data-id="cj6015mxg0035lvm6oy2hxbwp" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/2017/08/06/how-to-extract-event-time-in-apache-flume/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/etl/">etl</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/flume/">flume</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/java/">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Spark Streaming 中如何实现 Exactly-Once 语义</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/cnblogs/tags/analytics/" style="font-size: 13.33px;">analytics</a> <a href="/cnblogs/tags/aosa/" style="font-size: 13.33px;">aosa</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 10px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 10px;">flume</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 16.67px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 13.33px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 10px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 13.33px;">javascript</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 16.67px;">noir</a> <a href="/cnblogs/tags/ops/" style="font-size: 13.33px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 13.33px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 16.67px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/sql/" style="font-size: 10px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 13.33px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 13.33px;">translation</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/">Apache Flume 如何解析消息中的事件时间</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/">Spark Streaming 中如何实现 Exactly-Once 语义</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/">通过 SQL 查询学习 Pandas 数据处理</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/">使用 WebSocket 和 Python 编写日志查看器</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/">为什么不用 ES6 完全替换 Lodash</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/cnblogs/" class="mobile-nav-link">首页</a>
+  
+    <a href="/cnblogs/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/cnblogs/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/cnblogs/categories/Digest" class="mobile-nav-link">摘译</a>
+  
+    <a href="/cnblogs/archives" class="mobile-nav-link">全部文章</a>
+  
+    <a href="http://shzhangji.com/" class="mobile-nav-link">English</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  var disqus_url = 'http://shzhangji.com/2017/08/06/how-to-extract-event-time-in-apache-flume/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">
+  <script src="/cnblogs/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/cnblogs/js/script.js"></script>
+
+  </div>
+</body>
+</html>
