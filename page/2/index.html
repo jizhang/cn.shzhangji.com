@@ -89,6 +89,55 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-model-dependency-injection-with-spring-aop" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/" class="article-date">
+  <time datetime="2015-09-12T14:03:00.000Z" itemprop="datePublished">2015-09-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Notes/">Notes</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/">使用Spring AOP向领域模型注入依赖</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在<a href="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/">贫血领域模型</a>这篇译文中，Martin阐述了这种“反模式”的症状和问题，并引用了领域驱动设计中的话来说明领域模型和分层设计之间的关系。对于Spring项目的开发人员来说，贫血领域模型十分常见：模型（或实体）仅仅包含对数据表的映射，通常是一组私有属性和公有getter/setter，所有的业务逻辑都写在服务层中，领域模型仅仅用来传递数据。为了编写真正的领域模型，我们需要将业务逻辑移至模型对象中，这就引出另一个问题：业务逻辑通常需要调用其他服务或模型，而使用<code>new</code>关键字或由JPA创建的对象是不受Spring托管的，也就无法进行依赖注入。解决这个问题的方法有很多，比较之后我选择使用面向切面编程来实现。</p>
+<h2 id="面向切面编程"><a href="#面向切面编程" class="headerlink" title="面向切面编程"></a>面向切面编程</h2><p>面向切面编程，或<a href="https://en.wikipedia.org/wiki/Aspect-oriented_programming" target="_blank" rel="external">AOP</a>，是一种编程范式，和面向对象编程（<a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank" rel="external">OOP</a>）互为补充。简单来说，AOP可以在不修改既有代码的情况下改变代码的行为。开发者通过定义一组规则，在特定的类方法前后增加逻辑，如记录日志、性能监控、事务管理等。这些逻辑称为切面（Aspect），规则称为切点（Pointcut），在调用前还是调用后执行称为通知（Before advice, After advice）。最后，我们可以选择在编译期将这些逻辑写入类文件，或是在运行时动态加载这些逻辑，这是两种不同的织入方式（Compile-time weaving, Load-time weaving）。</p>
+<p>对于领域模型的依赖注入，我们要做的就是使用AOP在对象创建后调用Spring框架来注入依赖。幸运的是，<a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#aop" target="_blank" rel="external">Spring AOP</a>已经提供了<code>@Configurable</code>注解来帮助我们实现这一需求。</p>
+        
+          <p class="article-more-link">
+            <a href="/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/" data-id="cj6ubcff6002jtam6kit27z2s" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-anemic-domain-model" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/cnblogs/2015/09/05/anemic-domain-model/" class="article-date">
@@ -127,7 +176,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/" data-id="cj6a3b07g0028nlm6p8dumseb" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/" data-id="cj6ubcfet002ftam6ewluj6bo" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -187,7 +236,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/" data-id="cj6a3b07r002fnlm6hkck4hp4" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/" data-id="cj6ubcfeg0028tam6tomjuxqi" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -241,7 +290,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/" data-id="cj6a3b07k002bnlm6nfl5x59r" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/" data-id="cj6ubcfea0021tam6w1g4qsi5" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -301,7 +350,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/" data-id="cj6a3b0790024nlm60eaowhwi" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/" data-id="cj6ubcfec0025tam6b46bdtnf" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -354,7 +403,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/" data-id="cj6a3b070001unlm6ta39j3hv" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/" data-id="cj6ubcfeq002dtam6ho43fjsp" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -421,7 +470,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/" data-id="cj6a3b0740021nlm6vpftrxjd" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/" data-id="cj6ubcfe2001vtam6xqt1er1d" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -477,7 +526,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/" data-id="cj6a3b072001wnlm66vjmoejb" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/" data-id="cj6ubcfe6001ztam67c8izqyn" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -530,7 +579,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/" data-id="cj6a3b06g001nnlm66ktrmmf5" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/" data-id="cj6ubcfcz001itam6of13z9lj" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -593,58 +642,9 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/" data-id="cj6a3b06t001qnlm60prb8izy" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/" data-id="cj6ubcfd6001mtam6urbg2jw0" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/#disqus_thread" class="article-comment-link">留言</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-hive-small-files" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/cnblogs/2014/04/07/hive-small-files/" class="article-date">
-  <time datetime="2014-04-07T09:09:00.000Z" itemprop="datePublished">2014-04-07</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/cnblogs/categories/Notes/">Notes</a>►<a class="article-category-link" href="/cnblogs/categories/Notes/Big-Data/">Big Data</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/cnblogs/2014/04/07/hive-small-files/">Hive小文件问题的处理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Hive的后端存储是HDFS，它对大文件的处理是非常高效的，如果合理配置文件系统的块大小，NameNode可以支持很大的数据量。但是在数据仓库中，越是上层的表其汇总程度就越高，数据量也就越小。而且这些表通常会按日期进行分区，随着时间的推移，HDFS的文件数目就会逐渐增加。</p>
-<h2 id="小文件带来的问题"><a href="#小文件带来的问题" class="headerlink" title="小文件带来的问题"></a>小文件带来的问题</h2><p>关于这个问题的阐述可以读一读Cloudera的<a href="http://blog.cloudera.com/blog/2009/02/the-small-files-problem/" target="_blank" rel="external">这篇文章</a>。简单来说，HDFS的文件元信息，包括位置、大小、分块信息等，都是保存在NameNode的内存中的。每个对象大约占用150个字节，因此一千万个文件及分块就会占用约3G的内存空间，一旦接近这个量级，NameNode的性能就会开始下降了。</p>
-<p>此外，HDFS读写小文件时也会更加耗时，因为每次都需要从NameNode获取元信息，并与对应的DataNode建立连接。对于MapReduce程序来说，小文件还会增加Mapper的个数，每个脚本只处理很少的数据，浪费了大量的调度时间。当然，这个问题可以通过使用CombinedInputFile和JVM重用来解决。</p>
-        
-          <p class="article-more-link">
-            <a href="/cnblogs/2014/04/07/hive-small-files/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/" data-id="cj6a3b06a001jnlm62fhi6vgu" class="article-share-link">分享</a>
-      
-        <a href="http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/#disqus_thread" class="article-comment-link">留言</a>
       
       
     </footer>
@@ -677,7 +677,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/cnblogs/tags/analytics/" style="font-size: 13.33px;">analytics</a> <a href="/cnblogs/tags/aosa/" style="font-size: 13.33px;">aosa</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 13.33px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 10px;">flume</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 16.67px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 13.33px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 13.33px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 13.33px;">javascript</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 16.67px;">noir</a> <a href="/cnblogs/tags/ops/" style="font-size: 13.33px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 13.33px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 16.67px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/sql/" style="font-size: 10px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 13.33px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 13.33px;">translation</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 13.33px;">analytics</a> <a href="/cnblogs/tags/aosa/" style="font-size: 13.33px;">aosa</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 13.33px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 10px;">flume</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 16.67px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 13.33px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 16.67px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 13.33px;">javascript</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 16.67px;">noir</a> <a href="/cnblogs/tags/ops/" style="font-size: 13.33px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 13.33px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 16.67px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/sql/" style="font-size: 10px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 16.67px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 13.33px;">translation</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
     </div>
   </div>
 
@@ -699,6 +699,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/">实时计算工具库 stream-lib 使用指南</a>
+          </li>
+        
+          <li>
             <a href="/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/">使用 Binlog 和 Canal 从 MySQL 抽取数据</a>
           </li>
         
@@ -712,10 +716,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/">通过 SQL 查询学习 Pandas 数据处理</a>
-          </li>
-        
-          <li>
-            <a href="/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/">使用 WebSocket 和 Python 编写日志查看器</a>
           </li>
         
       </ul>

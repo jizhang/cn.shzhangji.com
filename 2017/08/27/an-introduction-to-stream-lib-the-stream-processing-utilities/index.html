@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>实时计算工具库 stream-lib 使用指南 | 张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="进行大数据处理时，计算唯一值、95% 分位数等操作非常占用空间和时间。但有时我们只是想对数据集有一个概略的了解，数值的准确性并不那么重要。实时监控系统中也是如此，可以容忍一定的错误率。目前已经有许多算法可以通过牺牲准确性来减少计算所需的空间和时间，这些算法大多支持数据结构之间的合并，因此可以方便地用在实时计算中。stream-lib 就是一个集成了很多此类算法的实时计算工具库，是对现有研究成果的">
+<meta name="keywords" content="java,stream processing,algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实时计算工具库 stream-lib 使用指南">
+<meta property="og:url" content="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta property="og:description" content="进行大数据处理时，计算唯一值、95% 分位数等操作非常占用空间和时间。但有时我们只是想对数据集有一个概略的了解，数值的准确性并不那么重要。实时监控系统中也是如此，可以容忍一定的错误率。目前已经有许多算法可以通过牺牲准确性来减少计算所需的空间和时间，这些算法大多支持数据结构之间的合并，因此可以方便地用在实时计算中。stream-lib 就是一个集成了很多此类算法的实时计算工具库，是对现有研究成果的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/stream-lib/bloom-filter.jpg">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/stream-lib/count-min-sketch.png">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/stream-lib/t-digest.png">
+<meta property="og:updated_time" content="2017-08-27T05:54:45.088Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="实时计算工具库 stream-lib 使用指南">
+<meta name="twitter:description" content="进行大数据处理时，计算唯一值、95% 分位数等操作非常占用空间和时间。但有时我们只是想对数据集有一个概略的了解，数值的准确性并不那么重要。实时监控系统中也是如此，可以容忍一定的错误率。目前已经有许多算法可以通过牺牲准确性来减少计算所需的空间和时间，这些算法大多支持数据结构之间的合并，因此可以方便地用在实时计算中。stream-lib 就是一个集成了很多此类算法的实时计算工具库，是对现有研究成果的">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/stream-lib/bloom-filter.jpg">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/cnblogs/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/cnblogs/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/cnblogs/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/cnblogs/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/cnblogs/">首页</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Digest">摘译</a>
+        
+          <a class="main-nav-link" href="/cnblogs/archives">全部文章</a>
+        
+          <a class="main-nav-link" href="http://shzhangji.com/">English</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/cnblogs/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com/cnblogs"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-an-introduction-to-stream-lib-the-stream-processing-utilities" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/" class="article-date">
+  <time datetime="2017-08-27T05:47:16.000Z" itemprop="datePublished">2017-08-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Big-Data/">Big Data</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      实时计算工具库 stream-lib 使用指南
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>进行大数据处理时，计算唯一值、95% 分位数等操作非常占用空间和时间。但有时我们只是想对数据集有一个概略的了解，数值的准确性并不那么重要。实时监控系统中也是如此，可以容忍一定的错误率。目前已经有许多算法可以通过牺牲准确性来减少计算所需的空间和时间，这些算法大多支持数据结构之间的合并，因此可以方便地用在实时计算中。<a href="https://github.com/addthis/stream-lib" target="_blank" rel="external"><code>stream-lib</code></a> 就是一个集成了很多此类算法的实时计算工具库，是对现有研究成果的 Java 实现。本文就将介绍这一工具库的使用方法。</p>
+<h2 id="唯一值计算-HyperLogLog"><a href="#唯一值计算-HyperLogLog" class="headerlink" title="唯一值计算 HyperLogLog"></a>唯一值计算 <code>HyperLogLog</code></h2><p>独立访客（UV）是网站的重要指标之一。我们通常会为每一个用户生成一个 UUID，并在 HTTP Cookie 中记录和跟踪，或直接使用 IP 地址做近似计算。我们可以使用一个 <code>HashSet</code> 来计算 UV 的准确值，但无疑会占用大量的空间。<code>HyperLogLog</code> 则是一种近似算法，用于解决此类唯一值计算的问题。该算法<a href="https://en.wikipedia.org/wiki/HyperLogLog" target="_blank" rel="external">在对超过 10^9 个唯一值进行计算时可以做到 2% 的标准差，并只占用 1.5 kB 内存</a>。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.clearspring.analytics<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>stream<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ICardinality card = <span class="keyword">new</span> HyperLogLog(<span class="number">10</span>);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : <span class="keyword">new</span> <span class="keyword">int</span>[] &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">3</span> &#125;) &#123;</div><div class="line">    card.offer(i);</div><div class="line">&#125;</div><div class="line">System.out.println(card.cardinality()); <span class="comment">// 4</span></div></pre></td></tr></table></figure>
+<a id="more"></a>
+<p><code>HyperLogLog</code> 会计算每一个成员二进制值首位有多少个零，如果零的最大个数是 <code>n</code>，则唯一值数量就是 <code>2^n</code>。算法中有两个关键点，首先，成员的值必须是服从正态分布的，这一点可以通过哈希函数实现。<code>stream-lib</code> 使用的是 <a href="https://en.wikipedia.org/wiki/MurmurHash" target="_blank" rel="external">MurmurHash</a>，它简单、快速、且符合分布要求，应用于多种基于哈希查询的算法。其次，为了降低计算结果的方差，集合成员会先被拆分成多个子集合，最后的唯一值数量是各个子集合结果的调和平均数。上文代码中，我们传递给 <code>HyperLogLog</code> 构造函数的整型参数就表示会采用多少个二进制位来进行分桶。最后，准确性可以通过这个公式计算：<code>1.04/sqrt(2^log2m)</code>。</p>
+<p><code>HyperLogLog</code> 是对 <code>LogLog</code> 算法的扩展，而 <code>HyperLogLogPlus</code> 则包含了更多优化策略。比如，它使用了 64 位的哈希函数，以减少哈希碰撞；对于唯一值数较小的集合，会引入纠偏机制；此外，它还对子集合的存储方式做了改进，能够从稀疏型的数据结构逐渐扩展为密集型。这几种算法都已包含在 <code>stream-lib</code> 中。</p>
+<h2 id="集合成员测试-BloomFilter"><a href="#集合成员测试-BloomFilter" class="headerlink" title="集合成员测试 BloomFilter"></a>集合成员测试 <code>BloomFilter</code></h2><p><img src="/cnblogs/images/stream-lib/bloom-filter.jpg" alt="Bloom Filter"></p>
+<p><code>BloomFilter</code> 用于检测一个元素是否包含在集合中，是一种广泛应用的数据结构。它的特点是有一定几率误报（False Positive Probability, FPP），但绝不会漏报（False Negative）。举例来说，Chrome 在检测恶意 URL 时，会在本地维护一个布隆过滤器。当用户输入一个 URL 时，如果布隆过滤器说它不在恶意网址库里，则它一定不在；如果返回结果为真，则 Chrome 会进一步请求服务器以确认是否的确是恶意网址，并提示给用户。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Filter filter = <span class="keyword">new</span> BloomFilter(<span class="number">100</span>, <span class="number">0.01</span>);</div><div class="line">filter.add(<span class="string">"google.com"</span>);</div><div class="line">filter.add(<span class="string">"twitter.com"</span>);</div><div class="line">filter.add(<span class="string">"facebook.com"</span>);</div><div class="line">System.out.println(filter.isPresent(<span class="string">"bing.com"</span>)); <span class="comment">// false</span></div></pre></td></tr></table></figure>
+<p>布隆过滤器的构造过程比较简单：</p>
+<ul>
+<li>创建一个包含 <code>n</code> 个元素的位数组，Java 中可以直接使用 <a href="https://docs.oracle.com/javase/8/docs/api/java/util/BitSet.html" target="_blank" rel="external"><code>BitSet</code></a>；</li>
+<li>使用 <code>k</code> 个哈希函数对新元素进行处理，结果更新到数组的对应位置中；</li>
+<li>当需要测试一个元素是否在集合中时，同样进行 <code>k</code> 次哈希：<ul>
+<li>若哈希结果的每一位都命中了，那这个元素就有可能会在集合中（False Positive）；</li>
+<li>如果不是所有的比特位都命中，则该元素一定不在集合中。</li>
+</ul>
+</li>
+</ul>
+<p>同样，这些哈希函数必须是服从正态分布的，且要做到两两之间相互独立。Murmur 哈希算法能够满足这一要求。FPP 的计算公式为 <code>(1-e^(-kn/m))^k</code>，这个页面（<a href="https://llimllib.github.io/bloomfilter-tutorial/" target="_blank" rel="external">链接</a>）提供了在线的布隆过滤器可视化过程。这一算法的其它应用场景有：邮件服务器中用来判别垃圾发件人；Cassandra、HBase 会用它来过滤不存在的记录行；Squid 则基于布隆过滤器实现了<a href="https://wiki.squid-cache.org/SquidFaq/CacheDigests" target="_blank" rel="external">缓存摘要</a>。</p>
+<h2 id="Top-K-排名-CountMinSketch"><a href="#Top-K-排名-CountMinSketch" class="headerlink" title="Top K 排名 CountMinSketch"></a>Top K 排名 <code>CountMinSketch</code></h2><p><img src="/cnblogs/images/stream-lib/count-min-sketch.png" alt="Count Min Sketch"></p>
+<p><a href="https://stackoverflow.com/a/35356116/1030720" target="_blank" rel="external">图片来源</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Count%E2%80%93min_sketch" target="_blank" rel="external"><code>CountMinSketch</code></a> 是一种“速写”算法，能够使用较小的空间勾勒出数据集内各类事件的频次。比如，我们可以统计出当前最热门的推特内容，或是计算网站访问量最大的页面。当然，这一算法同样会牺牲一定的准确性。</p>
+<p>下面这段代码演示的是如何使用 <code>stream-lib</code> 来统计数据量最多的记录：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">List&lt;String&gt; animals;</div><div class="line">IFrequency freq = <span class="keyword">new</span> CountMinSketch(<span class="number">10</span>, <span class="number">5</span>, <span class="number">0</span>);</div><div class="line">Map&lt;String, Long&gt; top = Collections.emptyMap();</div><div class="line"><span class="keyword">for</span> (String animal : animals) &#123;</div><div class="line">    freq.add(animal, <span class="number">1</span>);</div><div class="line">    top = Stream.concat(top.keySet().stream(), Stream.of(animal)).distinct()</div><div class="line">              .map(a -&gt; <span class="keyword">new</span> SimpleEntry&lt;String, Long&gt;(a, freq.estimateCount(a)))</div><div class="line">              .sorted(Comparator.comparing(SimpleEntry&lt;String, Long&gt;::getValue).reversed())</div><div class="line">              .limit(<span class="number">3</span>)</div><div class="line">              .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));</div><div class="line">&#125;</div><div class="line"></div><div class="line">System.out.println(top); <span class="comment">// &#123;rabbit=25, bird=45, spider=35&#125;</span></div></pre></td></tr></table></figure>
+<p><code>CountMinSketch#estimateCount</code> 方法又称为 <em>点查询</em> ，用来读取“速写”中某一事件的频次。由于数据结构中无法记录具体的值，我们需要在另行编写代码来实现。</p>
+<p><code>CountMinSketch</code> 的数据结构和布隆过滤器类似，只不过它会使用 <code>d</code> 个 <code>w</code> 位的数组，从而组成一个 <code>d x w</code> 的矩阵。加入新值时，该算法会对其应用 <code>d</code> 个哈希函数，并更新到矩阵的相应位置。这些哈希函数只需做到<a href="https://en.wikipedia.org/wiki/Pairwise_independence" target="_blank" rel="external">两两独立</a>即可，因此 <code>stream-lib</code> 使用了一种简单而快速的算法：<code>(a*x+b) mod p</code>。在进行 <em>点查询</em> 时，同样计算该值的哈希结果，找到矩阵中最小的值，即是它的频次。</p>
+<p>这一算法的误差是 <code>ε = e / w</code>，误差概率是 <code>δ = 1 / e ^ d</code>。因此，我们可以通过增加 <code>w</code> 或 <code>d</code> 来提升计算精度。算法论文可以查看这个<a href="https://web.archive.org/web/20060907232042/http://www.eecs.harvard.edu/~michaelm/CS222/countmin.pdf" target="_blank" rel="external">链接</a>。</p>
+<h2 id="分位数计算-T-Digest"><a href="#分位数计算-T-Digest" class="headerlink" title="分位数计算  T-Digest"></a>分位数计算  <code>T-Digest</code></h2><p><img src="/cnblogs/images/stream-lib/t-digest.png" alt="T-Digest"></p>
+<p><a href="https://dataorigami.net/blogs/napkin-folding/19055451-percentile-and-quantile-estimation-of-big-data-the-t-digest" target="_blank" rel="external">图片来源</a></p>
+<p>中位数、95% 分位数，这类计算在描述性统计中很常见。相较于平均数，中位数不会受到异常值的影响，但它的计算过程比较复杂，需要保留所有具体值，排序后取得中间位置的数作为结果。<code>T-Digest</code> 算法则通过一定计算，将数据集的分布情况粗略地记录下来，从而估计出指定的分位数值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Random rand = <span class="keyword">new</span> Random();</div><div class="line">List&lt;Double&gt; data = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">TDigest digest = <span class="keyword">new</span> TDigest(<span class="number">100</span>);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000000</span>; ++i) &#123;</div><div class="line">    <span class="keyword">double</span> d = rand.nextDouble();</div><div class="line">    data.add(d);</div><div class="line">    digest.add(d);</div><div class="line">&#125;</div><div class="line">Collections.sort(data);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">double</span> q : <span class="keyword">new</span> <span class="keyword">double</span>[] &#123; <span class="number">0.1</span>, <span class="number">0.5</span>, <span class="number">0.9</span> &#125;) &#123;</div><div class="line">    System.out.println(String.format(<span class="string">"quantile=%.1f digest=%.4f exact=%.4f"</span>,</div><div class="line">            q, digest.quantile(q), data.get((<span class="keyword">int</span>) (data.size() * q))));</div><div class="line">&#125;</div><div class="line"><span class="comment">// quantile=0.1 digest=0.0998 exact=0.1003</span></div><div class="line"><span class="comment">// quantile=0.5 digest=0.5009 exact=0.5000</span></div><div class="line"><span class="comment">// quantile=0.9 digest=0.8994 exact=0.8998</span></div></pre></td></tr></table></figure>
+<p><code>T-Digest</code> 的论文可以在这个<a href="https://raw.githubusercontent.com/tdunning/t-digest/master/docs/t-digest-paper/histo.pdf" target="_blank" rel="external">链接</a>中找到。简单来说，该算法使用了类似一维 k-means 聚类的过程，将真实的分布情况用若干中心点（Centroid）来描述。此外，不同的 <code>T-Digest</code> 实例之间可以进行合并，得到一个体积略大、但准确性更高的实例，这一点非常适用于并行计算。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我们可以看到，本文提到的大部分算法都是通过牺牲准确性来提升时间与空间的利用效率的。通过对数据集进行“速写”，抓住其中的“特征”，我们就能给出不错的估计结果。<code>stream-lib</code> 以及其它开源项目能够让我们非常便捷地将这类算法应用到实际问题中。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://www.javadoc.io/doc/com.clearspring.analytics/stream/2.9.5" target="_blank" rel="external">https://www.javadoc.io/doc/com.clearspring.analytics/stream/2.9.5</a></li>
+<li><a href="http://www.addthis.com/blog/2011/03/29/new-open-source-stream-summarizing-java-library/" target="_blank" rel="external">http://www.addthis.com/blog/2011/03/29/new-open-source-stream-summarizing-java-library/</a></li>
+<li><a href="https://www.mapr.com/blog/some-important-streaming-algorithms-you-should-know-about" target="_blank" rel="external">https://www.mapr.com/blog/some-important-streaming-algorithms-you-should-know-about</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/" data-id="cj6ubcfgq003gtam6s7ao04fl" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/algorithm/">algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/stream-processing/">stream processing</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">使用 Binlog 和 Canal 从 MySQL 抽取数据</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Python数据平台</h3>
+    <div class="widget">
+      <img src="/cnblogs/images/pydp-qrcode.jpg" style="width: 100%;"></img>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 13.33px;">analytics</a> <a href="/cnblogs/tags/aosa/" style="font-size: 13.33px;">aosa</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 13.33px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 10px;">flume</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 16.67px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 13.33px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 16.67px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 13.33px;">javascript</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 16.67px;">noir</a> <a href="/cnblogs/tags/ops/" style="font-size: 13.33px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 13.33px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 16.67px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/sql/" style="font-size: 10px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 16.67px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 13.33px;">translation</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/">实时计算工具库 stream-lib 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/">使用 Binlog 和 Canal 从 MySQL 抽取数据</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/">Apache Flume 如何解析消息中的事件时间</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/">Spark Streaming 中如何实现 Exactly-Once 语义</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/">通过 SQL 查询学习 Pandas 数据处理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png"></a>
+      <br>
+      &copy; 2017 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/cnblogs/" class="mobile-nav-link">首页</a>
+  
+    <a href="/cnblogs/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/cnblogs/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/cnblogs/categories/Digest" class="mobile-nav-link">摘译</a>
+  
+    <a href="/cnblogs/archives" class="mobile-nav-link">全部文章</a>
+  
+    <a href="http://shzhangji.com/" class="mobile-nav-link">English</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  var disqus_url = 'http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">
+  <script src="/cnblogs/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/cnblogs/js/script.js"></script>
+
+  </div>
+</body>
+</html>

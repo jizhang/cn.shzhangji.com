@@ -5,7 +5,7 @@
   <link href="/cnblogs/atom.xml" rel="self"/>
   
   <link href="http://shzhangji.com/cnblogs/"/>
-  <updated>2017-08-13T02:10:57.720Z</updated>
+  <updated>2017-08-27T05:54:45.088Z</updated>
   <id>http://shzhangji.com/cnblogs/</id>
   
   <author>
@@ -14,6 +14,75 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>实时计算工具库 stream-lib 使用指南</title>
+    <link href="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/"/>
+    <id>http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/</id>
+    <published>2017-08-27T05:47:16.000Z</published>
+    <updated>2017-08-27T05:54:45.088Z</updated>
+    
+    <content type="html"><![CDATA[<p>进行大数据处理时，计算唯一值、95% 分位数等操作非常占用空间和时间。但有时我们只是想对数据集有一个概略的了解，数值的准确性并不那么重要。实时监控系统中也是如此，可以容忍一定的错误率。目前已经有许多算法可以通过牺牲准确性来减少计算所需的空间和时间，这些算法大多支持数据结构之间的合并，因此可以方便地用在实时计算中。<a href="https://github.com/addthis/stream-lib" target="_blank" rel="external"><code>stream-lib</code></a> 就是一个集成了很多此类算法的实时计算工具库，是对现有研究成果的 Java 实现。本文就将介绍这一工具库的使用方法。</p>
+<h2 id="唯一值计算-HyperLogLog"><a href="#唯一值计算-HyperLogLog" class="headerlink" title="唯一值计算 HyperLogLog"></a>唯一值计算 <code>HyperLogLog</code></h2><p>独立访客（UV）是网站的重要指标之一。我们通常会为每一个用户生成一个 UUID，并在 HTTP Cookie 中记录和跟踪，或直接使用 IP 地址做近似计算。我们可以使用一个 <code>HashSet</code> 来计算 UV 的准确值，但无疑会占用大量的空间。<code>HyperLogLog</code> 则是一种近似算法，用于解决此类唯一值计算的问题。该算法<a href="https://en.wikipedia.org/wiki/HyperLogLog" target="_blank" rel="external">在对超过 10^9 个唯一值进行计算时可以做到 2% 的标准差，并只占用 1.5 kB 内存</a>。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.clearspring.analytics<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>stream<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ICardinality card = <span class="keyword">new</span> HyperLogLog(<span class="number">10</span>);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : <span class="keyword">new</span> <span class="keyword">int</span>[] &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">3</span> &#125;) &#123;</div><div class="line">    card.offer(i);</div><div class="line">&#125;</div><div class="line">System.out.println(card.cardinality()); <span class="comment">// 4</span></div></pre></td></tr></table></figure>
+<a id="more"></a>
+<p><code>HyperLogLog</code> 会计算每一个成员二进制值首位有多少个零，如果零的最大个数是 <code>n</code>，则唯一值数量就是 <code>2^n</code>。算法中有两个关键点，首先，成员的值必须是服从正态分布的，这一点可以通过哈希函数实现。<code>stream-lib</code> 使用的是 <a href="https://en.wikipedia.org/wiki/MurmurHash" target="_blank" rel="external">MurmurHash</a>，它简单、快速、且符合分布要求，应用于多种基于哈希查询的算法。其次，为了降低计算结果的方差，集合成员会先被拆分成多个子集合，最后的唯一值数量是各个子集合结果的调和平均数。上文代码中，我们传递给 <code>HyperLogLog</code> 构造函数的整型参数就表示会采用多少个二进制位来进行分桶。最后，准确性可以通过这个公式计算：<code>1.04/sqrt(2^log2m)</code>。</p>
+<p><code>HyperLogLog</code> 是对 <code>LogLog</code> 算法的扩展，而 <code>HyperLogLogPlus</code> 则包含了更多优化策略。比如，它使用了 64 位的哈希函数，以减少哈希碰撞；对于唯一值数较小的集合，会引入纠偏机制；此外，它还对子集合的存储方式做了改进，能够从稀疏型的数据结构逐渐扩展为密集型。这几种算法都已包含在 <code>stream-lib</code> 中。</p>
+<h2 id="集合成员测试-BloomFilter"><a href="#集合成员测试-BloomFilter" class="headerlink" title="集合成员测试 BloomFilter"></a>集合成员测试 <code>BloomFilter</code></h2><p><img src="/cnblogs/images/stream-lib/bloom-filter.jpg" alt="Bloom Filter"></p>
+<p><code>BloomFilter</code> 用于检测一个元素是否包含在集合中，是一种广泛应用的数据结构。它的特点是有一定几率误报（False Positive Probability, FPP），但绝不会漏报（False Negative）。举例来说，Chrome 在检测恶意 URL 时，会在本地维护一个布隆过滤器。当用户输入一个 URL 时，如果布隆过滤器说它不在恶意网址库里，则它一定不在；如果返回结果为真，则 Chrome 会进一步请求服务器以确认是否的确是恶意网址，并提示给用户。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Filter filter = <span class="keyword">new</span> BloomFilter(<span class="number">100</span>, <span class="number">0.01</span>);</div><div class="line">filter.add(<span class="string">"google.com"</span>);</div><div class="line">filter.add(<span class="string">"twitter.com"</span>);</div><div class="line">filter.add(<span class="string">"facebook.com"</span>);</div><div class="line">System.out.println(filter.isPresent(<span class="string">"bing.com"</span>)); <span class="comment">// false</span></div></pre></td></tr></table></figure>
+<p>布隆过滤器的构造过程比较简单：</p>
+<ul>
+<li>创建一个包含 <code>n</code> 个元素的位数组，Java 中可以直接使用 <a href="https://docs.oracle.com/javase/8/docs/api/java/util/BitSet.html" target="_blank" rel="external"><code>BitSet</code></a>；</li>
+<li>使用 <code>k</code> 个哈希函数对新元素进行处理，结果更新到数组的对应位置中；</li>
+<li>当需要测试一个元素是否在集合中时，同样进行 <code>k</code> 次哈希：<ul>
+<li>若哈希结果的每一位都命中了，那这个元素就有可能会在集合中（False Positive）；</li>
+<li>如果不是所有的比特位都命中，则该元素一定不在集合中。</li>
+</ul>
+</li>
+</ul>
+<p>同样，这些哈希函数必须是服从正态分布的，且要做到两两之间相互独立。Murmur 哈希算法能够满足这一要求。FPP 的计算公式为 <code>(1-e^(-kn/m))^k</code>，这个页面（<a href="https://llimllib.github.io/bloomfilter-tutorial/" target="_blank" rel="external">链接</a>）提供了在线的布隆过滤器可视化过程。这一算法的其它应用场景有：邮件服务器中用来判别垃圾发件人；Cassandra、HBase 会用它来过滤不存在的记录行；Squid 则基于布隆过滤器实现了<a href="https://wiki.squid-cache.org/SquidFaq/CacheDigests" target="_blank" rel="external">缓存摘要</a>。</p>
+<h2 id="Top-K-排名-CountMinSketch"><a href="#Top-K-排名-CountMinSketch" class="headerlink" title="Top K 排名 CountMinSketch"></a>Top K 排名 <code>CountMinSketch</code></h2><p><img src="/cnblogs/images/stream-lib/count-min-sketch.png" alt="Count Min Sketch"></p>
+<p><a href="https://stackoverflow.com/a/35356116/1030720" target="_blank" rel="external">图片来源</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Count%E2%80%93min_sketch" target="_blank" rel="external"><code>CountMinSketch</code></a> 是一种“速写”算法，能够使用较小的空间勾勒出数据集内各类事件的频次。比如，我们可以统计出当前最热门的推特内容，或是计算网站访问量最大的页面。当然，这一算法同样会牺牲一定的准确性。</p>
+<p>下面这段代码演示的是如何使用 <code>stream-lib</code> 来统计数据量最多的记录：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">List&lt;String&gt; animals;</div><div class="line">IFrequency freq = <span class="keyword">new</span> CountMinSketch(<span class="number">10</span>, <span class="number">5</span>, <span class="number">0</span>);</div><div class="line">Map&lt;String, Long&gt; top = Collections.emptyMap();</div><div class="line"><span class="keyword">for</span> (String animal : animals) &#123;</div><div class="line">    freq.add(animal, <span class="number">1</span>);</div><div class="line">    top = Stream.concat(top.keySet().stream(), Stream.of(animal)).distinct()</div><div class="line">              .map(a -&gt; <span class="keyword">new</span> SimpleEntry&lt;String, Long&gt;(a, freq.estimateCount(a)))</div><div class="line">              .sorted(Comparator.comparing(SimpleEntry&lt;String, Long&gt;::getValue).reversed())</div><div class="line">              .limit(<span class="number">3</span>)</div><div class="line">              .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));</div><div class="line">&#125;</div><div class="line"></div><div class="line">System.out.println(top); <span class="comment">// &#123;rabbit=25, bird=45, spider=35&#125;</span></div></pre></td></tr></table></figure>
+<p><code>CountMinSketch#estimateCount</code> 方法又称为 <em>点查询</em> ，用来读取“速写”中某一事件的频次。由于数据结构中无法记录具体的值，我们需要在另行编写代码来实现。</p>
+<p><code>CountMinSketch</code> 的数据结构和布隆过滤器类似，只不过它会使用 <code>d</code> 个 <code>w</code> 位的数组，从而组成一个 <code>d x w</code> 的矩阵。加入新值时，该算法会对其应用 <code>d</code> 个哈希函数，并更新到矩阵的相应位置。这些哈希函数只需做到<a href="https://en.wikipedia.org/wiki/Pairwise_independence" target="_blank" rel="external">两两独立</a>即可，因此 <code>stream-lib</code> 使用了一种简单而快速的算法：<code>(a*x+b) mod p</code>。在进行 <em>点查询</em> 时，同样计算该值的哈希结果，找到矩阵中最小的值，即是它的频次。</p>
+<p>这一算法的误差是 <code>ε = e / w</code>，误差概率是 <code>δ = 1 / e ^ d</code>。因此，我们可以通过增加 <code>w</code> 或 <code>d</code> 来提升计算精度。算法论文可以查看这个<a href="https://web.archive.org/web/20060907232042/http://www.eecs.harvard.edu/~michaelm/CS222/countmin.pdf" target="_blank" rel="external">链接</a>。</p>
+<h2 id="分位数计算-T-Digest"><a href="#分位数计算-T-Digest" class="headerlink" title="分位数计算  T-Digest"></a>分位数计算  <code>T-Digest</code></h2><p><img src="/cnblogs/images/stream-lib/t-digest.png" alt="T-Digest"></p>
+<p><a href="https://dataorigami.net/blogs/napkin-folding/19055451-percentile-and-quantile-estimation-of-big-data-the-t-digest" target="_blank" rel="external">图片来源</a></p>
+<p>中位数、95% 分位数，这类计算在描述性统计中很常见。相较于平均数，中位数不会受到异常值的影响，但它的计算过程比较复杂，需要保留所有具体值，排序后取得中间位置的数作为结果。<code>T-Digest</code> 算法则通过一定计算，将数据集的分布情况粗略地记录下来，从而估计出指定的分位数值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Random rand = <span class="keyword">new</span> Random();</div><div class="line">List&lt;Double&gt; data = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">TDigest digest = <span class="keyword">new</span> TDigest(<span class="number">100</span>);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000000</span>; ++i) &#123;</div><div class="line">    <span class="keyword">double</span> d = rand.nextDouble();</div><div class="line">    data.add(d);</div><div class="line">    digest.add(d);</div><div class="line">&#125;</div><div class="line">Collections.sort(data);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">double</span> q : <span class="keyword">new</span> <span class="keyword">double</span>[] &#123; <span class="number">0.1</span>, <span class="number">0.5</span>, <span class="number">0.9</span> &#125;) &#123;</div><div class="line">    System.out.println(String.format(<span class="string">"quantile=%.1f digest=%.4f exact=%.4f"</span>,</div><div class="line">            q, digest.quantile(q), data.get((<span class="keyword">int</span>) (data.size() * q))));</div><div class="line">&#125;</div><div class="line"><span class="comment">// quantile=0.1 digest=0.0998 exact=0.1003</span></div><div class="line"><span class="comment">// quantile=0.5 digest=0.5009 exact=0.5000</span></div><div class="line"><span class="comment">// quantile=0.9 digest=0.8994 exact=0.8998</span></div></pre></td></tr></table></figure>
+<p><code>T-Digest</code> 的论文可以在这个<a href="https://raw.githubusercontent.com/tdunning/t-digest/master/docs/t-digest-paper/histo.pdf" target="_blank" rel="external">链接</a>中找到。简单来说，该算法使用了类似一维 k-means 聚类的过程，将真实的分布情况用若干中心点（Centroid）来描述。此外，不同的 <code>T-Digest</code> 实例之间可以进行合并，得到一个体积略大、但准确性更高的实例，这一点非常适用于并行计算。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我们可以看到，本文提到的大部分算法都是通过牺牲准确性来提升时间与空间的利用效率的。通过对数据集进行“速写”，抓住其中的“特征”，我们就能给出不错的估计结果。<code>stream-lib</code> 以及其它开源项目能够让我们非常便捷地将这类算法应用到实际问题中。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://www.javadoc.io/doc/com.clearspring.analytics/stream/2.9.5" target="_blank" rel="external">https://www.javadoc.io/doc/com.clearspring.analytics/stream/2.9.5</a></li>
+<li><a href="http://www.addthis.com/blog/2011/03/29/new-open-source-stream-summarizing-java-library/" target="_blank" rel="external">http://www.addthis.com/blog/2011/03/29/new-open-source-stream-summarizing-java-library/</a></li>
+<li><a href="https://www.mapr.com/blog/some-important-streaming-algorithms-you-should-know-about" target="_blank" rel="external">https://www.mapr.com/blog/some-important-streaming-algorithms-you-should-know-about</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;进行大数据处理时，计算唯一值、95% 分位数等操作非常占用空间和时间。但有时我们只是想对数据集有一个概略的了解，数值的准确性并不那么重要。实时监控系统中也是如此，可以容忍一定的错误率。目前已经有许多算法可以通过牺牲准确性来减少计算所需的空间和时间，这些算法大多支持数据结构之间的合并，因此可以方便地用在实时计算中。&lt;a href=&quot;https://github.com/addthis/stream-lib&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;&lt;code&gt;stream-lib&lt;/code&gt;&lt;/a&gt; 就是一个集成了很多此类算法的实时计算工具库，是对现有研究成果的 Java 实现。本文就将介绍这一工具库的使用方法。&lt;/p&gt;
+&lt;h2 id=&quot;唯一值计算-HyperLogLog&quot;&gt;&lt;a href=&quot;#唯一值计算-HyperLogLog&quot; class=&quot;headerlink&quot; title=&quot;唯一值计算 HyperLogLog&quot;&gt;&lt;/a&gt;唯一值计算 &lt;code&gt;HyperLogLog&lt;/code&gt;&lt;/h2&gt;&lt;p&gt;独立访客（UV）是网站的重要指标之一。我们通常会为每一个用户生成一个 UUID，并在 HTTP Cookie 中记录和跟踪，或直接使用 IP 地址做近似计算。我们可以使用一个 &lt;code&gt;HashSet&lt;/code&gt; 来计算 UV 的准确值，但无疑会占用大量的空间。&lt;code&gt;HyperLogLog&lt;/code&gt; 则是一种近似算法，用于解决此类唯一值计算的问题。该算法&lt;a href=&quot;https://en.wikipedia.org/wiki/HyperLogLog&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;在对超过 10^9 个唯一值进行计算时可以做到 2% 的标准差，并只占用 1.5 kB 内存&lt;/a&gt;。&lt;/p&gt;
+&lt;figure class=&quot;highlight xml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;dependency&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;groupId&lt;/span&gt;&amp;gt;&lt;/span&gt;com.clearspring.analytics&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;groupId&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;artifactId&lt;/span&gt;&amp;gt;&lt;/span&gt;stream&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;artifactId&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;version&lt;/span&gt;&amp;gt;&lt;/span&gt;2.9.5&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;version&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;dependency&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;ICardinality card = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; HyperLogLog(&lt;span class=&quot;number&quot;&gt;10&lt;/span&gt;);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; i : &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt;[] &amp;#123; &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;4&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt; &amp;#125;) &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    card.offer(i);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;System.out.println(card.cardinality()); &lt;span class=&quot;comment&quot;&gt;// 4&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+      <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
+    
+    
+      <category term="java" scheme="http://shzhangji.com/cnblogs/tags/java/"/>
+    
+      <category term="stream processing" scheme="http://shzhangji.com/cnblogs/tags/stream-processing/"/>
+    
+      <category term="algorithm" scheme="http://shzhangji.com/cnblogs/tags/algorithm/"/>
+    
+  </entry>
   
   <entry>
     <title>使用 Binlog 和 Canal 从 MySQL 抽取数据</title>
@@ -223,11 +292,11 @@
     
       <category term="scala" scheme="http://shzhangji.com/cnblogs/tags/scala/"/>
     
-      <category term="stream processing" scheme="http://shzhangji.com/cnblogs/tags/stream-processing/"/>
-    
       <category term="spark streaming" scheme="http://shzhangji.com/cnblogs/tags/spark-streaming/"/>
     
       <category term="kafka" scheme="http://shzhangji.com/cnblogs/tags/kafka/"/>
+    
+      <category term="stream processing" scheme="http://shzhangji.com/cnblogs/tags/stream-processing/"/>
     
   </entry>
   
@@ -307,9 +376,9 @@
       <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
     
     
-      <category term="python" scheme="http://shzhangji.com/cnblogs/tags/python/"/>
-    
       <category term="analytics" scheme="http://shzhangji.com/cnblogs/tags/analytics/"/>
+    
+      <category term="python" scheme="http://shzhangji.com/cnblogs/tags/python/"/>
     
       <category term="pandas" scheme="http://shzhangji.com/cnblogs/tags/pandas/"/>
     
@@ -488,11 +557,11 @@
       <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
     
     
+      <category term="analytics" scheme="http://shzhangji.com/cnblogs/tags/analytics/"/>
+    
       <category term="crossfilter" scheme="http://shzhangji.com/cnblogs/tags/crossfilter/"/>
     
       <category term="dc.js" scheme="http://shzhangji.com/cnblogs/tags/dc-js/"/>
-    
-      <category term="analytics" scheme="http://shzhangji.com/cnblogs/tags/analytics/"/>
     
   </entry>
   
@@ -539,11 +608,11 @@
     
       <category term="spark" scheme="http://shzhangji.com/cnblogs/tags/spark/"/>
     
+      <category term="stream processing" scheme="http://shzhangji.com/cnblogs/tags/stream-processing/"/>
+    
       <category term="druid" scheme="http://shzhangji.com/cnblogs/tags/druid/"/>
     
       <category term="machine learning" scheme="http://shzhangji.com/cnblogs/tags/machine-learning/"/>
-    
-      <category term="stream processing" scheme="http://shzhangji.com/cnblogs/tags/stream-processing/"/>
     
   </entry>
   
@@ -552,7 +621,7 @@
     <link href="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/"/>
     <id>http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/</id>
     <published>2016-03-13T08:25:00.000Z</published>
-    <updated>2017-08-11T23:26:39.542Z</updated>
+    <updated>2017-08-13T02:10:57.717Z</updated>
     
     <content type="html"><![CDATA[<p>作者：<a href="https://opensource.com/business/15/12/top-5-frameworks" target="_blank" rel="external">John Esposito</a></p>
 <p>软件侵吞着世界<a href="http://www.wsj.com/articles/SB10001424053111903480904576512250915629460" target="_blank" rel="external">已经四年多了</a>，但开发人员看待软件的方式稍有不同。我们一直在致力于<a href="http://www.dougengelbart.org/pubs/augment-3906.html" target="_blank" rel="external">解决实际问题</a>，而<a href="http://worrydream.com/refs/Brooks-NoSilverBullet.pdf" target="_blank" rel="external">很少思考软件开发的基石</a>。当问题变得更庞大、解决方案更复杂时，一些实用的、不怎么<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html" target="_blank" rel="external">产生泄漏</a>的抽象工具就显得越来越重要。</p>
@@ -607,7 +676,7 @@
     <link href="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/"/>
     <id>http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/</id>
     <published>2015-09-12T14:03:00.000Z</published>
-    <updated>2017-08-13T00:13:31.527Z</updated>
+    <updated>2017-08-13T02:10:57.713Z</updated>
     
     <content type="html"><![CDATA[<p>在<a href="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/">贫血领域模型</a>这篇译文中，Martin阐述了这种“反模式”的症状和问题，并引用了领域驱动设计中的话来说明领域模型和分层设计之间的关系。对于Spring项目的开发人员来说，贫血领域模型十分常见：模型（或实体）仅仅包含对数据表的映射，通常是一组私有属性和公有getter/setter，所有的业务逻辑都写在服务层中，领域模型仅仅用来传递数据。为了编写真正的领域模型，我们需要将业务逻辑移至模型对象中，这就引出另一个问题：业务逻辑通常需要调用其他服务或模型，而使用<code>new</code>关键字或由JPA创建的对象是不受Spring托管的，也就无法进行依赖注入。解决这个问题的方法有很多，比较之后我选择使用面向切面编程来实现。</p>
 <h2 id="面向切面编程"><a href="#面向切面编程" class="headerlink" title="面向切面编程"></a>面向切面编程</h2><p>面向切面编程，或<a href="https://en.wikipedia.org/wiki/Aspect-oriented_programming" target="_blank" rel="external">AOP</a>，是一种编程范式，和面向对象编程（<a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank" rel="external">OOP</a>）互为补充。简单来说，AOP可以在不修改既有代码的情况下改变代码的行为。开发者通过定义一组规则，在特定的类方法前后增加逻辑，如记录日志、性能监控、事务管理等。这些逻辑称为切面（Aspect），规则称为切点（Pointcut），在调用前还是调用后执行称为通知（Before advice, After advice）。最后，我们可以选择在编译期将这些逻辑写入类文件，或是在运行时动态加载这些逻辑，这是两种不同的织入方式（Compile-time weaving, Load-time weaving）。</p>
@@ -1329,58 +1398,6 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-    
-    </summary>
-    
-      <category term="Notes" scheme="http://shzhangji.com/cnblogs/categories/Notes/"/>
-    
-      <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Notes/Big-Data/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Hive小文件问题的处理</title>
-    <link href="http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/"/>
-    <id>http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/</id>
-    <published>2014-04-07T09:09:00.000Z</published>
-    <updated>2017-03-09T22:24:58.549Z</updated>
-    
-    <content type="html"><![CDATA[<p>Hive的后端存储是HDFS，它对大文件的处理是非常高效的，如果合理配置文件系统的块大小，NameNode可以支持很大的数据量。但是在数据仓库中，越是上层的表其汇总程度就越高，数据量也就越小。而且这些表通常会按日期进行分区，随着时间的推移，HDFS的文件数目就会逐渐增加。</p>
-<h2 id="小文件带来的问题"><a href="#小文件带来的问题" class="headerlink" title="小文件带来的问题"></a>小文件带来的问题</h2><p>关于这个问题的阐述可以读一读Cloudera的<a href="http://blog.cloudera.com/blog/2009/02/the-small-files-problem/" target="_blank" rel="external">这篇文章</a>。简单来说，HDFS的文件元信息，包括位置、大小、分块信息等，都是保存在NameNode的内存中的。每个对象大约占用150个字节，因此一千万个文件及分块就会占用约3G的内存空间，一旦接近这个量级，NameNode的性能就会开始下降了。</p>
-<p>此外，HDFS读写小文件时也会更加耗时，因为每次都需要从NameNode获取元信息，并与对应的DataNode建立连接。对于MapReduce程序来说，小文件还会增加Mapper的个数，每个脚本只处理很少的数据，浪费了大量的调度时间。当然，这个问题可以通过使用CombinedInputFile和JVM重用来解决。</p>
-<a id="more"></a>
-<h2 id="Hive小文件产生的原因"><a href="#Hive小文件产生的原因" class="headerlink" title="Hive小文件产生的原因"></a>Hive小文件产生的原因</h2><p>前面已经提到，汇总后的数据量通常比源数据要少得多。而为了提升运算速度，我们会增加Reducer的数量，Hive本身也会做类似优化——Reducer数量等于源数据的量除以hive.exec.reducers.bytes.per.reducer所配置的量（默认1G）。Reducer数量的增加也即意味着结果文件的增加，从而产生小文件的问题。</p>
-<h2 id="配置Hive结果合并"><a href="#配置Hive结果合并" class="headerlink" title="配置Hive结果合并"></a>配置Hive结果合并</h2><p>我们可以通过一些配置项来使Hive在执行结束后对结果文件进行合并：</p>
-<ul>
-<li><code>hive.merge.mapfiles</code> 在map-only job后合并文件，默认<code>true</code></li>
-<li><code>hive.merge.mapredfiles</code> 在map-reduce job后合并文件，默认<code>false</code></li>
-<li><code>hive.merge.size.per.task</code> 合并后每个文件的大小，默认<code>256000000</code></li>
-<li><code>hive.merge.smallfiles.avgsize</code> 平均文件大小，是决定是否执行合并操作的阈值，默认<code>16000000</code></li>
-</ul>
-<p>Hive在对结果文件进行合并时会执行一个额外的map-only脚本，mapper的数量是文件总大小除以size.per.task参数所得的值，触发合并的条件是：</p>
-<ol>
-<li>根据查询类型不同，相应的mapfiles/mapredfiles参数需要打开；</li>
-<li>结果文件的平均大小需要大于avgsize参数的值。</li>
-</ol>
-<p>示例：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">-- map-red job，5个reducer，产生5个60K的文件。</span></div><div class="line"><span class="keyword">create</span> <span class="keyword">table</span> dw_stage.zj_small <span class="keyword">as</span></div><div class="line"><span class="keyword">select</span> paid, <span class="keyword">count</span>(*)</div><div class="line"><span class="keyword">from</span> dw_db.dw_soj_imp_dtl</div><div class="line"><span class="keyword">where</span> log_dt = <span class="string">'2014-04-14'</span></div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> paid;</div><div class="line"></div><div class="line"><span class="comment">-- 执行额外的map-only job，一个mapper，产生一个300K的文件。</span></div><div class="line"><span class="keyword">set</span> hive.merge.mapredfiles=<span class="literal">true</span>;</div><div class="line"><span class="keyword">create</span> <span class="keyword">table</span> dw_stage.zj_small <span class="keyword">as</span></div><div class="line"><span class="keyword">select</span> paid, <span class="keyword">count</span>(*)</div><div class="line"><span class="keyword">from</span> dw_db.dw_soj_imp_dtl</div><div class="line"><span class="keyword">where</span> log_dt = <span class="string">'2014-04-14'</span></div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> paid;</div><div class="line"></div><div class="line"><span class="comment">-- map-only job，45个mapper，产生45个25M左右的文件。</span></div><div class="line"><span class="keyword">create</span> <span class="keyword">table</span> dw_stage.zj_small <span class="keyword">as</span></div><div class="line"><span class="keyword">select</span> *</div><div class="line"><span class="keyword">from</span> dw_db.dw_soj_imp_dtl</div><div class="line"><span class="keyword">where</span> log_dt = <span class="string">'2014-04-14'</span></div><div class="line"><span class="keyword">and</span> paid <span class="keyword">like</span> <span class="string">'%baidu%'</span>;</div><div class="line"></div><div class="line"><span class="comment">-- 执行额外的map-only job，4个mapper，产生4个250M左右的文件。</span></div><div class="line"><span class="keyword">set</span> hive.merge.smallfiles.avgsize=<span class="number">100000000</span>;</div><div class="line"><span class="keyword">create</span> <span class="keyword">table</span> dw_stage.zj_small <span class="keyword">as</span></div><div class="line"><span class="keyword">select</span> *</div><div class="line"><span class="keyword">from</span> dw_db.dw_soj_imp_dtl</div><div class="line"><span class="keyword">where</span> log_dt = <span class="string">'2014-04-14'</span></div><div class="line"><span class="keyword">and</span> paid <span class="keyword">like</span> <span class="string">'%baidu%'</span>;</div></pre></td></tr></table></figure>
-<h3 id="压缩文件的处理"><a href="#压缩文件的处理" class="headerlink" title="压缩文件的处理"></a>压缩文件的处理</h3><p>如果结果表使用了压缩格式，则必须配合SequenceFile来存储，否则无法进行合并，以下是示例：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">set</span> mapred.output.compression.type=<span class="keyword">BLOCK</span>;</div><div class="line"><span class="keyword">set</span> hive.exec.compress.output=<span class="literal">true</span>;</div><div class="line"><span class="keyword">set</span> mapred.output.compression.codec=org.apache.hadoop.io.compress.LzoCodec;</div><div class="line"><span class="keyword">set</span> hive.merge.smallfiles.avgsize=<span class="number">100000000</span>;</div><div class="line"></div><div class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> dw_stage.zj_small;</div><div class="line"><span class="keyword">create</span> <span class="keyword">table</span> dw_stage.zj_small</div><div class="line"><span class="keyword">STORED</span> <span class="keyword">AS</span> SEQUENCEFILE</div><div class="line"><span class="keyword">as</span> <span class="keyword">select</span> *</div><div class="line"><span class="keyword">from</span> dw_db.dw_soj_imp_dtl</div><div class="line"><span class="keyword">where</span> log_dt = <span class="string">'2014-04-14'</span></div><div class="line"><span class="keyword">and</span> paid <span class="keyword">like</span> <span class="string">'%baidu%'</span>;</div></pre></td></tr></table></figure>
-<h2 id="使用HAR归档文件"><a href="#使用HAR归档文件" class="headerlink" title="使用HAR归档文件"></a>使用HAR归档文件</h2><p>Hadoop的<a href="http://hadoop.apache.org/docs/stable1/hadoop_archives.html" target="_blank" rel="external">归档文件</a>格式也是解决小文件问题的方式之一。而且Hive提供了<a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Archiving" target="_blank" rel="external">原生支持</a>：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">set hive.archive.enabled=true;</div><div class="line">set hive.archive.har.parentdir.settable=true;</div><div class="line">set har.partfile.size=1099511627776;</div><div class="line"></div><div class="line">ALTER TABLE srcpart ARCHIVE PARTITION(ds=&apos;2008-04-08&apos;, hr=&apos;12&apos;);</div><div class="line"></div><div class="line">ALTER TABLE srcpart UNARCHIVE PARTITION(ds=&apos;2008-04-08&apos;, hr=&apos;12&apos;);</div></pre></td></tr></table></figure>
-<p>如果使用的不是分区表，则可创建成外部表，并使用<code>har://</code>协议来指定路径。</p>
-<h2 id="HDFS-Federation"><a href="#HDFS-Federation" class="headerlink" title="HDFS Federation"></a>HDFS Federation</h2><p>Hadoop V2引入了HDFS Federation的概念：</p>
-<p><img src="http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/images/federation.gif" alt=""></p>
-<p>实则是将NameNode做了拆分，从而增强了它的扩展性，小文件的问题也能够得到缓解。</p>
-<h2 id="其他工具"><a href="#其他工具" class="headerlink" title="其他工具"></a>其他工具</h2><p>对于通常的应用，使用Hive结果合并就能达到很好的效果。如果不想因此增加运行时间，可以自行编写一些脚本，在系统空闲时对分区内的文件进行合并，也能达到目的。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Hive的后端存储是HDFS，它对大文件的处理是非常高效的，如果合理配置文件系统的块大小，NameNode可以支持很大的数据量。但是在数据仓库中，越是上层的表其汇总程度就越高，数据量也就越小。而且这些表通常会按日期进行分区，随着时间的推移，HDFS的文件数目就会逐渐增加。&lt;/p&gt;
-&lt;h2 id=&quot;小文件带来的问题&quot;&gt;&lt;a href=&quot;#小文件带来的问题&quot; class=&quot;headerlink&quot; title=&quot;小文件带来的问题&quot;&gt;&lt;/a&gt;小文件带来的问题&lt;/h2&gt;&lt;p&gt;关于这个问题的阐述可以读一读Cloudera的&lt;a href=&quot;http://blog.cloudera.com/blog/2009/02/the-small-files-problem/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;这篇文章&lt;/a&gt;。简单来说，HDFS的文件元信息，包括位置、大小、分块信息等，都是保存在NameNode的内存中的。每个对象大约占用150个字节，因此一千万个文件及分块就会占用约3G的内存空间，一旦接近这个量级，NameNode的性能就会开始下降了。&lt;/p&gt;
-&lt;p&gt;此外，HDFS读写小文件时也会更加耗时，因为每次都需要从NameNode获取元信息，并与对应的DataNode建立连接。对于MapReduce程序来说，小文件还会增加Mapper的个数，每个脚本只处理很少的数据，浪费了大量的调度时间。当然，这个问题可以通过使用CombinedInputFile和JVM重用来解决。&lt;/p&gt;
     
     </summary>
     

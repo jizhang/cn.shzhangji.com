@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/</loc>
+    
+    <lastmod>2017-08-27T05:54:45.088Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/</loc>
+    
+    <lastmod>2017-08-27T03:11:50.422Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://shzhangji.com/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/</loc>
     
     <lastmod>2017-08-13T02:10:57.720Z</lastmod>
@@ -9,16 +23,16 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/</loc>
+    <loc>http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/</loc>
     
-    <lastmod>2017-08-13T00:13:31.527Z</lastmod>
+    <lastmod>2017-08-13T02:10:57.717Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/</loc>
+    <loc>http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/</loc>
     
-    <lastmod>2017-08-11T23:26:39.542Z</lastmod>
+    <lastmod>2017-08-13T02:10:57.713Z</lastmod>
     
   </url>
   
@@ -222,13 +236,6 @@
     <loc>http://shzhangji.com/cnblogs/2013/02/09/cia-hadoop/</loc>
     
     <lastmod>2017-03-09T22:24:58.534Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/</loc>
-    
-    <lastmod>2017-03-09T22:24:58.532Z</lastmod>
     
   </url>
   
