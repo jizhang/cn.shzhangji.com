@@ -14,9 +14,9 @@
 <meta property="og:description" content="2017 Top 15 Python 数据科学类库 近年来，Python 在数据科学领域得到了越来越多的关注，本文整理归类了使用率最高的数据科学类库，供大家参考。 NumPy、SciPy、Pandas 是 Python 数据科学的核心类库。NumPy 提供了 N 维数组、矩阵、向量等数据结构，能够进行高性能的数学运算；SciPy 包含了线性代数、拟合优化、统计学习的通用方法；Pandas 则一般用">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/digest/google-trends.png">
-<meta property="og:image" content="http://shzhangji.com/cnblogs/images/digest/time-series-anomaly-detection.png">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/digest/anomaly-detection-cart.png">
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/digest/opensource.jpg">
-<meta property="og:updated_time" content="2017-09-06T01:53:53.000Z">
+<meta property="og:updated_time" content="2017-09-06T02:00:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目">
 <meta name="twitter:description" content="2017 Top 15 Python 数据科学类库 近年来，Python 在数据科学领域得到了越来越多的关注，本文整理归类了使用率最高的数据科学类库，供大家参考。 NumPy、SciPy、Pandas 是 Python 数据科学的核心类库。NumPy 提供了 N 维数组、矩阵、向量等数据结构，能够进行高性能的数学运算；SciPy 包含了线性代数、拟合优化、统计学习的通用方法；Pandas 则一般用">
@@ -130,7 +130,7 @@ ga('send', 'pageview');
 <p>自然语言处理领域中，NLTK 提供了文本标记、分词、构建语料树等功能，用以揭示句中或句间的依赖关系；Gensim 则擅长构建向量空间模型、话题建模、挖掘大量文本中重复出现的模式，其算法都属于非监督学习，因此只需提供语料库就能得到结果。</p>
 <p>原文：<a href="http://www.kdnuggets.com/2017/06/top-15-python-libraries-data-science.html" target="_blank" rel="external">http://www.kdnuggets.com/2017/06/top-15-python-libraries-data-science.html</a></p>
 <a id="more"></a>
-<h2 id="时间序列数据异常点检测算法"><a href="#时间序列数据异常点检测算法" class="headerlink" title="时间序列数据异常点检测算法"></a>时间序列数据异常点检测算法</h2><p><img src="/cnblogs/images/digest/time-series-anomaly-detection.png" alt=""></p>
+<h2 id="时间序列数据异常点检测算法"><a href="#时间序列数据异常点检测算法" class="headerlink" title="时间序列数据异常点检测算法"></a>时间序列数据异常点检测算法</h2><p><img src="/cnblogs/images/digest/anomaly-detection-cart.png" alt=""></p>
 <p>异常点检测是指寻找那些偏离标准值或正常值的数据点。异常点有几种常见的类型：短期内产生的峰值，包括最大值、最小值、以及零值；长期的数据合计与上一周期的比较等。检测方法也可以归类为两种：对数据点进行分类，标记异常与否；或是对未来数据走势做预测，给出置信区间。</p>
 <p>使用 STL 分解法将时间序列数据表示成三个要素：季节性、趋势、残差。通过分析残差的背离程度，引入一定的阈值，就可以作为预警依据了。我们可以使用绝对中位差来作为阈值，推特使用并开源了相关类库（<a href="https://github.com/twitter/AnomalyDetection" target="_blank" rel="external">链接</a>）。这种方法的优点是简单，对峰值异常较敏感，并能结合滑动平均来检测周期性的异常。缺点是需要进行调参，且不能检测剧烈变动的指标。</p>
 <p>分类和回归树算法有两种使用方式：一种是准备好已标记过异常点的数据集，进行监督型的机器学习；另一种则是让 CART 算法自动寻找数据集中的模式，预测异常点的置信区间。最常用的开源库是 <a href="https://github.com/dmlc/xgboost" target="_blank" rel="external">xgboost</a>。这一方法可以用各种特征进行学习和预测，当然计算量也会因此上升。</p>
