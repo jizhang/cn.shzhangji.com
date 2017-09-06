@@ -5,7 +5,7 @@
   <link href="/cnblogs/atom.xml" rel="self"/>
   
   <link href="http://shzhangji.com/cnblogs/"/>
-  <updated>2017-09-05T04:20:10.000Z</updated>
+  <updated>2017-09-06T01:53:53.000Z</updated>
   <id>http://shzhangji.com/cnblogs/</id>
   
   <author>
@@ -14,6 +14,58 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目</title>
+    <link href="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/"/>
+    <id>http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/</id>
+    <published>2017-09-06T01:49:10.000Z</published>
+    <updated>2017-09-06T01:53:53.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="2017-Top-15-Python-数据科学类库"><a href="#2017-Top-15-Python-数据科学类库" class="headerlink" title="2017 Top 15 Python 数据科学类库"></a>2017 Top 15 Python 数据科学类库</h2><p><img src="/cnblogs/images/digest/google-trends.png" alt="Google Trends"></p>
+<p>近年来，Python 在数据科学领域得到了越来越多的关注，本文整理归类了使用率最高的数据科学类库，供大家参考。</p>
+<p>NumPy、SciPy、Pandas 是 Python 数据科学的核心类库。NumPy 提供了 N 维数组、矩阵、向量等数据结构，能够进行高性能的数学运算；SciPy 包含了线性代数、拟合优化、统计学习的通用方法；Pandas 则一般用于数据清洗、探索型分析等工作。</p>
+<p>可视化方面，Matplotlib 是最早流行的类库，提供了丰富的图形化接口，但 API 的使用方式偏底层，需要编写较多代码；Seaborn 构建在 Matplotlib 之上，重新定义了图表样式，更适合在报告、演示文档中使用，并且它还预置了诸多探索型分析函数，可以快速地对数据进行描述性可视化；Bokeh 主打交互性，它运行在浏览器中，让使用者可以方便地调节可视化参数；Plotly 也是一款基于页面的可视化工具，但因为是商业软件，需要授权后才能使用。</p>
+<p>SciKit-Learn 是公认的 Python 机器学习标准类库，它提供了准确、统一的接口，可以方便地使用各种机器学习算法；深度学习领域，Theano 是比较老牌的类库之一，特点是能够运行于不同的系统架构之上（CPU、GPU）；Tensorflow 则是最近较火的基础类库，使用它提供的各种算子和数据流工具，我们可以构建出多层神经网络，在集群上对大数据进行运算；Keras 则是一款较上层的工具库，底层使用 Theano 或 Tensorflow 作为引擎，可以通过快速构建实验来验证模型。</p>
+<p>自然语言处理领域中，NLTK 提供了文本标记、分词、构建语料树等功能，用以揭示句中或句间的依赖关系；Gensim 则擅长构建向量空间模型、话题建模、挖掘大量文本中重复出现的模式，其算法都属于非监督学习，因此只需提供语料库就能得到结果。</p>
+<p>原文：<a href="http://www.kdnuggets.com/2017/06/top-15-python-libraries-data-science.html" target="_blank" rel="external">http://www.kdnuggets.com/2017/06/top-15-python-libraries-data-science.html</a></p>
+<a id="more"></a>
+<h2 id="时间序列数据异常点检测算法"><a href="#时间序列数据异常点检测算法" class="headerlink" title="时间序列数据异常点检测算法"></a>时间序列数据异常点检测算法</h2><p><img src="/cnblogs/images/digest/time-series-anomaly-detection.png" alt=""></p>
+<p>异常点检测是指寻找那些偏离标准值或正常值的数据点。异常点有几种常见的类型：短期内产生的峰值，包括最大值、最小值、以及零值；长期的数据合计与上一周期的比较等。检测方法也可以归类为两种：对数据点进行分类，标记异常与否；或是对未来数据走势做预测，给出置信区间。</p>
+<p>使用 STL 分解法将时间序列数据表示成三个要素：季节性、趋势、残差。通过分析残差的背离程度，引入一定的阈值，就可以作为预警依据了。我们可以使用绝对中位差来作为阈值，推特使用并开源了相关类库（<a href="https://github.com/twitter/AnomalyDetection" target="_blank" rel="external">链接</a>）。这种方法的优点是简单，对峰值异常较敏感，并能结合滑动平均来检测周期性的异常。缺点是需要进行调参，且不能检测剧烈变动的指标。</p>
+<p>分类和回归树算法有两种使用方式：一种是准备好已标记过异常点的数据集，进行监督型的机器学习；另一种则是让 CART 算法自动寻找数据集中的模式，预测异常点的置信区间。最常用的开源库是 <a href="https://github.com/dmlc/xgboost" target="_blank" rel="external">xgboost</a>。这一方法可以用各种特征进行学习和预测，当然计算量也会因此上升。</p>
+<p>ARIMA 是一种较为简单的算法，通过历史值来预测下一个数据点的动向。它的特点是每接收一个新的数据点都需要重新构建一次预测模型，并且你的数据必须和时间是无关的。和该算法相似的是指数平滑法，比较有趣的实现是 <a href="https://www.otexts.org/fpp/7/5" target="_blank" rel="external">Holt-Winters 季节性指标</a>，用于检测阶段性长期趋势的异常。</p>
+<p>人工神经网络也能够进行异常检测，只是这一方式还处于<a href="https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2015-56.pdf" target="_blank" rel="external">科研阶段</a>。不过我们想要提醒读者的是，尽量从简单的模型开始，针对你的具体问题进行优化，因为通用的算法并不一定是最优的。</p>
+<p>原文：<a href="https://blog.statsbot.co/time-series-anomaly-detection-algorithms-1cef5519aef2" target="_blank" rel="external">https://blog.statsbot.co/time-series-anomaly-detection-algorithms-1cef5519aef2</a></p>
+<h2 id="如何加入开源项目"><a href="#如何加入开源项目" class="headerlink" title="如何加入开源项目"></a>如何加入开源项目</h2><p><img src="/cnblogs/images/digest/opensource.jpg" alt="opensource"></p>
+<p>已经蠢蠢欲动了吗？不如马上开始！找一个你正在使用的开源项目，Fork 源码仓库。先从修复 Bug 开始，或者为现有代码编写单元测试。过程中你需要学会读懂别人的代码，遵循代码规范。提交补丁后，你一定会受到猛烈的抨击，千万不要因此胆怯。熟悉代码之后，可以寻求一些更重要的职责，比如提出一个新的特性，或者认领新特性的开发工作。最后，你也可以开启自己的开源项目。</p>
+<p>如何寻找自己想做贡献的开源项目？首先你可以在邮件列表、论坛、Bug 跟踪系统中找到这样的项目，问问自己是否喜欢这里的社区氛围。一开始不要在一棵树上吊死，多观察几个开源项目，找到自己对味的。从小处着手，比如重现 Bug、提交测试代码、改进文档等等。中途不要放弃！</p>
+<p>最直接的加入方式其实是当正在使用的某个项目出现 Bug，或者你有用的不爽的地方，对它加以改进。此外，加入一个对开源项目友好的公司也是不错的选择。</p>
+<p>原文：<a href="https://arstechnica.com/information-technology/2012/03/ask-stack-how-can-i-find-a-good-open-source-project-to-join/" target="_blank" rel="external">https://arstechnica.com/information-technology/2012/03/ask-stack-how-can-i-find-a-good-open-source-project-to-join/</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;2017-Top-15-Python-数据科学类库&quot;&gt;&lt;a href=&quot;#2017-Top-15-Python-数据科学类库&quot; class=&quot;headerlink&quot; title=&quot;2017 Top 15 Python 数据科学类库&quot;&gt;&lt;/a&gt;2017 Top 15 Python 数据科学类库&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/cnblogs/images/digest/google-trends.png&quot; alt=&quot;Google Trends&quot;&gt;&lt;/p&gt;
+&lt;p&gt;近年来，Python 在数据科学领域得到了越来越多的关注，本文整理归类了使用率最高的数据科学类库，供大家参考。&lt;/p&gt;
+&lt;p&gt;NumPy、SciPy、Pandas 是 Python 数据科学的核心类库。NumPy 提供了 N 维数组、矩阵、向量等数据结构，能够进行高性能的数学运算；SciPy 包含了线性代数、拟合优化、统计学习的通用方法；Pandas 则一般用于数据清洗、探索型分析等工作。&lt;/p&gt;
+&lt;p&gt;可视化方面，Matplotlib 是最早流行的类库，提供了丰富的图形化接口，但 API 的使用方式偏底层，需要编写较多代码；Seaborn 构建在 Matplotlib 之上，重新定义了图表样式，更适合在报告、演示文档中使用，并且它还预置了诸多探索型分析函数，可以快速地对数据进行描述性可视化；Bokeh 主打交互性，它运行在浏览器中，让使用者可以方便地调节可视化参数；Plotly 也是一款基于页面的可视化工具，但因为是商业软件，需要授权后才能使用。&lt;/p&gt;
+&lt;p&gt;SciKit-Learn 是公认的 Python 机器学习标准类库，它提供了准确、统一的接口，可以方便地使用各种机器学习算法；深度学习领域，Theano 是比较老牌的类库之一，特点是能够运行于不同的系统架构之上（CPU、GPU）；Tensorflow 则是最近较火的基础类库，使用它提供的各种算子和数据流工具，我们可以构建出多层神经网络，在集群上对大数据进行运算；Keras 则是一款较上层的工具库，底层使用 Theano 或 Tensorflow 作为引擎，可以通过快速构建实验来验证模型。&lt;/p&gt;
+&lt;p&gt;自然语言处理领域中，NLTK 提供了文本标记、分词、构建语料树等功能，用以揭示句中或句间的依赖关系；Gensim 则擅长构建向量空间模型、话题建模、挖掘大量文本中重复出现的模式，其算法都属于非监督学习，因此只需提供语料库就能得到结果。&lt;/p&gt;
+&lt;p&gt;原文：&lt;a href=&quot;http://www.kdnuggets.com/2017/06/top-15-python-libraries-data-science.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.kdnuggets.com/2017/06/top-15-python-libraries-data-science.html&lt;/a&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Digest" scheme="http://shzhangji.com/cnblogs/categories/Digest/"/>
+    
+    
+      <category term="analytics" scheme="http://shzhangji.com/cnblogs/tags/analytics/"/>
+    
+      <category term="data science" scheme="http://shzhangji.com/cnblogs/tags/data-science/"/>
+    
+      <category term="opensource" scheme="http://shzhangji.com/cnblogs/tags/opensource/"/>
+    
+  </entry>
   
   <entry>
     <title>Hive 窗口与分析型函数</title>
@@ -82,9 +134,9 @@
       <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
     
     
-      <category term="analytics" scheme="http://shzhangji.com/cnblogs/tags/analytics/"/>
-    
       <category term="hive" scheme="http://shzhangji.com/cnblogs/tags/hive/"/>
+    
+      <category term="analytics" scheme="http://shzhangji.com/cnblogs/tags/analytics/"/>
     
       <category term="sql" scheme="http://shzhangji.com/cnblogs/tags/sql/"/>
     
@@ -451,9 +503,9 @@
       <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
     
     
-      <category term="analytics" scheme="http://shzhangji.com/cnblogs/tags/analytics/"/>
-    
       <category term="python" scheme="http://shzhangji.com/cnblogs/tags/python/"/>
+    
+      <category term="analytics" scheme="http://shzhangji.com/cnblogs/tags/analytics/"/>
     
       <category term="pandas" scheme="http://shzhangji.com/cnblogs/tags/pandas/"/>
     
@@ -632,11 +684,11 @@
       <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
     
     
-      <category term="analytics" scheme="http://shzhangji.com/cnblogs/tags/analytics/"/>
-    
       <category term="crossfilter" scheme="http://shzhangji.com/cnblogs/tags/crossfilter/"/>
     
       <category term="dc.js" scheme="http://shzhangji.com/cnblogs/tags/dc-js/"/>
+    
+      <category term="analytics" scheme="http://shzhangji.com/cnblogs/tags/analytics/"/>
     
   </entry>
   
@@ -1307,57 +1359,6 @@
 &lt;li&gt;用于发布内部模块。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;sbt的依赖管理基于&lt;a href=&quot;http://ant.apache.org/ivy/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Ivy&lt;/a&gt;，虽然它能直接使用&lt;a href=&quot;http://search.maven.org/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Maven中央仓库&lt;/a&gt;中的Jar包，在配置时还是有一些注意事项的。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Notes" scheme="http://shzhangji.com/cnblogs/categories/Notes/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL异常UTF-8字符的处理</title>
-    <link href="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/"/>
-    <id>http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/</id>
-    <published>2014-10-14T05:16:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>ETL流程中，我们会将Hive中的数据导入MySQL——先用Hive命令行将数据保存为文本文件，然后用MySQL的LOAD DATA语句进行加载。最近有一张表在加载到MySQL时会报以下错误：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Incorrect string value: &apos;\xF0\x9D\x8C\x86&apos; for column ...</div></pre></td></tr></table></figure>
-<p>经查，这个字段中保存的是用户聊天记录，因此会有一些表情符号。这些符号在UTF-8编码下需要使用4个字节来记录，而MySQL中的utf8编码只支持3个字节，因此无法导入。</p>
-<p>根据UTF-8的编码规范，3个字节支持的Unicode字符范围是U+0000–U+FFFF，因此可以在Hive中对数据做一下清洗：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> REGEXP_REPLACE(<span class="keyword">content</span>, <span class="string">'[^\\u0000-\\uFFFF]'</span>, <span class="string">''</span>) <span class="keyword">FROM</span> ...</div></pre></td></tr></table></figure>
-<p>这样就能排除那些需要使用3个以上字节来记录的字符了，从而成功导入MySQL。</p>
-<p>以下是一些详细说明和参考资料。</p>
-<a id="more"></a>
-<h2 id="Unicode字符集和UTF编码"><a href="#Unicode字符集和UTF编码" class="headerlink" title="Unicode字符集和UTF编码"></a>Unicode字符集和UTF编码</h2><p><a href="http://en.wikipedia.org/wiki/Unicode" target="_blank" rel="external">Unicode字符集</a>是一种将全球所有文字都囊括在内的字符集，从而实现跨语言、跨平台的文字信息交换。它由<a href="http://en.wikipedia.org/wiki/Plane_\(Unicode\" target="_blank" rel="external">基本多语平面（BMP）</a>#Basic_Multilingual_Plane)和多个扩展平面（non-BMP）组成。前者的编码范围是U+0000-U+FFFF，包括了绝大多数现代语言文字，因此最为常用。</p>
-<p><a href="http://en.wikipedia.org/wiki/Unicode#Unicode_Transformation_Format_and_Universal_Character_Set" target="_blank" rel="external">UTF</a>则是一种编码格式，负责将Unicode字符对应的编号转换为计算机可以识别的二进制数据，进行保存和读取。</p>
-<p>比如，磁盘上记录了以下二进制数据：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">1101000 1100101 1101100 1101100 1101111</div></pre></td></tr></table></figure>
-<p>读取它的程序知道这是以UTF-8编码保存的字符串，因此将其解析为以下编号：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">104 101 108 108 111</div></pre></td></tr></table></figure>
-<p>又因为UTF-8编码对应的字符集是Unicode，所以上面这五个编号对应的字符便是“hello”。</p>
-<p>很多人会将Unicode和UTF混淆，但两者并不具可比性，它们完成的功能是不同的。</p>
-<h2 id="UTF-8编码"><a href="#UTF-8编码" class="headerlink" title="UTF-8编码"></a>UTF-8编码</h2><p>UTF编码家族也有很多成员，其中<a href="http://en.wikipedia.org/wiki/UTF-8" target="_blank" rel="external">UTF-8</a>最为常用。它是一种变长的编码格式，对于ASCII码中的字符使用1个字节进行编码，对于中文等则使用3个字节。这样做的优点是在存储西方语言文字时不会造成空间浪费，不像UTF-16和UTF-32，分别使用两个字节和四个字节对所有字符进行编码。</p>
-<p>UTF-8编码的字节数上限并不是3个。对于U+0000-U+FFFF范围内的字符，使用3个字节可以表示完全；对于non-BMP中的字符，则会使用4-6个字节来表示。同样，UTF-16编码也会使用四个字节来表示non-BMP中的字符。</p>
-<h2 id="MySQL的UTF-8编码"><a href="#MySQL的UTF-8编码" class="headerlink" title="MySQL的UTF-8编码"></a>MySQL的UTF-8编码</h2><p>根据MySQL的<a href="http://dev.mysql.com/doc/refman/5.5/en/charset-unicode.html" target="_blank" rel="external">官方文档</a>，它的UTF-8编码支持是不完全的，最多使用3个字符，这也是导入数据时报错的原因。</p>
-<p>MySQL5.5开始支持utf8mb4编码，至多使用4个字节，因此能包含到non-BMP字符。只是我们的MySQL版本仍是5.1，因此选择丢弃这些字符。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><a href="http://stackoverflow.com/questions/3951722/whats-the-difference-between-unicode-and-utf8" target="_blank" rel="external">http://stackoverflow.com/questions/3951722/whats-the-difference-between-unicode-and-utf8</a></li>
-<li><a href="http://www.joelonsoftware.com/articles/Unicode.html" target="_blank" rel="external">http://www.joelonsoftware.com/articles/Unicode.html</a></li>
-<li><a href="http://apps.timwhitlock.info/emoji/tables/unicode" target="_blank" rel="external">http://apps.timwhitlock.info/emoji/tables/unicode</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;ETL流程中，我们会将Hive中的数据导入MySQL——先用Hive命令行将数据保存为文本文件，然后用MySQL的LOAD DATA语句进行加载。最近有一张表在加载到MySQL时会报以下错误：&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;Incorrect string value: &amp;apos;\xF0\x9D\x8C\x86&amp;apos; for column ...&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;经查，这个字段中保存的是用户聊天记录，因此会有一些表情符号。这些符号在UTF-8编码下需要使用4个字节来记录，而MySQL中的utf8编码只支持3个字节，因此无法导入。&lt;/p&gt;
-&lt;p&gt;根据UTF-8的编码规范，3个字节支持的Unicode字符范围是U+0000–U+FFFF，因此可以在Hive中对数据做一下清洗：&lt;/p&gt;
-&lt;figure class=&quot;highlight sql&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;SELECT&lt;/span&gt; REGEXP_REPLACE(&lt;span class=&quot;keyword&quot;&gt;content&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;[^\\u0000-\\uFFFF]&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;&#39;&lt;/span&gt;) &lt;span class=&quot;keyword&quot;&gt;FROM&lt;/span&gt; ...&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;这样就能排除那些需要使用3个以上字节来记录的字符了，从而成功导入MySQL。&lt;/p&gt;
-&lt;p&gt;以下是一些详细说明和参考资料。&lt;/p&gt;
     
     </summary>
     

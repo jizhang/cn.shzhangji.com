@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/</loc>
+    
+    <lastmod>2017-09-06T01:53:53.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://shzhangji.com/cnblogs/2017/09/05/hive-window-and-analytical-functions/</loc>
     
     <lastmod>2017-09-05T04:20:10.000Z</lastmod>
@@ -100,20 +107,6 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/</loc>
-    
-    <lastmod>2017-03-09T07:25:39.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/</loc>
-    
-    <lastmod>2017-03-09T07:25:39.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://shzhangji.com/cnblogs/2013/02/09/cia-hadoop/</loc>
     
     <lastmod>2017-03-09T07:25:39.000Z</lastmod>
@@ -128,6 +121,20 @@
   </url>
   
   <url>
+    <loc>http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/</loc>
+    
+    <lastmod>2017-03-09T07:25:39.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/</loc>
+    
+    <lastmod>2017-03-09T07:25:39.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/</loc>
     
     <lastmod>2017-03-09T04:27:06.000Z</lastmod>
@@ -135,28 +142,7 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2012/11/16/aosa-git/</loc>
-    
-    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/</loc>
-    
-    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/</loc>
-    
-    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2013/04/22/cia-storm/</loc>
     
     <lastmod>2017-03-09T03:44:04.000Z</lastmod>
     
@@ -171,6 +157,27 @@
   
   <url>
     <loc>http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/</loc>
+    
+    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/04/22/cia-storm/</loc>
+    
+    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/</loc>
+    
+    <lastmod>2017-03-09T03:44:04.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2012/11/16/aosa-git/</loc>
     
     <lastmod>2017-03-09T03:44:04.000Z</lastmod>
     
@@ -198,13 +205,6 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/</loc>
-    
-    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://shzhangji.com/cnblogs/2014/01/25/java-reflection-tutorial/</loc>
     
     <lastmod>2017-03-09T03:37:13.000Z</lastmod>
@@ -212,7 +212,14 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/</loc>
+    <loc>http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/</loc>
+    
+    <lastmod>2017-03-09T03:37:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/</loc>
     
     <lastmod>2017-03-09T03:37:13.000Z</lastmod>
     
@@ -282,7 +289,7 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/</loc>
+    <loc>http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/</loc>
     
     <lastmod>2017-03-09T03:37:13.000Z</lastmod>
     

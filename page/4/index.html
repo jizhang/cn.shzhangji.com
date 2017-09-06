@@ -89,6 +89,60 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-perl-prime-in-action-jvm-monitoring-2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/" class="article-date">
+  <time datetime="2013-03-28T07:28:00.000Z" itemprop="datePublished">2013-03-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Tutorial/">Tutorial</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/">Perl入门实战：JVM监控脚本（下）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="套接字"><a href="#套接字" class="headerlink" title="套接字"></a>套接字</h2><p>使用套接字（Socket）进行网络通信的基本流程是：</p>
+<ul>
+<li>服务端：监听端口、等待连接、接收请求、发送应答；</li>
+<li>客户端：连接服务端、发送请求、接收应答。</li>
+</ul>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> IO::Socket::INET;</div><div class="line"></div><div class="line"><span class="keyword">my</span> $server = IO::Socket::INET-&gt;new(</div><div class="line">    <span class="string">LocalPort =&gt;</span> <span class="number">10060</span>,</div><div class="line">    <span class="string">Type =&gt;</span> SOCK_STREAM,</div><div class="line">    <span class="string">Reuse =&gt;</span> <span class="number">1</span>,</div><div class="line">    <span class="string">Listen =&gt;</span> SOMAXCONN</div><div class="line">) || <span class="keyword">die</span> <span class="string">"服务创建失败\n"</span>;</div><div class="line"></div><div class="line"><span class="keyword">while</span> (<span class="keyword">my</span> $client = $server-&gt;<span class="keyword">accept</span>()) &#123;</div><div class="line"></div><div class="line">    <span class="keyword">my</span> $line = &lt;$client&gt;;</div><div class="line">    <span class="keyword">chomp</span>($line);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> ($line =~ <span class="regexp">/^JVMPORT ([0-9]+)$/</span>) &#123;</div><div class="line">        <span class="keyword">print</span> <span class="string">"RECV $1\n"</span>;</div><div class="line">        <span class="keyword">print</span> $client <span class="string">"OK\n"</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">print</span> <span class="string">"ERROR $line\n"</span>;</div><div class="line">        <span class="keyword">print</span> $client <span class="string">"ERROR\n"</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">close</span>($client);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">close</span>($server);</div></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/" data-id="cj78d8jdu000n4lzjm9bjic3a" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2013/03/28/perl-prime-in-action-jvm-monitoring-2/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/perl/">perl</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-fork-and-zombie-process" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/cnblogs/2013/03/27/fork-and-zombie-process/" class="article-date">
@@ -127,7 +181,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/03/27/fork-and-zombie-process/" data-id="cj77331ld0011lozjq69ax2qi" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2013/03/27/fork-and-zombie-process/" data-id="cj78d8jdz000r4lzj3lxsrwhu" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2013/03/27/fork-and-zombie-process/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -185,7 +239,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/" data-id="cj77331l7000vlozjr2e53ww3" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/" data-id="cj78d8jdt000m4lzjsulojr6h" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2013/03/26/perl-prime-in-action-jvm-monitoring-1/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -238,7 +292,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/03/07/currying-and-partial-application/" data-id="cj77331l2000nlozje0o5nnde" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2013/03/07/currying-and-partial-application/" data-id="cj78d8jdo000h4lzjh5w0v7wq" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2013/03/07/currying-and-partial-application/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -289,7 +343,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/02/09/cia-hadoop/" data-id="cj77331l3000qlozjxk2f6nb4" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2013/02/09/cia-hadoop/" data-id="cj78d8jdm000e4lzjpe4eth33" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2013/02/09/cia-hadoop/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -342,7 +396,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/" data-id="cj77331kw000klozjr8ze76hj" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/" data-id="cj78d8jdc00094lzjh2p7kv2q" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -395,7 +449,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/" data-id="cj77331ku000ilozje2oegbjw" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/" data-id="cj78d8jdf000b4lzjwnb1ivnk" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -449,7 +503,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/" data-id="cj77331kq000flozjm6bn5r1r" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/" data-id="cj78d8jd800064lzj337pq3yl" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -507,7 +561,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/" data-id="cj77331km000elozj296vp4xz" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/" data-id="cj78d8jd300054lzjryehwwfh" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -559,66 +613,12 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/" data-id="cj77331kk000dlozjox4h90ht" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/" data-id="cj78d8jcp00014lzj1igh7yqr" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/clojure/">clojure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/noir/">noir</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-aosa-python-packaging" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/cnblogs/2012/11/18/aosa-python-packaging/" class="article-date">
-  <time datetime="2012-11-18T11:20:00.000Z" itemprop="datePublished">2012-11-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/cnblogs/categories/Translation/">Translation</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/cnblogs/2012/11/18/aosa-python-packaging/">开源软件架构 - 卷1：第14章 Python打包工具</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>作者：<a href="http://www.aosabook.org/en/intro1.html#ziade-tarek" target="_blank" rel="external">Tarek Ziadé</a>，翻译：<a href="mailto:zhangji87@gmail.com" target="_blank" rel="external">张吉</a></p>
-<p>原文：<a href="http://www.aosabook.org/en/packaging.html" target="_blank" rel="external">http://www.aosabook.org/en/packaging.html</a></p>
-<h2 id="14-1-简介"><a href="#14-1-简介" class="headerlink" title="14.1 简介"></a>14.1 简介</h2><p>对于如何安装软件，目前有两种思想流派。第一种是说软件应该自给自足，不依赖于其它任何部件，这点在Windows和Mac OS X系统中很流行。这种方式简化了软件的管理：每个软件都有自己独立的“领域”，安装和卸载它们不会对操作系统产生影响。如果软件依赖一项不常见的类库，那么这个类库一定是包含在软件安装包之中的。</p>
-<p>第二种流派，主要在类Linux的操作系统中盛行，即软件应该是由一个个独立的、小型的软件包组成的。类库被包含在软件包中，包与包之间可以有依赖关系。安装软件时需要查找和安装它所依赖的其他特定版本的软件包。这些依赖包通常是从一个包含所有软件包的中央仓库中获取的。这种理念也催生了Linux发行版中那些复杂的依赖管理工具，如<code>dpkg</code>和<code>RPM</code>。它们会跟踪软件包的依赖关系，并防止两个软件使用了版本相冲突的第三方包。</p>
-<p>以上两种流派各有优劣。高度模块化的系统可以使得更新和替换某个软件包变的非常方便，因为每个类库都只有一份，所有依赖于它的应用程序都能因此受益。比如，修复某个类库的安全漏洞可以立刻应用到所有程序中，而如果应用程序使用了自带的类库，那安全更新就很难应用进去了，特别是在类库版本不一致的情况下更难处理。</p>
-<p>不过这种“模块化”也被一些开发者视为缺点，因为他们无法控制应用程序的依赖关系。他们希望提供一个独立和稳定的软件运行环境，这样就不会在系统升级后遭遇各种依赖方面的问题。</p>
-        
-          <p class="article-more-link">
-            <a href="/cnblogs/2012/11/18/aosa-python-packaging/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/" data-id="cj77331kg000alozjvrb5tsxr" class="article-share-link">分享</a>
-      
-        <a href="http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/#disqus_thread" class="article-comment-link">留言</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/aosa/">aosa</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/python/">python</a></li></ul>
 
     </footer>
   </div>
@@ -650,7 +650,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 16.67px;">analytics</a> <a href="/cnblogs/tags/aosa/" style="font-size: 13.33px;">aosa</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 13.33px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 10px;">flume</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 16.67px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 16.67px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 16.67px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 13.33px;">javascript</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 16.67px;">noir</a> <a href="/cnblogs/tags/ops/" style="font-size: 13.33px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 13.33px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 16.67px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/sql/" style="font-size: 13.33px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 16.67px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 13.33px;">translation</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 17.5px;">analytics</a> <a href="/cnblogs/tags/aosa/" style="font-size: 12.5px;">aosa</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.5px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 10px;">flume</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 15px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 12.5px;">javascript</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 15px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 12.5px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 12.5px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 15px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.5px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 15px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/sql/" style="font-size: 12.5px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 15px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 12.5px;">translation</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
     </div>
   </div>
 
@@ -672,6 +672,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/">2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目</a>
+          </li>
+        
+          <li>
             <a href="/cnblogs/2017/09/05/hive-window-and-analytical-functions/">Hive 窗口与分析型函数</a>
           </li>
         
@@ -685,10 +689,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/">Apache Flume 如何解析消息中的事件时间</a>
-          </li>
-        
-          <li>
-            <a href="/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/">Spark Streaming 中如何实现 Exactly-Once 语义</a>
           </li>
         
       </ul>

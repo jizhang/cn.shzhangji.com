@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目 | 张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="2017 Top 15 Python 数据科学类库 近年来，Python 在数据科学领域得到了越来越多的关注，本文整理归类了使用率最高的数据科学类库，供大家参考。 NumPy、SciPy、Pandas 是 Python 数据科学的核心类库。NumPy 提供了 N 维数组、矩阵、向量等数据结构，能够进行高性能的数学运算；SciPy 包含了线性代数、拟合优化、统计学习的通用方法；Pandas 则一般用">
+<meta name="keywords" content="analytics,data science,opensource">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目">
+<meta property="og:url" content="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta property="og:description" content="2017 Top 15 Python 数据科学类库 近年来，Python 在数据科学领域得到了越来越多的关注，本文整理归类了使用率最高的数据科学类库，供大家参考。 NumPy、SciPy、Pandas 是 Python 数据科学的核心类库。NumPy 提供了 N 维数组、矩阵、向量等数据结构，能够进行高性能的数学运算；SciPy 包含了线性代数、拟合优化、统计学习的通用方法；Pandas 则一般用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/digest/google-trends.png">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/digest/time-series-anomaly-detection.png">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/digest/opensource.jpg">
+<meta property="og:updated_time" content="2017-09-06T01:53:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目">
+<meta name="twitter:description" content="2017 Top 15 Python 数据科学类库 近年来，Python 在数据科学领域得到了越来越多的关注，本文整理归类了使用率最高的数据科学类库，供大家参考。 NumPy、SciPy、Pandas 是 Python 数据科学的核心类库。NumPy 提供了 N 维数组、矩阵、向量等数据结构，能够进行高性能的数学运算；SciPy 包含了线性代数、拟合优化、统计学习的通用方法；Pandas 则一般用">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/digest/google-trends.png">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/cnblogs/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/cnblogs/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/cnblogs/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/cnblogs/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/cnblogs/">首页</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Digest">摘译</a>
+        
+          <a class="main-nav-link" href="/cnblogs/archives">全部文章</a>
+        
+          <a class="main-nav-link" href="http://shzhangji.com/">English</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/cnblogs/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com/cnblogs"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-python-data-science-anomaly-detection-opensource" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/" class="article-date">
+  <time datetime="2017-09-06T01:49:10.000Z" itemprop="datePublished">2017-09-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Digest/">Digest</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="2017-Top-15-Python-数据科学类库"><a href="#2017-Top-15-Python-数据科学类库" class="headerlink" title="2017 Top 15 Python 数据科学类库"></a>2017 Top 15 Python 数据科学类库</h2><p><img src="/cnblogs/images/digest/google-trends.png" alt="Google Trends"></p>
+<p>近年来，Python 在数据科学领域得到了越来越多的关注，本文整理归类了使用率最高的数据科学类库，供大家参考。</p>
+<p>NumPy、SciPy、Pandas 是 Python 数据科学的核心类库。NumPy 提供了 N 维数组、矩阵、向量等数据结构，能够进行高性能的数学运算；SciPy 包含了线性代数、拟合优化、统计学习的通用方法；Pandas 则一般用于数据清洗、探索型分析等工作。</p>
+<p>可视化方面，Matplotlib 是最早流行的类库，提供了丰富的图形化接口，但 API 的使用方式偏底层，需要编写较多代码；Seaborn 构建在 Matplotlib 之上，重新定义了图表样式，更适合在报告、演示文档中使用，并且它还预置了诸多探索型分析函数，可以快速地对数据进行描述性可视化；Bokeh 主打交互性，它运行在浏览器中，让使用者可以方便地调节可视化参数；Plotly 也是一款基于页面的可视化工具，但因为是商业软件，需要授权后才能使用。</p>
+<p>SciKit-Learn 是公认的 Python 机器学习标准类库，它提供了准确、统一的接口，可以方便地使用各种机器学习算法；深度学习领域，Theano 是比较老牌的类库之一，特点是能够运行于不同的系统架构之上（CPU、GPU）；Tensorflow 则是最近较火的基础类库，使用它提供的各种算子和数据流工具，我们可以构建出多层神经网络，在集群上对大数据进行运算；Keras 则是一款较上层的工具库，底层使用 Theano 或 Tensorflow 作为引擎，可以通过快速构建实验来验证模型。</p>
+<p>自然语言处理领域中，NLTK 提供了文本标记、分词、构建语料树等功能，用以揭示句中或句间的依赖关系；Gensim 则擅长构建向量空间模型、话题建模、挖掘大量文本中重复出现的模式，其算法都属于非监督学习，因此只需提供语料库就能得到结果。</p>
+<p>原文：<a href="http://www.kdnuggets.com/2017/06/top-15-python-libraries-data-science.html" target="_blank" rel="external">http://www.kdnuggets.com/2017/06/top-15-python-libraries-data-science.html</a></p>
+<a id="more"></a>
+<h2 id="时间序列数据异常点检测算法"><a href="#时间序列数据异常点检测算法" class="headerlink" title="时间序列数据异常点检测算法"></a>时间序列数据异常点检测算法</h2><p><img src="/cnblogs/images/digest/time-series-anomaly-detection.png" alt=""></p>
+<p>异常点检测是指寻找那些偏离标准值或正常值的数据点。异常点有几种常见的类型：短期内产生的峰值，包括最大值、最小值、以及零值；长期的数据合计与上一周期的比较等。检测方法也可以归类为两种：对数据点进行分类，标记异常与否；或是对未来数据走势做预测，给出置信区间。</p>
+<p>使用 STL 分解法将时间序列数据表示成三个要素：季节性、趋势、残差。通过分析残差的背离程度，引入一定的阈值，就可以作为预警依据了。我们可以使用绝对中位差来作为阈值，推特使用并开源了相关类库（<a href="https://github.com/twitter/AnomalyDetection" target="_blank" rel="external">链接</a>）。这种方法的优点是简单，对峰值异常较敏感，并能结合滑动平均来检测周期性的异常。缺点是需要进行调参，且不能检测剧烈变动的指标。</p>
+<p>分类和回归树算法有两种使用方式：一种是准备好已标记过异常点的数据集，进行监督型的机器学习；另一种则是让 CART 算法自动寻找数据集中的模式，预测异常点的置信区间。最常用的开源库是 <a href="https://github.com/dmlc/xgboost" target="_blank" rel="external">xgboost</a>。这一方法可以用各种特征进行学习和预测，当然计算量也会因此上升。</p>
+<p>ARIMA 是一种较为简单的算法，通过历史值来预测下一个数据点的动向。它的特点是每接收一个新的数据点都需要重新构建一次预测模型，并且你的数据必须和时间是无关的。和该算法相似的是指数平滑法，比较有趣的实现是 <a href="https://www.otexts.org/fpp/7/5" target="_blank" rel="external">Holt-Winters 季节性指标</a>，用于检测阶段性长期趋势的异常。</p>
+<p>人工神经网络也能够进行异常检测，只是这一方式还处于<a href="https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2015-56.pdf" target="_blank" rel="external">科研阶段</a>。不过我们想要提醒读者的是，尽量从简单的模型开始，针对你的具体问题进行优化，因为通用的算法并不一定是最优的。</p>
+<p>原文：<a href="https://blog.statsbot.co/time-series-anomaly-detection-algorithms-1cef5519aef2" target="_blank" rel="external">https://blog.statsbot.co/time-series-anomaly-detection-algorithms-1cef5519aef2</a></p>
+<h2 id="如何加入开源项目"><a href="#如何加入开源项目" class="headerlink" title="如何加入开源项目"></a>如何加入开源项目</h2><p><img src="/cnblogs/images/digest/opensource.jpg" alt="opensource"></p>
+<p>已经蠢蠢欲动了吗？不如马上开始！找一个你正在使用的开源项目，Fork 源码仓库。先从修复 Bug 开始，或者为现有代码编写单元测试。过程中你需要学会读懂别人的代码，遵循代码规范。提交补丁后，你一定会受到猛烈的抨击，千万不要因此胆怯。熟悉代码之后，可以寻求一些更重要的职责，比如提出一个新的特性，或者认领新特性的开发工作。最后，你也可以开启自己的开源项目。</p>
+<p>如何寻找自己想做贡献的开源项目？首先你可以在邮件列表、论坛、Bug 跟踪系统中找到这样的项目，问问自己是否喜欢这里的社区氛围。一开始不要在一棵树上吊死，多观察几个开源项目，找到自己对味的。从小处着手，比如重现 Bug、提交测试代码、改进文档等等。中途不要放弃！</p>
+<p>最直接的加入方式其实是当正在使用的某个项目出现 Bug，或者你有用的不爽的地方，对它加以改进。此外，加入一个对开源项目友好的公司也是不错的选择。</p>
+<p>原文：<a href="https://arstechnica.com/information-technology/2012/03/ask-stack-how-can-i-find-a-good-open-source-project-to-join/" target="_blank" rel="external">https://arstechnica.com/information-technology/2012/03/ask-stack-how-can-i-find-a-good-open-source-project-to-join/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/" data-id="cj78d8jfs003d4lzjiq5d8wxr" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/analytics/">analytics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/data-science/">data science</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/opensource/">opensource</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/cnblogs/2017/09/05/hive-window-and-analytical-functions/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Hive 窗口与分析型函数</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Python数据平台</h3>
+    <div class="widget">
+      <img src="/cnblogs/images/pydp-qrcode.jpg" style="width: 100%;"></img>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 17.5px;">analytics</a> <a href="/cnblogs/tags/aosa/" style="font-size: 12.5px;">aosa</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.5px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 10px;">flume</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 15px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 12.5px;">javascript</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 15px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 12.5px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 12.5px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 15px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.5px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 15px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/sql/" style="font-size: 12.5px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 15px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 12.5px;">translation</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/">2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/09/05/hive-window-and-analytical-functions/">Hive 窗口与分析型函数</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/">实时计算工具库 stream-lib 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/">使用 Binlog 和 Canal 从 MySQL 抽取数据</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/">Apache Flume 如何解析消息中的事件时间</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png"></a>
+      <br>
+      &copy; 2017 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/cnblogs/" class="mobile-nav-link">首页</a>
+  
+    <a href="/cnblogs/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/cnblogs/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/cnblogs/categories/Digest" class="mobile-nav-link">摘译</a>
+  
+    <a href="/cnblogs/archives" class="mobile-nav-link">全部文章</a>
+  
+    <a href="http://shzhangji.com/" class="mobile-nav-link">English</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  var disqus_url = 'http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">
+  <script src="/cnblogs/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/cnblogs/js/script.js"></script>
+
+  </div>
+</body>
+</html>
