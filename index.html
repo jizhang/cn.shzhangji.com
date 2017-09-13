@@ -89,6 +89,58 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-apache-beam-quick-start-with-python" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2017/09/13/apache-beam-quick-start-with-python/" class="article-date">
+  <time datetime="2017-09-13T04:39:03.000Z" itemprop="datePublished">2017-09-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Big-Data/">Big Data</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/cnblogs/2017/09/13/apache-beam-quick-start-with-python/">Apache Beam 快速入门（Python 版）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://beam.apache.org/get-started/beam-overview/" target="_blank" rel="external">Apache Beam</a> 是一种大数据处理标准，由谷歌于 2016 年创建。它提供了一套统一的 DSL 用以处理离线和实时数据，并能在目前主流的大数据处理平台上使用，包括 Spark、Flink、以及谷歌自身的商业套件 Dataflow。Beam 的数据模型基于过去的几项研究成果：<a href="https://web.archive.org/web/20160923141630/https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/35650.pdf" target="_blank" rel="external">FlumeJava</a>、<a href="https://web.archive.org/web/20160201091359/http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/41378.pdf" target="_blank" rel="external">Millwheel</a>，适用场景包括 ETL、统计分析、实时计算等。目前，Beam 提供了两种语言的 SDK：Java、Python。本文将讲述如何使用 Python 编写 Beam 应用程序。</p>
+<p><img src="/cnblogs/images/beam/arch.jpg" alt="Apache Beam Pipeline"></p>
+<h2 id="安装-Apache-Beam"><a href="#安装-Apache-Beam" class="headerlink" title="安装 Apache Beam"></a>安装 Apache Beam</h2><p>Apache Beam Python SDK 必须使用 Python 2.7.x 版本，你可以安装 <a href="https://github.com/pyenv/pyenv" target="_blank" rel="external">pyenv</a> 来管理不同版本的 Python，或者直接从<a href="https://www.python.org/downloads/source/" target="_blank" rel="external">源代码</a>编译安装（需要支持 SSL）。之后，你便可以在 Python 虚拟环境中安装 Beam SDK 了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ virtualenv venv --distribute</div><div class="line">$ source venv/bin/activate</div><div class="line">(venv) $ pip install apache-beam</div></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/cnblogs/2017/09/13/apache-beam-quick-start-with-python/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2017/09/13/apache-beam-quick-start-with-python/" data-id="cj7ijectj003pmezj2yu57trz" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2017/09/13/apache-beam-quick-start-with-python/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/apache-beam/">apache beam</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/mapreduce/">mapreduce</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/stream-processing/">stream processing</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-python-data-science-anomaly-detection-opensource" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/" class="article-date">
@@ -130,7 +182,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/" data-id="cj78d8jfs003d4lzjiq5d8wxr" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/" data-id="cj7ijectg003mmezjr29no5e4" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -184,7 +236,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/09/05/hive-window-and-analytical-functions/" data-id="cj78d8jfw003k4lzjofmgpr1a" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/09/05/hive-window-and-analytical-functions/" data-id="cj7ijectd003fmezjqj2eskv8" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/09/05/hive-window-and-analytical-functions/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -236,7 +288,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/" data-id="cj78d8jfy003o4lzjortugx23" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/" data-id="cj7ijectm003smezj444fiqms" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -287,7 +339,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/" data-id="cj78d8jfu003h4lzjzw2bfxp6" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/" data-id="cj7ijectb003cmezjcuoahkht" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -345,7 +397,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/" data-id="cj78d8jfo00374lzjrc05pse2" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/" data-id="cj7iject90038mezjm5zvd802" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -400,7 +452,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" data-id="cj78d8jfq003a4lzj6kejvves" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" data-id="cj7iject80036mezjaa84zzo6" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -456,7 +508,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/" data-id="cj78d8jfn00334lzj93omxsdl" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/" data-id="cj7iject50032mezjsuz0y9bm" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -507,7 +559,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/" data-id="cj78d8jfl002z4lzjwnviccum" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/" data-id="cj7iject4002zmezj0etc4u2o" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -559,63 +611,12 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/" data-id="cj78d8jfk002w4lzjzgsfrhl6" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/" data-id="cj7iject2002wmezj3qxhj19e" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/es6/">es6</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/frontend/">frontend</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/javascript/">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/lodash/">lodash</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-build-interactive-report-with-crossfilter-and-dc-js" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/" class="article-date">
-  <time datetime="2017-06-18T10:59:53.000Z" itemprop="datePublished">2017-06-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/cnblogs/categories/Big-Data/">Big Data</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/">使用 Crossfilter 和 dc.js 构建交互式报表</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在对多维数据集进行图表分析时，我们希望在图表之间建立联系，选择图表中的一部分数据后，其他图表也会相应变动。这项工作可以通过开发完成，即在服务端对数据进行过滤，并更新所有图表。此外，我们还可以借助 Crossfilter 和 dc.js 这两个工具，直接在浏览器中对数据进行操作。</p>
-<h2 id="航班延误统计"><a href="#航班延误统计" class="headerlink" title="航班延误统计"></a>航班延误统计</h2><p>这是 Crossfilter 官方网站提供的示例，基于 <a href="http://stat-computing.org/dataexpo/2009/" target="_blank" rel="external">ASA Data Expo</a> 数据集的航班延误统计。下面我们将介绍如何用 dc.js 来实现这份交互式报表。项目源码可以在 <a href="https://jsfiddle.net/zjerryj/gjao9sws/" target="_blank" rel="external">JSFiddle</a> 中浏览，演示的数据量减少到 1000 条。</p>
-<p><img src="/cnblogs/images/airline-ontime-performance.png" alt=""></p>
-        
-          <p class="article-more-link">
-            <a href="/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/" data-id="cj78d8jfe002p4lzjjxtgvc3o" class="article-share-link">分享</a>
-      
-        <a href="http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/#disqus_thread" class="article-comment-link">留言</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/analytics/">analytics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/crossfilter/">crossfilter</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/dc-js/">dc.js</a></li></ul>
 
     </footer>
   </div>
@@ -647,7 +648,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 17.5px;">analytics</a> <a href="/cnblogs/tags/aosa/" style="font-size: 12.5px;">aosa</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.5px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 10px;">flume</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 15px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 12.5px;">javascript</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 10px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 15px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 12.5px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 12.5px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 15px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.5px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 15px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/sql/" style="font-size: 12.5px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 15px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 12.5px;">translation</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 17.5px;">analytics</a> <a href="/cnblogs/tags/aosa/" style="font-size: 12.5px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.5px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 10px;">flume</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 15px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 12.5px;">javascript</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 12.5px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 15px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 12.5px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 12.5px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 17.5px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.5px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 15px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/sql/" style="font-size: 12.5px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 17.5px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 12.5px;">translation</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
     </div>
   </div>
 
@@ -669,6 +670,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/cnblogs/2017/09/13/apache-beam-quick-start-with-python/">Apache Beam 快速入门（Python 版）</a>
+          </li>
+        
+          <li>
             <a href="/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/">2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目</a>
           </li>
         
@@ -682,10 +687,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/">使用 Binlog 和 Canal 从 MySQL 抽取数据</a>
-          </li>
-        
-          <li>
-            <a href="/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/">Apache Flume 如何解析消息中的事件时间</a>
           </li>
         
       </ul>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Apache Beam 快速入门（Python 版） | 张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Apache Beam 是一种大数据处理标准，由谷歌于 2016 年创建。它提供了一套统一的 DSL 用以处理离线和实时数据，并能在目前主流的大数据处理平台上使用，包括 Spark、Flink、以及谷歌自身的商业套件 Dataflow。Beam 的数据模型基于过去的几项研究成果：FlumeJava、Millwheel，适用场景包括 ETL、统计分析、实时计算等。目前，Beam 提供了两种语言的 S">
+<meta name="keywords" content="python,mapreduce,stream processing,apache beam">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Apache Beam 快速入门（Python 版）">
+<meta property="og:url" content="http://shzhangji.com/cnblogs/2017/09/13/apache-beam-quick-start-with-python/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta property="og:description" content="Apache Beam 是一种大数据处理标准，由谷歌于 2016 年创建。它提供了一套统一的 DSL 用以处理离线和实时数据，并能在目前主流的大数据处理平台上使用，包括 Spark、Flink、以及谷歌自身的商业套件 Dataflow。Beam 的数据模型基于过去的几项研究成果：FlumeJava、Millwheel，适用场景包括 ETL、统计分析、实时计算等。目前，Beam 提供了两种语言的 S">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/beam/arch.jpg">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/beam/matrix.png">
+<meta property="og:updated_time" content="2017-09-13T04:39:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Apache Beam 快速入门（Python 版）">
+<meta name="twitter:description" content="Apache Beam 是一种大数据处理标准，由谷歌于 2016 年创建。它提供了一套统一的 DSL 用以处理离线和实时数据，并能在目前主流的大数据处理平台上使用，包括 Spark、Flink、以及谷歌自身的商业套件 Dataflow。Beam 的数据模型基于过去的几项研究成果：FlumeJava、Millwheel，适用场景包括 ETL、统计分析、实时计算等。目前，Beam 提供了两种语言的 S">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/beam/arch.jpg">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/cnblogs/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/cnblogs/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/cnblogs/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/cnblogs/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/cnblogs/">首页</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Digest">摘译</a>
+        
+          <a class="main-nav-link" href="/cnblogs/archives">全部文章</a>
+        
+          <a class="main-nav-link" href="http://shzhangji.com/">English</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/cnblogs/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com/cnblogs"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-apache-beam-quick-start-with-python" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2017/09/13/apache-beam-quick-start-with-python/" class="article-date">
+  <time datetime="2017-09-13T04:39:03.000Z" itemprop="datePublished">2017-09-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Big-Data/">Big Data</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Apache Beam 快速入门（Python 版）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://beam.apache.org/get-started/beam-overview/" target="_blank" rel="external">Apache Beam</a> 是一种大数据处理标准，由谷歌于 2016 年创建。它提供了一套统一的 DSL 用以处理离线和实时数据，并能在目前主流的大数据处理平台上使用，包括 Spark、Flink、以及谷歌自身的商业套件 Dataflow。Beam 的数据模型基于过去的几项研究成果：<a href="https://web.archive.org/web/20160923141630/https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/35650.pdf" target="_blank" rel="external">FlumeJava</a>、<a href="https://web.archive.org/web/20160201091359/http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/41378.pdf" target="_blank" rel="external">Millwheel</a>，适用场景包括 ETL、统计分析、实时计算等。目前，Beam 提供了两种语言的 SDK：Java、Python。本文将讲述如何使用 Python 编写 Beam 应用程序。</p>
+<p><img src="/cnblogs/images/beam/arch.jpg" alt="Apache Beam Pipeline"></p>
+<h2 id="安装-Apache-Beam"><a href="#安装-Apache-Beam" class="headerlink" title="安装 Apache Beam"></a>安装 Apache Beam</h2><p>Apache Beam Python SDK 必须使用 Python 2.7.x 版本，你可以安装 <a href="https://github.com/pyenv/pyenv" target="_blank" rel="external">pyenv</a> 来管理不同版本的 Python，或者直接从<a href="https://www.python.org/downloads/source/" target="_blank" rel="external">源代码</a>编译安装（需要支持 SSL）。之后，你便可以在 Python 虚拟环境中安装 Beam SDK 了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ virtualenv venv --distribute</div><div class="line">$ source venv/bin/activate</div><div class="line">(venv) $ pip install apache-beam</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="Wordcount-示例"><a href="#Wordcount-示例" class="headerlink" title="Wordcount 示例"></a>Wordcount 示例</h2><p>Wordcount 是大数据领域的 Hello World，我们来看如何使用 Beam 实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</div><div class="line"><span class="keyword">import</span> apache_beam <span class="keyword">as</span> beam</div><div class="line"><span class="keyword">from</span> apache_beam.options.pipeline_options <span class="keyword">import</span> PipelineOptions</div><div class="line"><span class="keyword">with</span> beam.Pipeline(options=PipelineOptions()) <span class="keyword">as</span> p:</div><div class="line">    lines = p | <span class="string">'Create'</span> &gt;&gt; beam.Create([<span class="string">'cat dog'</span>, <span class="string">'snake cat'</span>, <span class="string">'dog'</span>])</div><div class="line">    counts = (</div><div class="line">        lines</div><div class="line">        | <span class="string">'Split'</span> &gt;&gt; (beam.FlatMap(<span class="keyword">lambda</span> x: x.split(<span class="string">' '</span>))</div><div class="line">                      .with_output_types(unicode))</div><div class="line">        | <span class="string">'PairWithOne'</span> &gt;&gt; beam.Map(<span class="keyword">lambda</span> x: (x, <span class="number">1</span>))</div><div class="line">        | <span class="string">'GroupAndSum'</span> &gt;&gt; beam.CombinePerKey(sum)</div><div class="line">    )</div><div class="line">    counts | <span class="string">'Print'</span> &gt;&gt; beam.ParDo(<span class="keyword">lambda</span> (w, c): print(<span class="string">'%s: %s'</span> % (w, c)))</div></pre></td></tr></table></figure>
+<p>运行脚本，我们便可得到每个单词出现的次数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(venv) $ python wordcount.py</div><div class="line">cat: 2</div><div class="line">snake: 1</div><div class="line">dog: 2</div></pre></td></tr></table></figure>
+<p>Apache Beam 有三个重要的基本概念：Pipeline、PCollection、以及 Transform。</p>
+<ul>
+<li><strong>Pipeline</strong> （管道）用以构建数据集和处理过程的 DAG（有向无环图）。我们可以将它看成 MapReduce 中的 <code>Job</code> 或是 Storm 的 <code>Topology</code>。</li>
+<li><strong>PCollection</strong> 是一种数据结构，我们可以对其进行各类转换操作，如解析、过滤、聚合等。它和 Spark 中的 <code>RDD</code> 概念类似。</li>
+<li><strong>Transform</strong> （转换）则用于编写业务逻辑。通过它，我们可以将一个 PCollection 转换成另一个 PCollection。Beam 提供了许多内置的转换函数，我们将在下文讨论。</li>
+</ul>
+<p>在本例中，<code>Pipeline</code> 和 <code>PipelineOptions</code> 用来创建一个管道。通过 <code>with</code> 关键字，上下文管理器会自动调用 <code>Pipeline.run</code> 和 <code>wait_until_finish</code> 方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[Output PCollection] = [Input PCollection] | [Label] &gt;&gt; [Transform]</div></pre></td></tr></table></figure>
+<p><code>|</code> 是 Beam 引入的新操作符，用来添加一个转换。每次转换都可以定义一个唯一的标签，默认由 Beam 自动生成。转换能够串联，我们可以构建出不同形态的转换流程，它们在运行时会表示为一个 DAG。</p>
+<p><code>beam.Create</code> 用来从内存数据创建出一个 PCollection，主要用于测试和演示。Beam 提供了多种内置的输入源（Source）和输出目标（Sink），可以接收和写入有界（Bounded）或无界（Unbounded）的数据，并且能进行自定义。</p>
+<p><code>beam.Map</code> 是一种 <em>一对一</em> 的转换，本例中我们将一个个单词转换成形如 <code>(word, 1)</code> 的元组。<code>beam.FlatMap</code> 则是 <code>Map</code> 和 <code>Flatten</code> 的结合体，通过它，我们将包含多个单词的数组合并成一个一维的数组。</p>
+<p><code>CombinePerKey</code> 的输入源是一系列的二元组（2-element tuple）。这个操作会将元素的第一个元素作为键进行分组，并将相同键的值（第二个元素）组成一个列表。最后，我们使用 <code>beam.ParDo</code> 输出统计结果。这个转换函数比较底层，我们会在下文详述。</p>
+<h2 id="输入与输出"><a href="#输入与输出" class="headerlink" title="输入与输出"></a>输入与输出</h2><p>目前，Beam Python SDK 对输入输出的支持十分有限。下表列出了现阶段支持的数据源（<a href="https://beam.apache.org/documentation/io/built-in/" target="_blank" rel="external">资料来源</a>）：</p>
+<table>
+<thead>
+<tr>
+<th>语言</th>
+<th>文件系统</th>
+<th>消息队列</th>
+<th>数据库</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Java</td>
+<td>HDFS<br>TextIO<br>XML</td>
+<td>AMQP<br>Kafka<br>JMS</td>
+<td>Hive<br>Solr<br>JDBC</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>textio<br>avroio<br>tfrecordio</td>
+<td>-</td>
+<td>Google Big Query<br>Google Cloud Datastore</td>
+</tr>
+</tbody>
+</table>
+<p>这段代码演示了如何使用 <code>textio</code> 对文本文件进行读写：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">lines = p | <span class="string">'Read'</span> &gt;&gt; beam.io.ReadFromText(<span class="string">'/path/to/input-*.csv'</span>)</div><div class="line">lines | <span class="string">'Write'</span> &gt;&gt; beam.io.WriteToText(<span class="string">'/path/to/output'</span>, file_name_suffix=<span class="string">'.csv'</span>)</div></pre></td></tr></table></figure>
+<p>通过使用通配符，<code>textio</code> 可以读取多个文件。我们还可以从不同的数据源中读取文件，并用 <code>Flatten</code> 方法将多个 <code>PCollection</code> 合并成一个。输出文件默认也会是多个，因为 Beam Pipeline 是并发执行的，不同的进程会写入独立的文件。</p>
+<h2 id="转换函数"><a href="#转换函数" class="headerlink" title="转换函数"></a>转换函数</h2><p>Beam 中提供了基础和上层的转换函数。通常我们更偏向于使用上层函数，这样就可以将精力聚焦在实现业务逻辑上。下表列出了常用的上层转换函数：</p>
+<table>
+<thead>
+<tr>
+<th>转换函数</th>
+<th>功能含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create(value)</td>
+<td>基于内存中的集合数据生成一个 PCollection。</td>
+</tr>
+<tr>
+<td>Filter(fn)</td>
+<td>使用 <code>fn</code> 函数过滤 PCollection 中的元素。</td>
+</tr>
+<tr>
+<td>Map(fn)</td>
+<td>使用 <code>fn</code> 函数做一对一的转换处理。</td>
+</tr>
+<tr>
+<td>FlatMap(fn)</td>
+<td>功能和 <code>Map</code> 类似，但是 <code>fn</code> 需要返回一个集合，里面包含零个或多个元素，最终 <code>FlatMap</code> 会将这些集合合并成一个 PCollection。</td>
+</tr>
+<tr>
+<td>Flatten()</td>
+<td>合并多个 PCollection。</td>
+</tr>
+<tr>
+<td>Partition(fn)</td>
+<td>将一个 PCollection 切分成多个分区。<code>fn</code> 可以是 <code>PartitionFn</code> 或一个普通函数，能够接受两个参数：<code>element</code>、<code>num_partitions</code>。</td>
+</tr>
+<tr>
+<td>GroupByKey()</td>
+<td>输入源必须是使用二元组表示的键值对，该方法会按键进行分组，并返回一个 <code>(key, iter&lt;value&gt;)</code> 的序列。</td>
+</tr>
+<tr>
+<td>CoGroupByKey()</td>
+<td>对多个二元组 PCollection 按相同键进行合并，如输入的是 <code>(k, v)</code> 和 <code>(k, w)</code>，则输出 <code>(k, (iter&lt;v&gt;, iter&lt;w&gt;))</code>。</td>
+</tr>
+<tr>
+<td>RemoveDuplicates()</td>
+<td>对 PCollection 的元素进行去重。</td>
+</tr>
+<tr>
+<td>CombinePerKey(fn)</td>
+<td>功能和 <code>GroupByKey</code> 类似，但会进一步使用 <code>fn</code> 对值列表进行合并。<code>fn</code> 可以是一个 <code>CombineFn</code>，或是一个普通函数，接收序列并返回结果，如 <code>sum</code>、<code>max</code> 函数等。</td>
+</tr>
+<tr>
+<td>CombineGlobally(fn)</td>
+<td>使用 <code>fn</code> 将整个 PCollection 合并计算成单个值。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Callable-DoFn-ParDo"><a href="#Callable-DoFn-ParDo" class="headerlink" title="Callable, DoFn, ParDo"></a>Callable, DoFn, ParDo</h3><p>可以看到，多数转换函数都会接收另一个函数（Callable）做为参数。在 Python 中，<a href="https://docs.python.org/2/library/functions.html#callable" target="_blank" rel="external">Callable</a> 可以是一个函数、类方法、Lambda 表达式、或是任何包含 <code>__call__</code> 方法的对象实例。Beam 会将这些函数包装成一个 <code>DoFn</code> 类，所有转换函数最终都会调用最基础的 <code>ParDo</code> 函数，并将 <code>DoFn</code> 传递给它。</p>
+<p>我们可以尝试将 <code>lambda x: x.split(&#39; &#39;)</code> 这个表达式转换成 <code>DoFn</code> 类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SplitFn</span><span class="params">(beam.DoFn)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process</span><span class="params">(self, element)</span>:</span></div><div class="line">        <span class="keyword">return</span> element.split(<span class="string">' '</span>)</div><div class="line"></div><div class="line">lines | beam.ParDo(SplitFn())</div></pre></td></tr></table></figure>
+<p><code>ParDo</code> 转换和 <code>FlatMap</code> 的功能类似，只是它的 <code>fn</code> 参数必须是一个 <code>DoFn</code>。除了使用 <code>return</code>，我们还可以用 <code>yield</code> 语句来返回结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SplitAndPairWithOneFn</span><span class="params">(beam.DoFn)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process</span><span class="params">(self, element)</span>:</span></div><div class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> element.split(<span class="string">' '</span>):</div><div class="line">            <span class="keyword">yield</span> (word, <span class="number">1</span>)</div></pre></td></tr></table></figure>
+<h3 id="合并函数"><a href="#合并函数" class="headerlink" title="合并函数"></a>合并函数</h3><p>合并函数（<code>CombineFn</code>）用来将集合数据合并计算成单个值。我们既可以对整个 PCollection 做合并（<code>CombineGlobally</code>），也可以计算每个键的合并结果（<code>CombinePerKey</code>）。Beam 会将普通函数（Callable）包装成 <code>CombineFn</code>，这些函数需要接收一个集合，并返回单个结果。需要注意的是，Beam 会将计算过程分发到多台服务器上，合并函数会被多次调用来计算中间结果，因此需要满足<a href="https://en.wikipedia.org/wiki/Commutative_property" target="_blank" rel="external">交换律</a>和<a href="https://en.wikipedia.org/wiki/Associative_property" target="_blank" rel="external">结合律</a>。<code>sum</code>、<code>min</code>、<code>max</code> 是符合这样的要求的。</p>
+<p>Beam 提供了许多内置的合并函数，如计数、求平均值、排序等。以计数为例，下面两种写法都可以用来统计整个 PCollection 中元素的个数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">lines | beam.combiners.Count.Globally()</div><div class="line">lines | beam.CombineGlobally(beam.combiners.CountCombineFn())</div></pre></td></tr></table></figure>
+<p>其他合并函数可以参考 Python SDK 的官方文档（<a href="https://beam.apache.org/documentation/sdks/pydoc/2.1.0/apache_beam.transforms.html#module-apache_beam.transforms.combiners" target="_blank" rel="external">链接</a>）。我们也可以自行实现合并函数，只需继承 <code>CombineFn</code>，并实现四个方法。我们以内置的 <code>Mean</code> 平均值合并函数的源码为例：</p>
+<p><a href="https://github.com/apache/beam/blob/v2.1.0/sdks/python/apache_beam/transforms/combiners.py#L75" target="_blank" rel="external"><code>apache_beam/transforms/combiners.py</code></a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MeanCombineFn</span><span class="params">(core.CombineFn)</span>:</span></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">create_accumulator</span><span class="params">(self)</span>:</span></div><div class="line">    <span class="string">"""创建一个“本地”的中间结果，记录合计值和记录数。"""</span></div><div class="line">    <span class="keyword">return</span> (<span class="number">0</span>, <span class="number">0</span>)</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">add_input</span><span class="params">(self, <span class="params">(sum_, count)</span>, element)</span>:</span></div><div class="line">    <span class="string">"""处理新接收到的值。"""</span></div><div class="line">    <span class="keyword">return</span> sum_ + element, count + <span class="number">1</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">merge_accumulators</span><span class="params">(self, accumulators)</span>:</span></div><div class="line">    <span class="string">"""合并多个中间结果。"""</span></div><div class="line">    sums, counts = zip(*accumulators)</div><div class="line">    <span class="keyword">return</span> sum(sums), sum(counts)</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">extract_output</span><span class="params">(self, <span class="params">(sum_, count)</span>)</span>:</span></div><div class="line">    <span class="string">"""计算平均值。"""</span></div><div class="line">    <span class="keyword">if</span> count == <span class="number">0</span>:</div><div class="line">      <span class="keyword">return</span> float(<span class="string">'NaN'</span>)</div><div class="line">    <span class="keyword">return</span> sum_ / float(count)</div></pre></td></tr></table></figure>
+<h3 id="复合转换函数"><a href="#复合转换函数" class="headerlink" title="复合转换函数"></a>复合转换函数</h3><p>我们简单看一下上文中使用到的 <code>beam.combiners.Count.Globally</code> 的源码（<a href="https://github.com/apache/beam/blob/v2.1.0/sdks/python/apache_beam/transforms/combiners.py#L101" target="_blank" rel="external">链接</a>），它继承了 <code>PTransform</code> 类，并在 <code>expand</code> 方法中对 PCollection 应用了转换函数。这会形成一个小型的有向无环图，并合并到最终的 DAG 中。我们称其为复合转换函数，主要用于将相关的转换逻辑整合起来，便于理解和管理。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Count</span><span class="params">(object)</span>:</span></div><div class="line">  <span class="class"><span class="keyword">class</span> <span class="title">Globally</span><span class="params">(ptransform.PTransform)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">expand</span><span class="params">(self, pcoll)</span>:</span></div><div class="line">      <span class="keyword">return</span> pcoll | core.CombineGlobally(CountCombineFn())</div></pre></td></tr></table></figure>
+<p>更多内置的复合转换函数如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>复合转换函数</th>
+<th>功能含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Count.Globally()</td>
+<td>计算元素总数。</td>
+</tr>
+<tr>
+<td>Count.PerKey()</td>
+<td>计算每个键的元素数。</td>
+</tr>
+<tr>
+<td>Count.PerElement()</td>
+<td>计算每个元素出现的次数，类似 Wordcount。</td>
+</tr>
+<tr>
+<td>Mean.Globally()</td>
+<td>计算所有元素的平均值。</td>
+</tr>
+<tr>
+<td>Mean.PerKey()</td>
+<td>计算每个键的元素平均值。</td>
+</tr>
+<tr>
+<td>Top.Of(n, reverse)</td>
+<td>获取 PCollection 中最大或最小的 <code>n</code> 个元素，另有 Top.Largest(n), Top.Smallest(n).</td>
+</tr>
+<tr>
+<td>Top.PerKey(n, reverse)</td>
+<td>获取每个键的值列表中最大或最小的 <code>n</code> 个元素，另有 Top.LargestPerKey(n), Top.SmallestPerKey(n)</td>
+</tr>
+<tr>
+<td>Sample.FixedSizeGlobally(n)</td>
+<td>随机获取 <code>n</code> 个元素。</td>
+</tr>
+<tr>
+<td>Sample.FixedSizePerKey(n)</td>
+<td>随机获取每个键下的 <code>n</code> 个元素。</td>
+</tr>
+<tr>
+<td>ToList()</td>
+<td>将 PCollection 合并成一个列表。</td>
+</tr>
+<tr>
+<td>ToDict()</td>
+<td>将 PCollection 合并成一个哈希表，输入数据需要是二元组集合。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="时间窗口"><a href="#时间窗口" class="headerlink" title="时间窗口"></a>时间窗口</h2><p>在处理事件数据时，如访问日志、用户点击流，每条数据都会有一个 <em>事件时间</em> 属性，而通常我们会按事件时间对数据进行分组统计，这些分组即时间窗口。在 Beam 中，我们可以定义不同的时间窗口类型，能够支持有界和无界数据。由于 Python SDK 暂时只支持有界数据，我们就以一个离线访问日志文件作为输入源，统计每个时间窗口的记录条数。对于无界数据，概念和处理流程也是类似的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">64.242.88.10 - - [07/Mar/2004:16:05:49 -0800] &quot;GET /edit HTTP/1.1&quot; 401 12846</div><div class="line">64.242.88.10 - - [07/Mar/2004:16:06:51 -0800] &quot;GET /rdiff HTTP/1.1&quot; 200 4523</div><div class="line">64.242.88.10 - - [07/Mar/2004:16:10:02 -0800] &quot;GET /hsdivision HTTP/1.1&quot; 200 6291</div><div class="line">64.242.88.10 - - [07/Mar/2004:16:11:58 -0800] &quot;GET /view HTTP/1.1&quot; 200 7352</div><div class="line">64.242.88.10 - - [07/Mar/2004:16:20:55 -0800] &quot;GET /view HTTP/1.1&quot; 200 5253</div></pre></td></tr></table></figure>
+<p><code>logmining.py</code> 的完整源码可以在 GitHub（<a href="https://github.com/jizhang/hello-beam/blob/master/logmining.py" target="_blank" rel="external">链接</a>）中找到：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">lines = p | <span class="string">'Create'</span> &gt;&gt; beam.io.ReadFromText(<span class="string">'access.log'</span>)</div><div class="line">windowed_counts = (</div><div class="line">    lines</div><div class="line">    | <span class="string">'Timestamp'</span> &gt;&gt; beam.Map(<span class="keyword">lambda</span> x: beam.window.TimestampedValue(</div><div class="line">                              x, extract_timestamp(x)))</div><div class="line">    | <span class="string">'Window'</span> &gt;&gt; beam.WindowInto(beam.window.SlidingWindows(<span class="number">600</span>, <span class="number">300</span>))</div><div class="line">    | <span class="string">'Count'</span> &gt;&gt; (beam.CombineGlobally(beam.combiners.CountCombineFn())</div><div class="line">                  .without_defaults())</div><div class="line">)</div><div class="line">windowed_counts =  windowed_counts | beam.ParDo(PrintWindowFn())</div></pre></td></tr></table></figure>
+<p>首先，我们需要为每一条记录附加上时间戳。自定义函数 <code>extract_timestamp</code> 用以将日志中的时间 <code>[07/Mar/2004:16:05:49 -0800]</code> 转换成 Unix 时间戳，<code>TimestampedValue</code> 则会将这个时间戳和对应记录关联起来。之后，我们定义了一个大小为 <em>10 分钟</em>，间隔为 <em>5 分钟</em> 的滑动窗口（Sliding Window）。从零点开始，第一个窗口的范围是 <code>[00:00, 00:10)</code>，第二个窗口的范围是 <code>[00:05, 00:15)</code>，以此类推。所有窗口的长度都是 <em>10 分钟</em>，相邻两个窗口之间相隔 <em>5 分钟</em>。滑动窗口和固定窗口（Fixed Window）不同，因为相同的元素可能会落入不同的窗口中参与计算。最后，我们使用一个合并函数计算每个窗口中的记录数。通过这个方法得到前五条记录的计算结果为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[2004-03-08T00:00:00Z, 2004-03-08T00:10:00Z) @ 2</div><div class="line">[2004-03-08T00:05:00Z, 2004-03-08T00:15:00Z) @ 4</div><div class="line">[2004-03-08T00:10:00Z, 2004-03-08T00:20:00Z) @ 2</div><div class="line">[2004-03-08T00:15:00Z, 2004-03-08T00:25:00Z) @ 1</div><div class="line">[2004-03-08T00:20:00Z, 2004-03-08T00:30:00Z) @ 1</div></pre></td></tr></table></figure>
+<p>在无界数据的实时计算过程中，事件数据的接收顺序是不固定的，因此需要利用 Beam 的水位线和触发器机制来处理延迟数据（Late Data）。这个话题比较复杂，而且 Python SDK 尚未支持这些特性，感兴趣的读者可以参考 Stream <a href="https://www.oreilly.com/ideas/the-world-beyond-batch-streaming-101" target="_blank" rel="external">101</a> 和 <a href="https://www.oreilly.com/ideas/the-world-beyond-batch-streaming-102" target="_blank" rel="external">102</a> 这两篇文章。</p>
+<h2 id="Pipeline-运行时"><a href="#Pipeline-运行时" class="headerlink" title="Pipeline 运行时"></a>Pipeline 运行时</h2><p>上文中提到，Apache Beam 是一个数据处理标准，只提供了 SDK 和 API，因而必须使用 Spark、Flink 这样的计算引擎来运行它。下表列出了当前支持 Beam Model 的引擎，以及他们的兼容程度：</p>
+<p><img src="/cnblogs/images/beam/matrix.png" alt="Beam 运行时能力矩阵"></p>
+<p><a href="https://beam.apache.org/documentation/runners/capability-matrix/" target="_blank" rel="external">图片来源</a></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://beam.apache.org/documentation/programming-guide/" target="_blank" rel="external">https://beam.apache.org/documentation/programming-guide/</a></li>
+<li><a href="https://beam.apache.org/documentation/sdks/pydoc/2.1.0/" target="_blank" rel="external">https://beam.apache.org/documentation/sdks/pydoc/2.1.0/</a></li>
+<li><a href="https://sookocheff.com/post/dataflow/get-to-know-dataflow/" target="_blank" rel="external">https://sookocheff.com/post/dataflow/get-to-know-dataflow/</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2017/09/13/apache-beam-quick-start-with-python/" data-id="cj7ijectj003pmezj2yu57trz" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2017/09/13/apache-beam-quick-start-with-python/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/apache-beam/">apache beam</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/mapreduce/">mapreduce</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/stream-processing/">stream processing</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Python数据平台</h3>
+    <div class="widget">
+      <img src="/cnblogs/images/pydp-qrcode.jpg" style="width: 100%;"></img>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 17.5px;">analytics</a> <a href="/cnblogs/tags/aosa/" style="font-size: 12.5px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/clojure/" style="font-size: 20px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.5px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 10px;">flume</a> <a href="/cnblogs/tags/fp/" style="font-size: 10px;">fp</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/git/" style="font-size: 10px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 15px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 12.5px;">javascript</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 12.5px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 15px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 12.5px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 12.5px;">perl</a> <a href="/cnblogs/tags/programming/" style="font-size: 10px;">programming</a> <a href="/cnblogs/tags/python/" style="font-size: 17.5px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.5px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 15px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/sql/" style="font-size: 12.5px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 17.5px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 12.5px;">translation</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/cnblogs/2017/09/13/apache-beam-quick-start-with-python/">Apache Beam 快速入门（Python 版）</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/">2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/09/05/hive-window-and-analytical-functions/">Hive 窗口与分析型函数</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/">实时计算工具库 stream-lib 使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/">使用 Binlog 和 Canal 从 MySQL 抽取数据</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png"></a>
+      <br>
+      &copy; 2017 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/cnblogs/" class="mobile-nav-link">首页</a>
+  
+    <a href="/cnblogs/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/cnblogs/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/cnblogs/categories/Digest" class="mobile-nav-link">摘译</a>
+  
+    <a href="/cnblogs/archives" class="mobile-nav-link">全部文章</a>
+  
+    <a href="http://shzhangji.com/" class="mobile-nav-link">English</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  var disqus_url = 'http://shzhangji.com/cnblogs/2017/09/13/apache-beam-quick-start-with-python/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">
+  <script src="/cnblogs/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/cnblogs/js/script.js"></script>
+
+  </div>
+</body>
+</html>
