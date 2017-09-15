@@ -421,9 +421,9 @@
       <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
     
     
-      <category term="stream processing" scheme="http://shzhangji.com/cnblogs/tags/stream-processing/"/>
-    
       <category term="java" scheme="http://shzhangji.com/cnblogs/tags/java/"/>
+    
+      <category term="stream processing" scheme="http://shzhangji.com/cnblogs/tags/stream-processing/"/>
     
       <category term="algorithm" scheme="http://shzhangji.com/cnblogs/tags/algorithm/"/>
     
@@ -499,11 +499,11 @@
       <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
     
     
+      <category term="mysql" scheme="http://shzhangji.com/cnblogs/tags/mysql/"/>
+    
       <category term="etl" scheme="http://shzhangji.com/cnblogs/tags/etl/"/>
     
       <category term="java" scheme="http://shzhangji.com/cnblogs/tags/java/"/>
-    
-      <category term="mysql" scheme="http://shzhangji.com/cnblogs/tags/mysql/"/>
     
       <category term="canal" scheme="http://shzhangji.com/cnblogs/tags/canal/"/>
     
@@ -565,11 +565,11 @@
       <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
     
     
-      <category term="flume" scheme="http://shzhangji.com/cnblogs/tags/flume/"/>
-    
       <category term="etl" scheme="http://shzhangji.com/cnblogs/tags/etl/"/>
     
       <category term="java" scheme="http://shzhangji.com/cnblogs/tags/java/"/>
+    
+      <category term="flume" scheme="http://shzhangji.com/cnblogs/tags/flume/"/>
     
   </entry>
   
@@ -633,9 +633,9 @@
       <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
     
     
-      <category term="spark" scheme="http://shzhangji.com/cnblogs/tags/spark/"/>
-    
       <category term="scala" scheme="http://shzhangji.com/cnblogs/tags/scala/"/>
+    
+      <category term="spark" scheme="http://shzhangji.com/cnblogs/tags/spark/"/>
     
       <category term="stream processing" scheme="http://shzhangji.com/cnblogs/tags/stream-processing/"/>
     
@@ -790,9 +790,9 @@
     
       <category term="python" scheme="http://shzhangji.com/cnblogs/tags/python/"/>
     
-      <category term="websocket" scheme="http://shzhangji.com/cnblogs/tags/websocket/"/>
-    
       <category term="ops" scheme="http://shzhangji.com/cnblogs/tags/ops/"/>
+    
+      <category term="websocket" scheme="http://shzhangji.com/cnblogs/tags/websocket/"/>
     
   </entry>
   
@@ -962,11 +962,11 @@
   </entry>
   
   <entry>
-    <title>开发人员必知的5种开源框架</title>
+    <title>开发人员必知的 5 种开源框架</title>
     <link href="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/"/>
     <id>http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/</id>
     <published>2016-03-13T08:25:00.000Z</published>
-    <updated>2017-08-14T00:37:26.000Z</updated>
+    <updated>2017-09-15T09:10:59.000Z</updated>
     
     <content type="html"><![CDATA[<p>作者：<a href="https://opensource.com/business/15/12/top-5-frameworks" target="_blank" rel="external">John Esposito</a></p>
 <p>软件侵吞着世界<a href="http://www.wsj.com/articles/SB10001424053111903480904576512250915629460" target="_blank" rel="external">已经四年多了</a>，但开发人员看待软件的方式稍有不同。我们一直在致力于<a href="http://www.dougengelbart.org/pubs/augment-3906.html" target="_blank" rel="external">解决实际问题</a>，而<a href="http://worrydream.com/refs/Brooks-NoSilverBullet.pdf" target="_blank" rel="external">很少思考软件开发的基石</a>。当问题变得更庞大、解决方案更复杂时，一些实用的、不怎么<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html" target="_blank" rel="external">产生泄漏</a>的抽象工具就显得越来越重要。</p>
@@ -1014,14 +1014,24 @@
     
       <category term="translation" scheme="http://shzhangji.com/cnblogs/tags/translation/"/>
     
+      <category term="spark" scheme="http://shzhangji.com/cnblogs/tags/spark/"/>
+    
+      <category term="spring" scheme="http://shzhangji.com/cnblogs/tags/spring/"/>
+    
+      <category term="bootstrap" scheme="http://shzhangji.com/cnblogs/tags/bootstrap/"/>
+    
+      <category term="angular" scheme="http://shzhangji.com/cnblogs/tags/angular/"/>
+    
+      <category term="docker" scheme="http://shzhangji.com/cnblogs/tags/docker/"/>
+    
   </entry>
   
   <entry>
-    <title>使用Spring AOP向领域模型注入依赖</title>
+    <title>使用 Spring AOP 向领域模型注入依赖</title>
     <link href="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/"/>
     <id>http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/</id>
     <published>2015-09-12T14:03:00.000Z</published>
-    <updated>2017-08-14T00:37:26.000Z</updated>
+    <updated>2017-09-15T09:10:22.000Z</updated>
     
     <content type="html"><![CDATA[<p>在<a href="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/">贫血领域模型</a>这篇译文中，Martin阐述了这种“反模式”的症状和问题，并引用了领域驱动设计中的话来说明领域模型和分层设计之间的关系。对于Spring项目的开发人员来说，贫血领域模型十分常见：模型（或实体）仅仅包含对数据表的映射，通常是一组私有属性和公有getter/setter，所有的业务逻辑都写在服务层中，领域模型仅仅用来传递数据。为了编写真正的领域模型，我们需要将业务逻辑移至模型对象中，这就引出另一个问题：业务逻辑通常需要调用其他服务或模型，而使用<code>new</code>关键字或由JPA创建的对象是不受Spring托管的，也就无法进行依赖注入。解决这个问题的方法有很多，比较之后我选择使用面向切面编程来实现。</p>
 <h2 id="面向切面编程"><a href="#面向切面编程" class="headerlink" title="面向切面编程"></a>面向切面编程</h2><p>面向切面编程，或<a href="https://en.wikipedia.org/wiki/Aspect-oriented_programming" target="_blank" rel="external">AOP</a>，是一种编程范式，和面向对象编程（<a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank" rel="external">OOP</a>）互为补充。简单来说，AOP可以在不修改既有代码的情况下改变代码的行为。开发者通过定义一组规则，在特定的类方法前后增加逻辑，如记录日志、性能监控、事务管理等。这些逻辑称为切面（Aspect），规则称为切点（Pointcut），在调用前还是调用后执行称为通知（Before advice, After advice）。最后，我们可以选择在编译期将这些逻辑写入类文件，或是在运行时动态加载这些逻辑，这是两种不同的织入方式（Compile-time weaving, Load-time weaving）。</p>
@@ -1081,8 +1091,12 @@
     
     </summary>
     
-      <category term="Notes" scheme="http://shzhangji.com/cnblogs/categories/Notes/"/>
+      <category term="Programming" scheme="http://shzhangji.com/cnblogs/categories/Programming/"/>
     
+    
+      <category term="spring" scheme="http://shzhangji.com/cnblogs/tags/spring/"/>
+    
+      <category term="aop" scheme="http://shzhangji.com/cnblogs/tags/aop/"/>
     
   </entry>
   
@@ -1091,7 +1105,7 @@
     <link href="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/"/>
     <id>http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/</id>
     <published>2015-09-05T11:02:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-09-15T09:10:08.000Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://www.martinfowler.com/bliki/AnemicDomainModel.html" target="_blank" rel="external">http://www.martinfowler.com/bliki/AnemicDomainModel.html</a></p>
 <p>贫血领域模型是一个存在已久的反模式，目前仍有许多拥趸者。一次我和Eric Evans聊天谈到它时，都觉得这个模型似乎越来越流行了。作为<a href="http://martinfowler.com/eaaCatalog/domainModel.html" target="_blank" rel="external">领域模型</a>的推广者，我们觉得这不是一件好事。</p>
@@ -1123,17 +1137,19 @@
     
     </summary>
     
-      <category term="Translation" scheme="http://shzhangji.com/cnblogs/categories/Translation/"/>
+      <category term="Programming" scheme="http://shzhangji.com/cnblogs/categories/Programming/"/>
     
+    
+      <category term="translation" scheme="http://shzhangji.com/cnblogs/tags/translation/"/>
     
   </entry>
   
   <entry>
-    <title>HotSpot JVM中的对象指针压缩</title>
+    <title>HotSpot JVM 中的对象指针压缩</title>
     <link href="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/"/>
     <id>http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/</id>
     <published>2015-06-25T09:41:00.000Z</published>
-    <updated>2017-03-09T03:37:13.000Z</updated>
+    <updated>2017-09-15T09:09:55.000Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="https://wiki.openjdk.java.net/display/HotSpot/CompressedOops" target="_blank" rel="external">https://wiki.openjdk.java.net/display/HotSpot/CompressedOops</a></p>
 <h2 id="什么是一般对象指针？"><a href="#什么是一般对象指针？" class="headerlink" title="什么是一般对象指针？"></a>什么是一般对象指针？</h2><p>一般对象指针（oop, ordinary object pointer）是HotSpot虚拟机的一个术语，表示受托管的对象指针。它的大小通常和本地指针是一样的。Java应用程序和GC子系统会非常小心地跟踪这些受托管的指针，以便在销毁对象时回收内存空间，或是在对空间进行整理时移动（复制）对象。</p>
@@ -1225,17 +1241,21 @@
     
     </summary>
     
-      <category term="Translation" scheme="http://shzhangji.com/cnblogs/categories/Translation/"/>
+      <category term="Programming" scheme="http://shzhangji.com/cnblogs/categories/Programming/"/>
     
+    
+      <category term="java" scheme="http://shzhangji.com/cnblogs/tags/java/"/>
+    
+      <category term="jvm" scheme="http://shzhangji.com/cnblogs/tags/jvm/"/>
     
   </entry>
   
   <entry>
-    <title>Apache HBase的适用场景</title>
+    <title>Apache HBase 的适用场景</title>
     <link href="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/"/>
     <id>http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/</id>
     <published>2015-03-08T00:03:00.000Z</published>
-    <updated>2017-03-09T04:27:06.000Z</updated>
+    <updated>2017-09-15T09:09:36.000Z</updated>
     
     <content type="html"><![CDATA[<p>原文：<a href="http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/" target="_blank" rel="external">http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/</a></p>
 <p>最近我在<a href="http://www.meetup.com/LA-HUG/" target="_blank" rel="external">洛杉矶Hadoop用户组</a>做了一次关于<a href="http://www.meetup.com/LA-HUG/pages/Video_from_April_13th_HBASE_DO%27S_and_DON%27TS/" target="_blank" rel="external">HBase适用场景</a>的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分享中的主要内容做了一个整理。如果你没有时间阅读全文，以下是一些摘要：</p>
@@ -1285,11 +1305,11 @@
   </entry>
   
   <entry>
-    <title>深入理解Reduce-side Join</title>
+    <title>深入理解 Reduce-side Join</title>
     <link href="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/"/>
     <id>http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/</id>
     <published>2015-01-13T06:20:00.000Z</published>
-    <updated>2017-03-09T07:25:39.000Z</updated>
+    <updated>2017-09-15T09:09:25.000Z</updated>
     
     <content type="html"><![CDATA[<p>在《<a href="http://www.amazon.com/MapReduce-Design-Patterns-Effective-Algorithms/dp/1449327176" target="_blank" rel="external">MapReduce Design Patterns</a>》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：</p>
 <p><img src="/cnblogs/images/reduce-side-join/reduce-side-join.png" alt=""></p>
@@ -1311,7 +1331,7 @@
 <p>按照我们的实现，Mapper输出的Key是<code>product_id</code>，Values是打了标签的产品表（Product）和订单表（Order）的记录。从数据量来看，应该缓存产品表，扫描订单表。这就要求两表记录到达Reducer时是有序的，产品表在前，边扫描边放入内存；订单表在后，边扫描边结合产品表的记录进行输出。要让Hadoop在Shuffle&amp;Sort阶段先按<code>product_id</code>排序、再按表的标签排序，就需要用到二次排序。</p>
 <p>二次排序的概念很简单，将Mapper输出的Key由单一的<code>product_id</code>修改为<code>product_id+tag</code>的复合Key就可以了，但需通过以下几步实现：</p>
 <h3 id="自定义Key类型"><a href="#自定义Key类型" class="headerlink" title="自定义Key类型"></a>自定义Key类型</h3><p>原来<code>product_id</code>是Text类型，我们的复合Key则要包含<code>product_id</code>和<code>tag</code>两个数据，并实现<code>WritableComparable</code>接口：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TaggedKey</span> <span class="keyword">implements</span> <span class="title">WritableComparable</span>&lt;<span class="title">TaggedKey</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Text joinKey = <span class="keyword">new</span> Text();</div><div class="line">    <span class="keyword">private</span> IntWritable tag = <span class="keyword">new</span> IntWritable();</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(TaggedKey taggedKey)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> compareValue = joinKey.compareTo(taggedKey.getJoinKey());</div><div class="line">        <span class="keyword">if</span> (compareValue == <span class="number">0</span>) &#123;</div><div class="line">            compareValue = tag.compareTo(taggedKey.getTag());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> compareValue;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 此处省略部分代码</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TaggedKey</span> <span class="keyword">implements</span> <span class="title">WritableComparable</span>&lt;<span class="title">TaggedKey</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Text joinKey = <span class="keyword">new</span> Text();</div><div class="line">    <span class="keyword">private</span> IntWritable tag = <span class="keyword">new</span> IntWritable();</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(TaggedKey taggedKey)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> compareValue = joinKey.compareTo(taggedKey.getJoinKey());</div><div class="line">        <span class="keyword">if</span> (compareValue == <span class="number">0</span>) &#123;</div><div class="line">            compareValue = tag.compareTo(taggedKey.getTag());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> compareValue;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 此处省略部分代码</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>可以看到，在比较两个TaggedKey时，会先比较joinKey（即<code>product_id</code>），再比较<code>tag</code>。</p>
 <h3 id="自定义分区方法"><a href="#自定义分区方法" class="headerlink" title="自定义分区方法"></a>自定义分区方法</h3><p>默认情况下，Hadoop会对Key进行哈希，以保证相同的Key会分配到同一个Reducer中。由于我们改变了Key的结构，因此需要重新编 写分区函数：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TaggedJoiningPartitioner</span> <span class="keyword">extends</span> <span class="title">Partitioner</span>&lt;<span class="title">TaggedKey</span>, <span class="title">Text</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPartition</span><span class="params">(TaggedKey taggedKey, Text text, <span class="keyword">int</span> numPartitions)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> taggedKey.getJoinKey().hashCode() % numPartitions;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -1352,6 +1372,8 @@
     
     </summary>
     
+      <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
+    
     
       <category term="hadoop" scheme="http://shzhangji.com/cnblogs/tags/hadoop/"/>
     
@@ -1360,11 +1382,11 @@
   </entry>
   
   <entry>
-    <title>使用git rebase让历史变得清晰</title>
+    <title>使用 git rebase 让历史变得清晰</title>
     <link href="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/"/>
     <id>http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/</id>
     <published>2014-12-23T08:10:00.000Z</published>
-    <updated>2017-03-09T07:25:39.000Z</updated>
+    <updated>2017-09-15T09:09:10.000Z</updated>
     
     <content type="html"><![CDATA[<p>当多人协作开发一个分支时，历史记录通常如下方左图所示，比较凌乱。如果希望能像右图那样呈线性提交，就需要学习git rebase的用法。</p>
 <p><img src="/cnblogs/images/git-rebase/rebase-result.png" alt=""></p>
@@ -1407,17 +1429,19 @@
     
     </summary>
     
-      <category term="Notes" scheme="http://shzhangji.com/cnblogs/categories/Notes/"/>
+      <category term="Programming" scheme="http://shzhangji.com/cnblogs/categories/Programming/"/>
     
+    
+      <category term="git" scheme="http://shzhangji.com/cnblogs/tags/git/"/>
     
   </entry>
   
   <entry>
-    <title>Spark快速入门</title>
+    <title>Spark 快速入门</title>
     <link href="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/"/>
     <id>http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/</id>
     <published>2014-12-16T07:59:00.000Z</published>
-    <updated>2017-06-06T03:12:23.000Z</updated>
+    <updated>2017-09-15T09:08:59.000Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://spark.apache.org/images/spark-logo.png" alt=""></p>
 <p><a href="http://spark.apache.org" target="_blank" rel="external">Apache Spark</a>是新兴的一种快速通用的大规模数据处理引擎。它的优势有三个方面：</p>
@@ -1523,9 +1547,9 @@
       <category term="Big Data" scheme="http://shzhangji.com/cnblogs/categories/Big-Data/"/>
     
     
-      <category term="spark" scheme="http://shzhangji.com/cnblogs/tags/spark/"/>
-    
       <category term="scala" scheme="http://shzhangji.com/cnblogs/tags/scala/"/>
+    
+      <category term="spark" scheme="http://shzhangji.com/cnblogs/tags/spark/"/>
     
   </entry>
   
