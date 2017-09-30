@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://shzhangji.com/cnblogs/2017/09/30/pandas-and-tidy-data/</loc>
+    
+    <lastmod>2017-09-30T07:39:28.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/</loc>
     
     <lastmod>2017-09-15T09:12:02.000Z</lastmod>

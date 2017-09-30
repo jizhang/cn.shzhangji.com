@@ -89,6 +89,61 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-pandas-and-tidy-data" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2017/09/30/pandas-and-tidy-data/" class="article-date">
+  <time datetime="2017-09-30T06:37:56.000Z" itemprop="datePublished">2017-09-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Big-Data/">Big Data</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/cnblogs/2017/09/30/pandas-and-tidy-data/">Pandas 与数据整理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在 <a href="https://www.jstatsoft.org/article/view/v059i10" target="_blank" rel="external">Tidy Data</a> 论文中，<a href="https://en.wikipedia.org/wiki/Hadley_Wickham" target="_blank" rel="external">Wickham 博士</a> 提出了这样一种“整洁”的数据结构：每个变量是一列，每次观测结果是一行，不同的观测类型存放在单独的表中。他认为这样的数据结构可以帮助分析师更简单高效地进行处理、建模、和可视化。他在论文中列举了 <em>五种</em> 不符合整洁数据的情况，并演示了如何通过 <a href="https://github.com/hadley/tidy-data/" target="_blank" rel="external">R 语言</a> 对它们进行整理。本文中，我们将使用 Python 和 Pandas 来达到同样的目的。</p>
+<p>文中的源代码和演示数据可以在 GitHub（<a href="https://github.com/jizhang/pandas-tidy-data" target="_blank" rel="external">链接</a>）上找到。读者应该已经安装好 Python 开发环境，推荐各位使用 Anaconda 和 Spyder IDE。</p>
+<h2 id="列名称是数据值，而非变量名"><a href="#列名称是数据值，而非变量名" class="headerlink" title="列名称是数据值，而非变量名"></a>列名称是数据值，而非变量名</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</div><div class="line">df = pd.read_csv(<span class="string">'data/pew.csv'</span>)</div><div class="line">df.head(<span class="number">10</span>)</div></pre></td></tr></table></figure>
+<p><img src="/cnblogs/images/tidy-data/pew.png" alt="宗教信仰与收入 - Pew 论坛"></p>
+<p>表中的列“&lt;$10k”、“$10-20k”其实是“收入”变量的具体值。<em>变量</em> 是指某一特性的观测值，如身高、体重，本例中则是收入、宗教信仰。表中的数值数据构成了另一个变量——人数。要做到 <em>每个变量是一列</em> ，我们需要进行以下变换：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">df = df.set_index(<span class="string">'religion'</span>)</div><div class="line">df = df.stack()</div><div class="line">df.index = df.index.rename(<span class="string">'income'</span>, level=<span class="number">1</span>)</div><div class="line">df.name = <span class="string">'frequency'</span></div><div class="line">df = df.reset_index()</div><div class="line">df.head(<span class="number">10</span>)</div></pre></td></tr></table></figure>
+<p><img src="/cnblogs/images/tidy-data/pew-tidy.png" alt="宗教信仰与收入 - 整洁版"></p>
+        
+          <p class="article-more-link">
+            <a href="/cnblogs/2017/09/30/pandas-and-tidy-data/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2017/09/30/pandas-and-tidy-data/" data-id="cj86tuy5o00002jzjev9zycdw" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2017/09/30/pandas-and-tidy-data/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/analytics/">analytics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/pandas/">pandas</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-apache-beam-quick-start-with-python" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/cnblogs/2017/09/13/apache-beam-quick-start-with-python/" class="article-date">
@@ -573,58 +628,6 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-why-use-lodash-when-es6-is-available" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/" class="article-date">
-  <time datetime="2017-06-29T06:49:14.000Z" itemprop="datePublished">2017-06-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/cnblogs/categories/Programming/">Programming</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/">为什么不用 ES6 完全替换 Lodash</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://lodash.com/" target="_blank" rel="external">Lodash</a> 是一款非常知名的 JavaScript 工具库，能够让开发者十分便捷地操纵数组和对象。我则是非常喜欢用它提供的函数式编程风格来操作集合类型，特别是链式调用和惰性求值。然而，随着 <a href="http://www.ecma-international.org/ecma-262/6.0/" target="_blank" rel="external">ECMAScript 2015 Standard (ES6)</a> 得到越来越多主流浏览器的支持，以及像 <a href="https://babeljs.io/" target="_blank" rel="external">Babel</a> 这样，能够将 ES6 代码编译成 ES5 从而在旧浏览器上运行的工具日渐流行，人们会发现许多 Lodash 提供的功能已经可以用 ES6 来替换了。然而真的如此吗？我认为，Lodash 仍然会非常流行，因为它可以为程序员提供更多的便利，并且优化我们编程的方式。</p>
-<h2 id="map-和-Array-map-是有区别的"><a href="#map-和-Array-map-是有区别的" class="headerlink" title="_.map 和 Array#map 是有区别的"></a><code>_.map</code> 和 <code>Array#map</code> 是有区别的</h2><p>在处理集合对象时，<code>_.map</code>、<code>_.reduce</code>、<code>_.filter</code>、以及 <code>_.forEach</code> 的使用频率很高，而今 ES6 已经能够原生支持这些操作：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">_.map([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], (i) =&gt; i + <span class="number">1</span>)</div><div class="line">_.reduce([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], (sum, i) =&gt; sum + i, <span class="number">0</span>)</div><div class="line">_.filter([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], (i) =&gt; i &gt; <span class="number">1</span>)</div><div class="line">_.forEach([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], (i) =&gt; &#123; <span class="built_in">console</span>.log(i) &#125;)</div><div class="line"></div><div class="line"><span class="comment">// 使用 ES6 改写</span></div><div class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].map(<span class="function">(<span class="params">i</span>) =&gt;</span> i + <span class="number">1</span>)</div><div class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].reduce(<span class="function">(<span class="params">sum, i</span>) =&gt;</span> sum + i, <span class="number">0</span>)</div><div class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].filter(<span class="function">(<span class="params">i</span>) =&gt;</span> i &gt; <span class="number">1</span>)</div><div class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].forEach(<span class="function">(<span class="params">i</span>) =&gt;</span> &#123; <span class="built_in">console</span>.log(i) &#125;)</div></pre></td></tr></table></figure>
-<p>但是，Lodash 的 <code>_.map</code> 函数功能更强大，它能够操作对象类型，提供了遍历和过滤的快捷方式，能够惰性求值，对 <code>null</code> 值容错，并且有着更好的性能。</p>
-        
-          <p class="article-more-link">
-            <a href="/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/" data-id="cj7lo3dva002pi7zjj7mvoxxi" class="article-share-link">分享</a>
-      
-        <a href="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/#disqus_thread" class="article-comment-link">留言</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/es6/">es6</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/frontend/">frontend</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/javascript/">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/lodash/">lodash</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
   <nav id="page-nav">
@@ -648,7 +651,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.67px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 18.33px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 13.33px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 10px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.67px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 13.33px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 15px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 11.67px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.67px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.67px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 13.33px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.67px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.67px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 15px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 11.67px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.67px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 15px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 18.33px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 16.67px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.67px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 18.33px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 13.33px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 10px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 10px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.67px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 13.33px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 15px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 11.67px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.67px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.67px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 13.33px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.67px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.67px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.67px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 16.67px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 11.67px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.67px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 15px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 18.33px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
     </div>
   </div>
 
@@ -670,6 +673,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/cnblogs/2017/09/30/pandas-and-tidy-data/">Pandas 与数据整理</a>
+          </li>
+        
+          <li>
             <a href="/cnblogs/2017/09/13/apache-beam-quick-start-with-python/">Apache Beam 快速入门（Python 版）</a>
           </li>
         
@@ -683,10 +690,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/">实时计算工具库 stream-lib 使用指南</a>
-          </li>
-        
-          <li>
-            <a href="/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/">使用 Binlog 和 Canal 从 MySQL 抽取数据</a>
           </li>
         
       </ul>
