@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://shzhangji.com/cnblogs/2018/04/07/error-handling-in-restful-api/</loc>
+    
+    <lastmod>2018-04-08T00:36:41.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://shzhangji.com/cnblogs/2017/10/24/flume-source-code-component-lifecycle/</loc>
     
     <lastmod>2017-10-24T01:18:26.000Z</lastmod>
