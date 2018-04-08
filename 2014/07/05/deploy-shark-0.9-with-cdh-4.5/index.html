@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="张吉的博客">
 <meta property="og:description" content="Spark是一个新兴的大数据计算平台，它的优势之一是内存型计算，因此对于需要多次迭代的算法尤为适用。同时，它又能够很好地融合到现有的Hadoop生态环境中，包括直接存取HDFS上的文件，以及运行于YARN之上。对于Hive，Spark也有相应的替代项目——Shark，能做到 drop-in replacement ，直接构建在现有集群之上。本文就将简要阐述如何在CDH4.5上搭建Shark0.9集">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-09-15T09:08:11.000Z">
+<meta property="og:updated_time" content="2017-09-30T23:07:36.343Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在 CDH 4.5 上安装 Shark 0.9">
 <meta name="twitter:description" content="Spark是一个新兴的大数据计算平台，它的优势之一是内存型计算，因此对于需要多次迭代的算法尤为适用。同时，它又能够很好地融合到现有的Hadoop生态环境中，包括直接存取HDFS上的文件，以及运行于YARN之上。对于Hive，Spark也有相应的替代项目——Shark，能做到 drop-in replacement ，直接构建在现有集群之上。本文就将简要阐述如何在CDH4.5上搭建Shark0.9集">
@@ -26,7 +26,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -118,18 +118,18 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="http://spark.apache.org" target="_blank" rel="external">Spark</a>是一个新兴的大数据计算平台，它的优势之一是内存型计算，因此对于需要多次迭代的算法尤为适用。同时，它又能够很好地融合到现有的<a href="http://hadoop.apache.org" target="_blank" rel="external">Hadoop</a>生态环境中，包括直接存取HDFS上的文件，以及运行于YARN之上。对于<a href="http://hive.apache.org" target="_blank" rel="external">Hive</a>，Spark也有相应的替代项目——<a href="http://shark.cs.berkeley.edu/" target="_blank" rel="external">Shark</a>，能做到 <strong>drop-in replacement</strong> ，直接构建在现有集群之上。本文就将简要阐述如何在CDH4.5上搭建Shark0.9集群。</p>
+        <p><a href="http://spark.apache.org" target="_blank" rel="noopener">Spark</a>是一个新兴的大数据计算平台，它的优势之一是内存型计算，因此对于需要多次迭代的算法尤为适用。同时，它又能够很好地融合到现有的<a href="http://hadoop.apache.org" target="_blank" rel="noopener">Hadoop</a>生态环境中，包括直接存取HDFS上的文件，以及运行于YARN之上。对于<a href="http://hive.apache.org" target="_blank" rel="noopener">Hive</a>，Spark也有相应的替代项目——<a href="http://shark.cs.berkeley.edu/" target="_blank" rel="noopener">Shark</a>，能做到 <strong>drop-in replacement</strong> ，直接构建在现有集群之上。本文就将简要阐述如何在CDH4.5上搭建Shark0.9集群。</p>
 <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ul>
 <li>安装方式：Spark使用CDH提供的Parcel，以Standalone模式启动</li>
 <li>软件版本<ul>
 <li>Cloudera Manager 4.8.2</li>
 <li>CDH 4.5</li>
 <li>Spark 0.9.0 Parcel</li>
-<li><a href="http://cloudera.rst.im/shark/" target="_blank" rel="external">Shark 0.9.1 Binary</a></li>
+<li><a href="http://cloudera.rst.im/shark/" target="_blank" rel="noopener">Shark 0.9.1 Binary</a></li>
 </ul>
 </li>
 <li>服务器基础配置<ul>
-<li>可用的软件源（如<a href="http://mirrors.ustc.edu.cn/" target="_blank" rel="external">中科大的源</a>）</li>
+<li>可用的软件源（如<a href="http://mirrors.ustc.edu.cn/" target="_blank" rel="noopener">中科大的源</a>）</li>
 <li>配置主节点至子节点的root账户SSH无密码登录。</li>
 <li>在<code>/etc/hosts</code>中写死IP和主机名，或者DNS做好正反解析。</li>
 </ul>
@@ -140,42 +140,42 @@ ga('send', 'pageview');
 <li>使用CM安装Parcel，不需要重启服务。</li>
 <li>修改<code>/etc/spark/conf/spark-env.sh</code>：（其中one-843是主节点的域名）</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">STANDALONE_SPARK_MASTER_HOST=one-843</div><div class="line">DEFAULT_HADOOP_HOME=/opt/cloudera/parcels/CDH/lib/hadoop</div><div class="line"><span class="built_in">export</span> SPARK_CLASSPATH=<span class="variable">$SPARK_CLASSPATH</span>:/opt/cloudera/parcels/HADOOP_LZO/lib/hadoop/lib/*</div><div class="line"><span class="built_in">export</span> SPARK_LIBRARY_PATH=<span class="variable">$SPARK_LIBRARY_PATH</span>:/opt/cloudera/parcels/HADOOP_LZO/lib/hadoop/lib/native</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">STANDALONE_SPARK_MASTER_HOST=one-843</span><br><span class="line">DEFAULT_HADOOP_HOME=/opt/cloudera/parcels/CDH/lib/hadoop</span><br><span class="line"><span class="built_in">export</span> SPARK_CLASSPATH=<span class="variable">$SPARK_CLASSPATH</span>:/opt/cloudera/parcels/HADOOP_LZO/lib/hadoop/lib/*</span><br><span class="line"><span class="built_in">export</span> SPARK_LIBRARY_PATH=<span class="variable">$SPARK_LIBRARY_PATH</span>:/opt/cloudera/parcels/HADOOP_LZO/lib/hadoop/lib/native</span><br></pre></td></tr></table></figure>
 <ul>
 <li>修改<code>/etc/spark/conf/slaves</code>，添加各节点主机名。</li>
 <li>将<code>/etc/spark/conf</code>目录同步至所有节点。</li>
 <li>启动Spark服务（即Standalone模式）：</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ /opt/cloudera/parcels/SPARK/lib/spark/sbin/start-master.sh</div><div class="line">$ /opt/cloudera/parcels/SPARK/lib/spark/sbin/start-slaves.sh</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ /opt/cloudera/parcels/SPARK/lib/spark/sbin/start-master.sh</span><br><span class="line">$ /opt/cloudera/parcels/SPARK/lib/spark/sbin/start-slaves.sh</span><br></pre></td></tr></table></figure>
 <ul>
 <li>测试<code>spark-shell</code>是否可用：</li>
 </ul>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sc.textFile(<span class="string">"hdfs://one-843:8020/user/jizhang/zj_people.txt.lzo"</span>).count</div></pre></td></tr></table></figure>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sc.textFile(<span class="string">"hdfs://one-843:8020/user/jizhang/zj_people.txt.lzo"</span>).count</span><br></pre></td></tr></table></figure>
 <h2 id="安装Shark"><a href="#安装Shark" class="headerlink" title="安装Shark"></a>安装Shark</h2><ul>
 <li>安装Oracle JDK 1.7 Update 45至<code>/usr/lib/jvm/jdk1.7.0_45</code>。</li>
-<li>下载别人编译好的二进制包：<a href="http://cloudera.rst.im/shark/shark-0.9.1-bin-2.0.0-mr1-cdh-4.6.0.tar.gz" target="_blank" rel="external">shark-0.9.1-bin-2.0.0-mr1-cdh-4.6.0.tar.gz</a></li>
+<li>下载别人编译好的二进制包：<a href="http://cloudera.rst.im/shark/shark-0.9.1-bin-2.0.0-mr1-cdh-4.6.0.tar.gz" target="_blank" rel="noopener">shark-0.9.1-bin-2.0.0-mr1-cdh-4.6.0.tar.gz</a></li>
 <li>解压至<code>/opt</code>目录，修改<code>conf/shark-env.sh</code>：</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> JAVA_HOME=/usr/lib/jvm/jdk1.7.0_45</div><div class="line"><span class="built_in">export</span> SCALA_HOME=/opt/cloudera/parcels/SPARK/lib/spark</div><div class="line"><span class="built_in">export</span> SHARK_HOME=/root/shark-0.9.1-bin-2.0.0-mr1-cdh-4.6.0</div><div class="line"></div><div class="line"><span class="built_in">export</span> HIVE_CONF_DIR=/etc/hive/conf</div><div class="line"></div><div class="line"><span class="built_in">export</span> HADOOP_HOME=/opt/cloudera/parcels/CDH/lib/hadoop</div><div class="line"><span class="built_in">export</span> SPARK_HOME=/opt/cloudera/parcels/SPARK/lib/spark</div><div class="line"><span class="built_in">export</span> MASTER=spark://one-843:7077</div><div class="line"></div><div class="line"><span class="built_in">export</span> SPARK_CLASSPATH=<span class="variable">$SPARK_CLASSPATH</span>:/opt/cloudera/parcels/HADOOP_LZO/lib/hadoop/lib/*</div><div class="line"><span class="built_in">export</span> SPARK_LIBRARY_PATH=<span class="variable">$SPARK_LIBRARY_PATH</span>:/opt/cloudera/parcels/HADOOP_LZO/lib/hadoop/lib/native</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> JAVA_HOME=/usr/lib/jvm/jdk1.7.0_45</span><br><span class="line"><span class="built_in">export</span> SCALA_HOME=/opt/cloudera/parcels/SPARK/lib/spark</span><br><span class="line"><span class="built_in">export</span> SHARK_HOME=/root/shark-0.9.1-bin-2.0.0-mr1-cdh-4.6.0</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> HIVE_CONF_DIR=/etc/hive/conf</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> HADOOP_HOME=/opt/cloudera/parcels/CDH/lib/hadoop</span><br><span class="line"><span class="built_in">export</span> SPARK_HOME=/opt/cloudera/parcels/SPARK/lib/spark</span><br><span class="line"><span class="built_in">export</span> MASTER=spark://one-843:7077</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> SPARK_CLASSPATH=<span class="variable">$SPARK_CLASSPATH</span>:/opt/cloudera/parcels/HADOOP_LZO/lib/hadoop/lib/*</span><br><span class="line"><span class="built_in">export</span> SPARK_LIBRARY_PATH=<span class="variable">$SPARK_LIBRARY_PATH</span>:/opt/cloudera/parcels/HADOOP_LZO/lib/hadoop/lib/native</span><br></pre></td></tr></table></figure>
 <ul>
 <li>开启SharkServer2，使用Supervisord管理：</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[program:sharkserver2]</div><div class="line">command = /opt/shark/bin/shark --service sharkserver2</div><div class="line">autostart = true</div><div class="line">autorestart = true</div><div class="line">stdout_logfile = /var/log/sharkserver2.log</div><div class="line">redirect_stderr = true</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ supervisorctl start sharkserver2</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[program:sharkserver2]</span><br><span class="line">command = /opt/shark/bin/shark --service sharkserver2</span><br><span class="line">autostart = true</span><br><span class="line">autorestart = true</span><br><span class="line">stdout_logfile = /var/log/sharkserver2.log</span><br><span class="line">redirect_stderr = true</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ supervisorctl start sharkserver2</span><br></pre></td></tr></table></figure>
 <ul>
 <li>测试</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ /opt/shark/bin/beeline -u jdbc:hive2://one-843:10000 -n root</div></pre></td></tr></table></figure>
-<h2 id="版本问题"><a href="#版本问题" class="headerlink" title="版本问题"></a>版本问题</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><h4 id="CDH"><a href="#CDH" class="headerlink" title="CDH"></a>CDH</h4><p>CDH是对Hadoop生态链各组件的打包，每个CDH版本都会对应一组Hadoop组件的版本，如<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.5.0/CDH-Version-and-Packaging-Information/cdhvd_topic_3.html" target="_blank" rel="external">CDH4.5</a>的部分对应关系如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ /opt/shark/bin/beeline -u jdbc:hive2://one-843:10000 -n root</span><br></pre></td></tr></table></figure>
+<h2 id="版本问题"><a href="#版本问题" class="headerlink" title="版本问题"></a>版本问题</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><h4 id="CDH"><a href="#CDH" class="headerlink" title="CDH"></a>CDH</h4><p>CDH是对Hadoop生态链各组件的打包，每个CDH版本都会对应一组Hadoop组件的版本，如<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.5.0/CDH-Version-and-Packaging-Information/cdhvd_topic_3.html" target="_blank" rel="noopener">CDH4.5</a>的部分对应关系如下：</p>
 <ul>
 <li>Apache Hadoop: hadoop-2.0.0+1518</li>
 <li>Apache Hive: hive-0.10.0+214</li>
 <li>Hue: hue-2.5.0+182</li>
 </ul>
-<p>可以看到，CDH4.5对应的Hive版本是0.10.0，因此它的<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.5.0/CDH4-Installation-Guide/cdh4ig_hive_metastore_configure.html" target="_blank" rel="external">Metastore Server</a>使用的也是0.10.0版本的API。</p>
+<p>可以看到，CDH4.5对应的Hive版本是0.10.0，因此它的<a href="http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.5.0/CDH4-Installation-Guide/cdh4ig_hive_metastore_configure.html" target="_blank" rel="noopener">Metastore Server</a>使用的也是0.10.0版本的API。</p>
 <h4 id="Spark"><a href="#Spark" class="headerlink" title="Spark"></a>Spark</h4><p>Spark目前最高版本是0.9.1，CDH前不久推出了0.9.0的Parcel，使得安装过程变的简单得多。CDH5中对Spark做了深度集成，即可以用CM来直接控制Spark的服务，且支持Spark on YARN架构。</p>
 <h4 id="Shark"><a href="#Shark" class="headerlink" title="Shark"></a>Shark</h4><p>Shark是基于Spark的一款应用，可以简单地认为是将Hive的MapReduce引擎替换为了Spark。</p>
-<p>Shark的一个特点的是需要使用特定的Hive版本——<a href="https://github.com/amplab/hive" target="_blank" rel="external">AMPLab patched Hive</a>：</p>
+<p>Shark的一个特点的是需要使用特定的Hive版本——<a href="https://github.com/amplab/hive" target="_blank" rel="noopener">AMPLab patched Hive</a>：</p>
 <ul>
 <li>Shark 0.8.x: AMPLab Hive 0.9.0</li>
 <li>Shark 0.9.x: AMPLab Hive 0.11.0</li>
@@ -185,23 +185,23 @@ ga('send', 'pageview');
 <h3 id="目前发现的不兼容SQL"><a href="#目前发现的不兼容SQL" class="headerlink" title="目前发现的不兼容SQL"></a>目前发现的不兼容SQL</h3><ul>
 <li>DROP TABLE …</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">FAILED: Error in metadata: org.apache.thrift.TApplicationException: Invalid method name: &apos;drop_table_with_environment_context&apos;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FAILED: Error in metadata: org.apache.thrift.TApplicationException: Invalid method name: &apos;drop_table_with_environment_context&apos;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>INSERT OVERWRITE TABLE … PARTITION (…) SELECT …</li>
 <li>LOAD DATA INPATH ‘…’ OVERWRITE INTO TABLE … PARTITION (…)</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Failed with exception org.apache.thrift.TApplicationException: Invalid method name: &apos;partition_name_has_valid_characters&apos;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Failed with exception org.apache.thrift.TApplicationException: Invalid method name: &apos;partition_name_has_valid_characters&apos;</span><br></pre></td></tr></table></figure>
 <p>也就是说上述两个方法名是0.11.0接口中定义的，在0.10.0的定义中并不存在，所以出现上述问题。</p>
 <h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><h4 id="对存在问题的SQL使用Hive命令去调"><a href="#对存在问题的SQL使用Hive命令去调" class="headerlink" title="对存在问题的SQL使用Hive命令去调"></a>对存在问题的SQL使用Hive命令去调</h4><p>因为Shark初期是想给分析师使用的，他们对分区表并不是很在意，而DROP TABLE可以在客户端做判断，转而使用Hive来执行。</p>
 <p>这个方案的优点是可以在现有集群上立刻用起来，但缺点是需要做一些额外的开发，而且API不一致的问题可能还会有其他坑在里面。</p>
 <h4 id="升级到CDH5"><a href="#升级到CDH5" class="headerlink" title="升级到CDH5"></a>升级到CDH5</h4><p>CDH5中Hive的版本是0.12.0，所以不排除同样存在API不兼容的问题。不过网上也有人尝试跳过AMPLab Hive，让Shark直接调用CDH中的Hive，其可行性还需要我们自己测试。</p>
-<p>对于这个问题，我只在<a href="https://groups.google.com/forum/#!starred/shark-users/x_Dh5-3isIc" target="_blank" rel="external">Google Groups</a>上看到一篇相关的帖子，不过并没有给出解决方案。</p>
+<p>对于这个问题，我只在<a href="https://groups.google.com/forum/#!starred/shark-users/x_Dh5-3isIc" target="_blank" rel="noopener">Google Groups</a>上看到一篇相关的帖子，不过并没有给出解决方案。</p>
 <p>目前我们实施的是 <strong>第一种方案</strong>，即在客户端和Shark之间添加一层，不支持的SQL语句直接降级用Hive执行，效果不错。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/" data-id="cj94xgvvj001fj2zjo96nmnmv" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/" data-id="cj6ubcfd6001mtam6urbg2jw0" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -351,7 +351,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">

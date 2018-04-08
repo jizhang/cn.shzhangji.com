@@ -14,7 +14,7 @@
 <meta property="og:description" content="在公司网络中使用sbt、Maven等项目构建工具时，我们通常会搭建一个公用的Nexus镜像服务，原因有以下几个：  避免重复下载依赖，节省公司带宽； 国内网络环境不理想，下载速度慢； IDC服务器没有外网访问权限； 用于发布内部模块。  sbt的依赖管理基于Ivy，虽然它能直接使用Maven中央仓库中的Jar包，在配置时还是有一些注意事项的。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://www.scala-sbt.org/0.13/docs/files/proxy-ivy-mvn-setup.png">
-<meta property="og:updated_time" content="2017-09-15T09:08:52.000Z">
+<meta property="og:updated_time" content="2017-09-30T23:07:36.343Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="离线环境下构建 sbt 项目">
 <meta name="twitter:description" content="在公司网络中使用sbt、Maven等项目构建工具时，我们通常会搭建一个公用的Nexus镜像服务，原因有以下几个：  避免重复下载依赖，节省公司带宽； 国内网络环境不理想，下载速度慢； IDC服务器没有外网访问权限； 用于发布内部模块。  sbt的依赖管理基于Ivy，虽然它能直接使用Maven中央仓库中的Jar包，在配置时还是有一些注意事项的。">
@@ -28,7 +28,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -120,40 +120,40 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在公司网络中使用<a href="http://www.scala-sbt.org/" target="_blank" rel="external">sbt</a>、<a href="http://maven.apache.org/" target="_blank" rel="external">Maven</a>等项目构建工具时，我们通常会搭建一个公用的<a href="http://www.sonatype.org/nexus/" target="_blank" rel="external">Nexus</a>镜像服务，原因有以下几个：</p>
+        <p>在公司网络中使用<a href="http://www.scala-sbt.org/" target="_blank" rel="noopener">sbt</a>、<a href="http://maven.apache.org/" target="_blank" rel="noopener">Maven</a>等项目构建工具时，我们通常会搭建一个公用的<a href="http://www.sonatype.org/nexus/" target="_blank" rel="noopener">Nexus</a>镜像服务，原因有以下几个：</p>
 <ul>
 <li>避免重复下载依赖，节省公司带宽；</li>
 <li>国内网络环境不理想，下载速度慢；</li>
 <li>IDC服务器没有外网访问权限；</li>
 <li>用于发布内部模块。</li>
 </ul>
-<p>sbt的依赖管理基于<a href="http://ant.apache.org/ivy/" target="_blank" rel="external">Ivy</a>，虽然它能直接使用<a href="http://search.maven.org/" target="_blank" rel="external">Maven中央仓库</a>中的Jar包，在配置时还是有一些注意事项的。</p>
+<p>sbt的依赖管理基于<a href="http://ant.apache.org/ivy/" target="_blank" rel="noopener">Ivy</a>，虽然它能直接使用<a href="http://search.maven.org/" target="_blank" rel="noopener">Maven中央仓库</a>中的Jar包，在配置时还是有一些注意事项的。</p>
 <a id="more"></a>
-<h2 id="配置Nexus镜像"><a href="#配置Nexus镜像" class="headerlink" title="配置Nexus镜像"></a>配置Nexus镜像</h2><p>根据这篇<a href="http://www.scala-sbt.org/0.13/docs/Proxy-Repositories.html" target="_blank" rel="external">官方文档</a>的描述，Ivy和Maven在依赖管理方面有些许差异，因此不能直接将两者的镜像仓库配置成一个，而需分别建立两个虚拟镜像组。</p>
+<h2 id="配置Nexus镜像"><a href="#配置Nexus镜像" class="headerlink" title="配置Nexus镜像"></a>配置Nexus镜像</h2><p>根据这篇<a href="http://www.scala-sbt.org/0.13/docs/Proxy-Repositories.html" target="_blank" rel="noopener">官方文档</a>的描述，Ivy和Maven在依赖管理方面有些许差异，因此不能直接将两者的镜像仓库配置成一个，而需分别建立两个虚拟镜像组。</p>
 <p><img src="http://www.scala-sbt.org/0.13/docs/files/proxy-ivy-mvn-setup.png" alt=""></p>
 <p>安装Nexus后默认会有一个Public Repositories组，可以将其作为Maven的镜像组，并添加一些常用的第三方镜像：</p>
 <ul>
-<li>cloudera: <a href="https://repository.cloudera.com/artifactory/cloudera-repos/" target="_blank" rel="external">https://repository.cloudera.com/artifactory/cloudera-repos/</a></li>
-<li>spring: <a href="http://repo.springsource.org/libs-release-remote/" target="_blank" rel="external">http://repo.springsource.org/libs-release-remote/</a></li>
-<li>scala-tools: <a href="https://oss.sonatype.org/content/groups/scala-tools/" target="_blank" rel="external">https://oss.sonatype.org/content/groups/scala-tools/</a></li>
+<li>cloudera: <a href="https://repository.cloudera.com/artifactory/cloudera-repos/" target="_blank" rel="noopener">https://repository.cloudera.com/artifactory/cloudera-repos/</a></li>
+<li>spring: <a href="http://repo.springsource.org/libs-release-remote/" target="_blank" rel="noopener">http://repo.springsource.org/libs-release-remote/</a></li>
+<li>scala-tools: <a href="https://oss.sonatype.org/content/groups/scala-tools/" target="_blank" rel="noopener">https://oss.sonatype.org/content/groups/scala-tools/</a></li>
 </ul>
 <p>对于Ivy镜像，我们创建一个新的虚拟组：ivy-releases，并添加以下两个镜像：</p>
 <ul>
-<li>type-safe: <a href="http://repo.typesafe.com/typesafe/ivy-releases/" target="_blank" rel="external">http://repo.typesafe.com/typesafe/ivy-releases/</a></li>
-<li>sbt-plugin: <a href="http://dl.bintray.com/sbt/sbt-plugin-releases/" target="_blank" rel="external">http://dl.bintray.com/sbt/sbt-plugin-releases/</a></li>
+<li>type-safe: <a href="http://repo.typesafe.com/typesafe/ivy-releases/" target="_blank" rel="noopener">http://repo.typesafe.com/typesafe/ivy-releases/</a></li>
+<li>sbt-plugin: <a href="http://dl.bintray.com/sbt/sbt-plugin-releases/" target="_blank" rel="noopener">http://dl.bintray.com/sbt/sbt-plugin-releases/</a></li>
 </ul>
 <p>对于sbt-plugin，由于一些原因，Nexus会将其置为Automatically Blocked状态，因此要在配置中将这个选项关闭，否则将无法下载远程的依赖包。</p>
 <h2 id="配置sbt"><a href="#配置sbt" class="headerlink" title="配置sbt"></a>配置sbt</h2><p>为了让sbt使用Nexus镜像，需要创建一个~/.sbt/repositories文件，内容为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[repositories]</div><div class="line">  local</div><div class="line">  my-ivy-proxy-releases: http://10.x.x.x:8081/nexus/content/groups/ivy-releases/, [organization]/[module]/(scala_[scalaVersion]/)(sbt_[sbtVersion]/)[revision]/[type]s/[artifact](-[classifier]).[ext]</div><div class="line">  my-maven-proxy-releases: http://10.x.x.x:8081/nexus/content/groups/public/</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[repositories]</span><br><span class="line">  local</span><br><span class="line">  my-ivy-proxy-releases: http://10.x.x.x:8081/nexus/content/groups/ivy-releases/, [organization]/[module]/(scala_[scalaVersion]/)(sbt_[sbtVersion]/)[revision]/[type]s/[artifact](-[classifier]).[ext]</span><br><span class="line">  my-maven-proxy-releases: http://10.x.x.x:8081/nexus/content/groups/public/</span><br></pre></td></tr></table></figure>
 <p>这样配置对大部分项目来说是足够了。但是有些项目会在构建描述文件中添加其它仓库，我们需要覆盖这种行为，方法是：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sbt -Dsbt.override.build.repos=<span class="literal">true</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sbt -Dsbt.override.build.repos=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
 <p>你也可以通过设置SBT_OPTS环境变量来进行全局配置。</p>
 <p>经过以上步骤，sbt执行过程中就不需要访问外网了，因此速度会有很大提升。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/" data-id="cj94xgvvo001lj2zjtkkgkxp4" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/" data-id="cj6ubcfe6001ztam67c8izqyn" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -303,7 +303,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">

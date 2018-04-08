@@ -6,7 +6,7 @@
   <title>开源软件架构 - 卷2：第6章 Git | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="作者：Susan Potter，翻译：张吉 原文：http://www.aosabook.org/en/git.html 6.1 Git概述Git能够让不同的协作者通过一个点对点的仓库网络对数据内容（通常是代码，当然不仅限于代码）进行维护。它支持分布式的工作流程，能够让数据内容临时分离，并最终合并到一起。 本章将阐述Git的内部实现是如何提供以上功能的，以及它和其他版本控制系统（VCS）的区别。">
-<meta name="keywords" content="aosa,translation,git">
+<meta name="keywords" content="aosa,git,translation">
 <meta property="og:type" content="article">
 <meta property="og:title" content="开源软件架构 - 卷2：第6章 Git">
 <meta property="og:url" content="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/index.html">
@@ -17,7 +17,7 @@
 <meta property="og:image" content="http://www.aosabook.org/images/git/object-hierarchy.png">
 <meta property="og:image" content="http://www.aosabook.org/images/git/packed-format.png">
 <meta property="og:image" content="http://www.aosabook.org/images/git/merge-history.png">
-<meta property="og:updated_time" content="2017-09-15T09:00:40.000Z">
+<meta property="og:updated_time" content="2017-09-30T23:07:36.292Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="开源软件架构 - 卷2：第6章 Git">
 <meta name="twitter:description" content="作者：Susan Potter，翻译：张吉 原文：http://www.aosabook.org/en/git.html 6.1 Git概述Git能够让不同的协作者通过一个点对点的仓库网络对数据内容（通常是代码，当然不仅限于代码）进行维护。它支持分布式的工作流程，能够让数据内容临时分离，并最终合并到一起。 本章将阐述Git的内部实现是如何提供以上功能的，以及它和其他版本控制系统（VCS）的区别。">
@@ -31,7 +31,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -123,8 +123,8 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>作者：<a href="http://www.aosabook.org/en/intro2.html#potter-susan" target="_blank" rel="external">Susan Potter</a>，翻译：<a href="mailto:zhangji87@gmail.com" target="_blank" rel="external">张吉</a></p>
-<p>原文：<a href="http://www.aosabook.org/en/git.html" target="_blank" rel="external">http://www.aosabook.org/en/git.html</a></p>
+        <p>作者：<a href="http://www.aosabook.org/en/intro2.html#potter-susan" target="_blank" rel="noopener">Susan Potter</a>，翻译：<a href="mailto:zhangji87@gmail.com" target="_blank" rel="noopener">张吉</a></p>
+<p>原文：<a href="http://www.aosabook.org/en/git.html" target="_blank" rel="noopener">http://www.aosabook.org/en/git.html</a></p>
 <h2 id="6-1-Git概述"><a href="#6-1-Git概述" class="headerlink" title="6.1 Git概述"></a>6.1 Git概述</h2><p>Git能够让不同的协作者通过一个点对点的仓库网络对数据内容（通常是代码，当然不仅限于代码）进行维护。它支持分布式的工作流程，能够让数据内容临时分离，并最终合并到一起。</p>
 <p>本章将阐述Git的内部实现是如何提供以上功能的，以及它和其他版本控制系统（VCS）的区别。</p>
 <h2 id="6-2-Git起源"><a href="#6-2-Git起源" class="headerlink" title="6.2 Git起源"></a>6.2 Git起源</h2><p>为了更好地理解Git的设计思想，我们有必要先了解一下Git项目的发源地——Linux内核开发社区——所面临的问题。</p>
@@ -138,8 +138,8 @@ ga('send', 'pageview');
 <li>预防代码错乱</li>
 <li>高性能</li>
 </ul>
-<p>这些设计目标都被实现了，我会在下文中通过解析Git的各种做法来阐述，包括在内容管理中使用有向无环图（<a href="http://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank" rel="external">DAG</a>），头指针引用，对象模型，远程协议，以及Git如何追踪合并树。</p>
-<p>虽然Git设计之初受到了很多BitKeeper的影响，但是两者还是有根本上的区别的，如Git提供了更多分布式和本地开发流程，这点是BitKeeper做不到的。<a href="http://www.monotone.ca/" target="_blank" rel="external">Monotone</a>，2003年启动的一个开源分布式版本控制系统，也对Git的早期开发产生了影响。</p>
+<p>这些设计目标都被实现了，我会在下文中通过解析Git的各种做法来阐述，包括在内容管理中使用有向无环图（<a href="http://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank" rel="noopener">DAG</a>），头指针引用，对象模型，远程协议，以及Git如何追踪合并树。</p>
+<p>虽然Git设计之初受到了很多BitKeeper的影响，但是两者还是有根本上的区别的，如Git提供了更多分布式和本地开发流程，这点是BitKeeper做不到的。<a href="http://www.monotone.ca/" target="_blank" rel="noopener">Monotone</a>，2003年启动的一个开源分布式版本控制系统，也对Git的早期开发产生了影响。</p>
 <p>分布式版本控制系统在提供更灵活的工作流程的同时，往往会增加它的复杂程度。分布式模型的独特优点有：</p>
 <ul>
 <li>能够线下进行增量提交</li>
@@ -192,10 +192,10 @@ ga('send', 'pageview');
 <p>不过这一问题已经得到处理，我会在本文的“当前进展和未来规划”一节加以阐述。</p>
 <h2 id="6-5-版本库、暂存区、工作区"><a href="#6-5-版本库、暂存区、工作区" class="headerlink" title="6.5 版本库、暂存区、工作区"></a>6.5 版本库、暂存区、工作区</h2><p>让我们开始深入研究一下Git吧，了解其中几个关键概念。</p>
 <p>首先让我们在本地创建一个Git版本库。在类Unix系统下，我们可以执行以下命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ mkdir testgit</div><div class="line">$ <span class="built_in">cd</span> testgit</div><div class="line">$ git init</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir testgit</span><br><span class="line">$ <span class="built_in">cd</span> testgit</span><br><span class="line">$ git init</span><br></pre></td></tr></table></figure>
 <p>这样我们就在testgit目录中初始化了一个新的版本库。我们可以建立分支、提交、创建里程碑、和远程Git仓库进行交互。我们甚至可以和其他类型的版本控制系统进行交互，只需要借助若干<code>git</code>命令即可。</p>
 <p><code>git init</code>命令会在testgit目录下创建一个名为.git的子目录。我们来看一下这个目录的结构：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">tree .git/</div><div class="line">.git/</div><div class="line">|-- HEAD</div><div class="line">|-- config</div><div class="line">|-- description</div><div class="line">|-- hooks</div><div class="line">|   |-- applypatch-msg.sample</div><div class="line">|   |-- commit-msg.sample</div><div class="line">|   |-- post-commit.sample</div><div class="line">|   |-- post-receive.sample</div><div class="line">|   |-- post-update.sample</div><div class="line">|   |-- pre-applypatch.sample</div><div class="line">|   |-- pre-commit.sample</div><div class="line">|   |-- pre-rebase.sample</div><div class="line">|   |-- prepare-commit-msg.sample</div><div class="line">|   |-- update.sample</div><div class="line">|-- info</div><div class="line">|   |-- exclude</div><div class="line">|-- objects</div><div class="line">|   |-- info</div><div class="line">|   |-- pack</div><div class="line">|-- refs</div><div class="line">    |-- heads</div><div class="line">    |-- tags</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">tree .git/</span><br><span class="line">.git/</span><br><span class="line">|-- HEAD</span><br><span class="line">|-- config</span><br><span class="line">|-- description</span><br><span class="line">|-- hooks</span><br><span class="line">|   |-- applypatch-msg.sample</span><br><span class="line">|   |-- commit-msg.sample</span><br><span class="line">|   |-- post-commit.sample</span><br><span class="line">|   |-- post-receive.sample</span><br><span class="line">|   |-- post-update.sample</span><br><span class="line">|   |-- pre-applypatch.sample</span><br><span class="line">|   |-- pre-commit.sample</span><br><span class="line">|   |-- pre-rebase.sample</span><br><span class="line">|   |-- prepare-commit-msg.sample</span><br><span class="line">|   |-- update.sample</span><br><span class="line">|-- info</span><br><span class="line">|   |-- exclude</span><br><span class="line">|-- objects</span><br><span class="line">|   |-- info</span><br><span class="line">|   |-- pack</span><br><span class="line">|-- refs</span><br><span class="line">    |-- heads</span><br><span class="line">    |-- tags</span><br></pre></td></tr></table></figure>
 <p><code>.git</code>目录默认创建在工作区的根目录下，也就是<code>testgit</code>。它包含了以下几种类型的文件和目录：</p>
 <ul>
 <li><em>配置文件</em>： <code>.git/config</code>、<code>.git/description</code>、<code>.git/info/exclude</code>，这些文件会用来配置本地仓库。</li>
@@ -217,10 +217,10 @@ ga('send', 'pageview');
 </li>
 </ul>
 <p>为了深入挖掘其中的原理，让我们看看<code>.git</code>目录下的文件都发生了哪些变化：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ GIT_DIR=<span class="variable">$PWD</span>/.git</div><div class="line">$ cat <span class="variable">$GIT_DIR</span>/HEAD</div><div class="line"></div><div class="line">ref: refs/heads/master</div><div class="line"></div><div class="line">$ MY_CURRENT_BRANCH=$(cat .git/HEAD | sed <span class="string">'s/ref: //g'</span>)</div><div class="line">$ cat <span class="variable">$GIT_DIR</span>/<span class="variable">$MY_CURRENT_BRANCH</span></div><div class="line"></div><div class="line">cat: .git/refs/heads/master: No such file or directory</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ GIT_DIR=<span class="variable">$PWD</span>/.git</span><br><span class="line">$ cat <span class="variable">$GIT_DIR</span>/HEAD</span><br><span class="line"></span><br><span class="line">ref: refs/heads/master</span><br><span class="line"></span><br><span class="line">$ MY_CURRENT_BRANCH=$(cat .git/HEAD | sed <span class="string">'s/ref: //g'</span>)</span><br><span class="line">$ cat <span class="variable">$GIT_DIR</span>/<span class="variable">$MY_CURRENT_BRANCH</span></span><br><span class="line"></span><br><span class="line">cat: .git/refs/heads/master: No such file or directory</span><br></pre></td></tr></table></figure>
 <p>这里会返回一个错误信息，因为我们还没有在Git仓库中进行过任何提交，因此不会存在任何分支，包括默认分支<code>master</code>。</p>
 <p>让我们进行一次提交，这时master分支会自动创建：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ git commit -m <span class="string">"Initial empty commit"</span> --allow-empty</div><div class="line">$ git branch</div><div class="line"></div><div class="line">* master</div><div class="line"></div><div class="line">$ cat <span class="variable">$GIT_DIR</span>/<span class="variable">$MY_CURRENT_BRANCH</span></div><div class="line"></div><div class="line">3bce5b130b17b7ce2f98d17b2998e32b1bc29d68</div><div class="line"></div><div class="line">$ git cat-file -p $(cat <span class="variable">$GIT_DIR</span>/<span class="variable">$MY_CURRENT_BRANCH</span>)</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ git commit -m <span class="string">"Initial empty commit"</span> --allow-empty</span><br><span class="line">$ git branch</span><br><span class="line"></span><br><span class="line">* master</span><br><span class="line"></span><br><span class="line">$ cat <span class="variable">$GIT_DIR</span>/<span class="variable">$MY_CURRENT_BRANCH</span></span><br><span class="line"></span><br><span class="line">3bce5b130b17b7ce2f98d17b2998e32b1bc29d68</span><br><span class="line"></span><br><span class="line">$ git cat-file -p $(cat <span class="variable">$GIT_DIR</span>/<span class="variable">$MY_CURRENT_BRANCH</span>)</span><br></pre></td></tr></table></figure>
 <p>输出的内容就是Git对象数据库中保存的信息了。</p>
 <h2 id="6-6-对象数据库"><a href="#6-6-对象数据库" class="headerlink" title="6.6 对象数据库"></a>6.6 对象数据库</h2><p><img src="http://www.aosabook.org/images/git/object-hierarchy.png" alt="图6.2：Git对象"></p>
 <p>图6.2：Git对象</p>
@@ -254,13 +254,13 @@ ga('send', 'pageview');
 <p>然而有一个问题无论是使用有向无环图还是线性提交都无法解决的，就是判断某个提交是否存在于每个分支中。例如上述例子中，我们假设已经将每个分支的提交都合并到各个分支去了。并不是所有情况下都是如此。</p>
 <p>对于较为简单的情况，Git可以将其它分支的“提交”拣选（<code>cherry-pick</code>）到当前分支中，当然前提是这次提交必须是能够直接应用进来的。</p>
 <h2 id="6-9-下一步做什么？"><a href="#6-9-下一步做什么？" class="headerlink" title="6.9 下一步做什么？"></a>6.9 下一步做什么？</h2><p>上文提到，Git采用来自Unix世界的工具包设计理念，因此非常适合用来编写脚本。但是，当需要在长时间运行的应用程序或服务中内嵌Git工具库的话就不太容易了。虽然目前流行的IDE都提供了Git图形化界面，但开发这些工具所需花费的精力还是比其他版本控制系统要多，因为它们提供了便于使用的链接库。</p>
-<p>为了解决这个问题，Shawn Pearce（来自谷歌开源程序办公室）率先实现了一个可供链接的Git类库，且发布协议较为宽松，因此没有阻碍该类库的推广。这个类库的名字是<a href="https://github.com/libgit2/libgit2" target="_blank" rel="external">libgit2</a>。一开始它并不流行，直到一个名叫Vincent Marti的学生在谷歌编程夏令营中使用了它。从那以后，Vincent和Github持续对libgit2类库贡献代码，并为其他语言编写了相应类库，包括Ruby，Python，PHP，.NET，Lua，Object-C等。</p>
-<p>Shawn Pearce还开启了一个名为<a href="https://github.com/eclipse/jgit" target="_blank" rel="external">JGit</a>的BSD项目，使用纯Java语言实现，能够对Git版本库进行基本的操作。该类库现在由Eclipse基金会维护，用于Eclipse IDE的Git插件中。</p>
+<p>为了解决这个问题，Shawn Pearce（来自谷歌开源程序办公室）率先实现了一个可供链接的Git类库，且发布协议较为宽松，因此没有阻碍该类库的推广。这个类库的名字是<a href="https://github.com/libgit2/libgit2" target="_blank" rel="noopener">libgit2</a>。一开始它并不流行，直到一个名叫Vincent Marti的学生在谷歌编程夏令营中使用了它。从那以后，Vincent和Github持续对libgit2类库贡献代码，并为其他语言编写了相应类库，包括Ruby，Python，PHP，.NET，Lua，Object-C等。</p>
+<p>Shawn Pearce还开启了一个名为<a href="https://github.com/eclipse/jgit" target="_blank" rel="noopener">JGit</a>的BSD项目，使用纯Java语言实现，能够对Git版本库进行基本的操作。该类库现在由Eclipse基金会维护，用于Eclipse IDE的Git插件中。</p>
 <p>还有其他一些有趣的周边项目，带有实验性质，使用各类数据源来保存Git对象，如：</p>
 <ul>
-<li><a href="https://github.com/spearce/jgit_cassandra" target="_blank" rel="external">jgit_cassandra</a> 使用Apache Cassandra作为Git对象数据库。它是一种混合型的数据源，提供了动态的BigTable式的数据模型。</li>
-<li><a href="https://github.com/spearce/jgit_hbase" target="_blank" rel="external">jgit_hbase</a> 能够将Git对象保存在HBase中，一种KV型分布式数据库。</li>
-<li><a href="https://github.com/libgit2/libgit2-backends" target="_blank" rel="external">libgit2-backends</a> 由libgit2项目衍生而来，致力于提供其他种类的数据源，如Memcached，Redis，SQLite，MySQL。</li>
+<li><a href="https://github.com/spearce/jgit_cassandra" target="_blank" rel="noopener">jgit_cassandra</a> 使用Apache Cassandra作为Git对象数据库。它是一种混合型的数据源，提供了动态的BigTable式的数据模型。</li>
+<li><a href="https://github.com/spearce/jgit_hbase" target="_blank" rel="noopener">jgit_hbase</a> 能够将Git对象保存在HBase中，一种KV型分布式数据库。</li>
+<li><a href="https://github.com/libgit2/libgit2-backends" target="_blank" rel="noopener">libgit2-backends</a> 由libgit2项目衍生而来，致力于提供其他种类的数据源，如Memcached，Redis，SQLite，MySQL。</li>
 </ul>
 <p>以上这些都是独立于Git核心工具包之外的项目。</p>
 <p>如你所见，我们可以用各种方式来使用Git，它的表现形式不再只有命令行这一种了，而是成为一种版本控制系统的协议。</p>
@@ -274,7 +274,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/" data-id="cj94xgvu40004j2zjejbymvag" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/" data-id="cj6ubcf9a0000tam6k285lb0x" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -419,7 +419,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">

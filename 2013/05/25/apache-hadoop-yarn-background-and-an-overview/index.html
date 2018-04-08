@@ -6,7 +6,7 @@
   <title>Apache Hadoop YARN - 项目背景与简介 | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="原文：http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/ 日前，Apache Hadoop YARN已被提升为Apache软件基金会的子项目，这是一个值得庆祝的里程碑。这里我们也第一时间为各位献上Apache Hadoop YARN项目的系列介绍文章。YARN是一个普适的、分布式的应用管理框架，运行于">
-<meta name="keywords" content="translation,hadoop">
+<meta name="keywords" content="hadoop,translation">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Apache Hadoop YARN - 项目背景与简介">
 <meta property="og:url" content="http://shzhangji.com/cnblogs/2013/05/25/apache-hadoop-yarn-background-and-an-overview/index.html">
@@ -15,7 +15,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://hortonworks.com/wp-content/uploads/2012/08/MRArch.png">
 <meta property="og:image" content="http://hortonworks.com/wp-content/uploads/2012/08/YARNArch.png">
-<meta property="og:updated_time" content="2017-09-15T09:06:36.000Z">
+<meta property="og:updated_time" content="2017-09-30T23:07:36.333Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Apache Hadoop YARN - 项目背景与简介">
 <meta name="twitter:description" content="原文：http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/ 日前，Apache Hadoop YARN已被提升为Apache软件基金会的子项目，这是一个值得庆祝的里程碑。这里我们也第一时间为各位献上Apache Hadoop YARN项目的系列介绍文章。YARN是一个普适的、分布式的应用管理框架，运行于">
@@ -29,7 +29,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -121,14 +121,14 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>原文：<a href="http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/" target="_blank" rel="external">http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/</a></p>
+        <p>原文：<a href="http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/" target="_blank" rel="noopener">http://hortonworks.com/blog/apache-hadoop-yarn-background-and-an-overview/</a></p>
 <p>日前，Apache Hadoop YARN已被提升为Apache软件基金会的子项目，这是一个值得庆祝的里程碑。这里我们也第一时间为各位献上Apache Hadoop YARN项目的系列介绍文章。YARN是一个普适的、分布式的应用管理框架，运行于Hadoop集群之上，用以替代传统的Apache Hadoop MapReduce框架。</p>
 <h2 id="MapReduce-模式"><a href="#MapReduce-模式" class="headerlink" title="MapReduce 模式"></a>MapReduce 模式</h2><p>本质上来说，MapReduce模型包含两个部分：一是Map过程，将数据拆分成若干份，分别处理，彼此之间没有依赖关系；二是Reduce过程，将中间结果汇总计算成最终结果。这是一种简单而又条件苛刻的模型，但也促使它成为高效和极易扩展的并行计算方式。</p>
 <p>Apache Hadoop MapReduce是当下最流行的开源MapReduce模型。</p>
 <p>特别地，当MapReduce配合分布式文件系统，类似Apache Hadoop HDFS，就能在大集群上提供高吞吐量的计算，这一经济效应是Hadoop得以流行的重要原因。</p>
 <p>这一模式成功的原因之一是，它使用的是“移动计算能力至数据节点”而非通过网络“移动数据至计算节点”的方式。具体来说，一个MapReduce任务会被调度到输入数据所在的HDFS节点执行，这会极大地减少I/O支出，因为大部分I/O会发生在本地磁盘或是同一机架中——这是核心优势。</p>
 <a id="more"></a>
-<h3 id="回顾2011年的Apache-Hadoop-MapReduce"><a href="#回顾2011年的Apache-Hadoop-MapReduce" class="headerlink" title="回顾2011年的Apache Hadoop MapReduce"></a>回顾2011年的Apache Hadoop MapReduce</h3><p>Apache Hadoop MapReduce是<a href="http://www.apache.org/" target="_blank" rel="external">Apache基金会</a>下的开源项目，实现了如上所述的MapReduce编程模式。作为一个在该项目中全职开发了六年的工作者，我通常会将它细分为以下几个部分：</p>
+<h3 id="回顾2011年的Apache-Hadoop-MapReduce"><a href="#回顾2011年的Apache-Hadoop-MapReduce" class="headerlink" title="回顾2011年的Apache Hadoop MapReduce"></a>回顾2011年的Apache Hadoop MapReduce</h3><p>Apache Hadoop MapReduce是<a href="http://www.apache.org/" target="_blank" rel="noopener">Apache基金会</a>下的开源项目，实现了如上所述的MapReduce编程模式。作为一个在该项目中全职开发了六年的工作者，我通常会将它细分为以下几个部分：</p>
 <ul>
 <li>提供给最终用户使用的 <strong>MapReduce API</strong> ，用来编写MapReduce应用程序。</li>
 <li><strong>MapReduce框架</strong> ，用来实现运行时的各个阶段，即map、sort/shuffle/merge、reduce。</li>
@@ -140,8 +140,8 @@ ga('send', 'pageview');
 <p>JobTracker负责的工作包括资源管理（即管理工作节点TaskTracker），跟踪资源消耗和可用情况，以及每个脚本的生命周期（脚本调度，进度跟踪，容错等）。</p>
 <p>TaskTracker的职责比较简单：根据JobTracker的指令来启动和关闭工作进程，并定时向JobTracker汇报处理进度。</p>
 <p>其实很早我们就意识到Hadoop的MapReduce框架需要被拆解和调整，特别是JobTracker，我们需要提升它的可扩展性，提高对集群的利用率，让用户能够方便地进行升级（即用户需要的敏捷性），并能支持MapReduce以外的脚本类型。</p>
-<p>长久以来，我们都在做修复和更新，如近期加入的JobTracker高可用和HDFS故障恢复（这两个特性都已包含在<a href="http://hortonworks.com/download/" target="_blank" rel="external">Hortonworks Data Platform v1</a>中）。但我们渐渐发现，这些特性会增加维护成本，而且并不能解决一些核心问题，如支持非MapReduce脚本，以及敏捷性。</p>
-<h3 id="为什么要支持非MapReduce类型的脚本？"><a href="#为什么要支持非MapReduce类型的脚本？" class="headerlink" title="为什么要支持非MapReduce类型的脚本？"></a>为什么要支持非MapReduce类型的脚本？</h3><p>MapReduce对大部分应用程序来说已经足够，但仍有一些场景并不适用，如图形计算（<a href="http://googleresearch.blogspot.com/2009/06/large-scale-graph-computing-at-google.html" target="_blank" rel="external">Google Pregel</a> / <a href="http://giraph.apache.org/" target="_blank" rel="external">Apache Giraph</a>）、交互式建模（<a href="http://en.wikipedia.org/wiki/Message_Passing_Interface" target="_blank" rel="external">MPI</a>）。当所有的企业数据都已存放在Hadoop HDFS中时，支持多种处理模型就变得额外重要。</p>
+<p>长久以来，我们都在做修复和更新，如近期加入的JobTracker高可用和HDFS故障恢复（这两个特性都已包含在<a href="http://hortonworks.com/download/" target="_blank" rel="noopener">Hortonworks Data Platform v1</a>中）。但我们渐渐发现，这些特性会增加维护成本，而且并不能解决一些核心问题，如支持非MapReduce脚本，以及敏捷性。</p>
+<h3 id="为什么要支持非MapReduce类型的脚本？"><a href="#为什么要支持非MapReduce类型的脚本？" class="headerlink" title="为什么要支持非MapReduce类型的脚本？"></a>为什么要支持非MapReduce类型的脚本？</h3><p>MapReduce对大部分应用程序来说已经足够，但仍有一些场景并不适用，如图形计算（<a href="http://googleresearch.blogspot.com/2009/06/large-scale-graph-computing-at-google.html" target="_blank" rel="noopener">Google Pregel</a> / <a href="http://giraph.apache.org/" target="_blank" rel="noopener">Apache Giraph</a>）、交互式建模（<a href="http://en.wikipedia.org/wiki/Message_Passing_Interface" target="_blank" rel="noopener">MPI</a>）。当所有的企业数据都已存放在Hadoop HDFS中时，支持多种处理模型就变得额外重要。</p>
 <p>此外，MapReduce本质上是以批量处理为核心的，对于日益增长的实时和近实时处理的客户需求，如流式计算以及CEPFresil等，就无能为力了。</p>
 <p>如果Hadoop能够支持这一特性，企业会从对Hadoop的投资中得到更多回报，因为他们可以减少数据迁移所需要的管理和维护成本。</p>
 <h3 id="为何要提升可扩展性？"><a href="#为何要提升可扩展性？" class="headerlink" title="为何要提升可扩展性？"></a>为何要提升可扩展性？</h3><p>根据摩尔定律，同样的价格所能购买到的计算能力一直在大幅上升。让我们看看以下两组数字：</p>
@@ -166,7 +166,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/05/25/apache-hadoop-yarn-background-and-an-overview/" data-id="cj94xgvv90012j2zjfkizafjm" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2013/05/25/apache-hadoop-yarn-background-and-an-overview/" data-id="cj6ubcfck001btam6w4xj918h" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2013/05/25/apache-hadoop-yarn-background-and-an-overview/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -316,7 +316,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">

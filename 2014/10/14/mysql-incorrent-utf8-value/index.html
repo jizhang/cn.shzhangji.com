@@ -6,14 +6,14 @@
   <title>MySQL 异常 UTF-8 字符的处理 | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="ETL流程中，我们会将Hive中的数据导入MySQL——先用Hive命令行将数据保存为文本文件，然后用MySQL的LOAD DATA语句进行加载。最近有一张表在加载到MySQL时会报以下错误： 1Incorrect string value: &amp;apos;\xF0\x9D\x8C\x86&amp;apos; for column ... 经查，这个字段中保存的是用户聊天记录，因此会有一些表情符号。这些符号">
-<meta name="keywords" content="mysql,etl">
+<meta name="keywords" content="etl,mysql">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL 异常 UTF-8 字符的处理">
 <meta property="og:url" content="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/index.html">
 <meta property="og:site_name" content="张吉的博客">
 <meta property="og:description" content="ETL流程中，我们会将Hive中的数据导入MySQL——先用Hive命令行将数据保存为文本文件，然后用MySQL的LOAD DATA语句进行加载。最近有一张表在加载到MySQL时会报以下错误： 1Incorrect string value: &amp;apos;\xF0\x9D\x8C\x86&amp;apos; for column ... 经查，这个字段中保存的是用户聊天记录，因此会有一些表情符号。这些符号">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-09-15T09:08:38.000Z">
+<meta property="og:updated_time" content="2017-09-30T23:07:36.343Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL 异常 UTF-8 字符的处理">
 <meta name="twitter:description" content="ETL流程中，我们会将Hive中的数据导入MySQL——先用Hive命令行将数据保存为文本文件，然后用MySQL的LOAD DATA语句进行加载。最近有一张表在加载到MySQL时会报以下错误： 1Incorrect string value: &amp;apos;\xF0\x9D\x8C\x86&amp;apos; for column ... 经查，这个字段中保存的是用户聊天记录，因此会有一些表情符号。这些符号">
@@ -26,7 +26,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -119,35 +119,35 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p>ETL流程中，我们会将Hive中的数据导入MySQL——先用Hive命令行将数据保存为文本文件，然后用MySQL的LOAD DATA语句进行加载。最近有一张表在加载到MySQL时会报以下错误：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Incorrect string value: &apos;\xF0\x9D\x8C\x86&apos; for column ...</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Incorrect string value: &apos;\xF0\x9D\x8C\x86&apos; for column ...</span><br></pre></td></tr></table></figure>
 <p>经查，这个字段中保存的是用户聊天记录，因此会有一些表情符号。这些符号在UTF-8编码下需要使用4个字节来记录，而MySQL中的utf8编码只支持3个字节，因此无法导入。</p>
 <p>根据UTF-8的编码规范，3个字节支持的Unicode字符范围是U+0000–U+FFFF，因此可以在Hive中对数据做一下清洗：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> REGEXP_REPLACE(<span class="keyword">content</span>, <span class="string">'[^\\u0000-\\uFFFF]'</span>, <span class="string">''</span>) <span class="keyword">FROM</span> ...</div></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> REGEXP_REPLACE(<span class="keyword">content</span>, <span class="string">'[^\\u0000-\\uFFFF]'</span>, <span class="string">''</span>) <span class="keyword">FROM</span> ...</span><br></pre></td></tr></table></figure>
 <p>这样就能排除那些需要使用3个以上字节来记录的字符了，从而成功导入MySQL。</p>
 <p>以下是一些详细说明和参考资料。</p>
 <a id="more"></a>
-<h2 id="Unicode字符集和UTF编码"><a href="#Unicode字符集和UTF编码" class="headerlink" title="Unicode字符集和UTF编码"></a>Unicode字符集和UTF编码</h2><p><a href="http://en.wikipedia.org/wiki/Unicode" target="_blank" rel="external">Unicode字符集</a>是一种将全球所有文字都囊括在内的字符集，从而实现跨语言、跨平台的文字信息交换。它由<a href="http://en.wikipedia.org/wiki/Plane_\(Unicode\" target="_blank" rel="external">基本多语平面（BMP）</a>#Basic_Multilingual_Plane)和多个扩展平面（non-BMP）组成。前者的编码范围是U+0000-U+FFFF，包括了绝大多数现代语言文字，因此最为常用。</p>
-<p><a href="http://en.wikipedia.org/wiki/Unicode#Unicode_Transformation_Format_and_Universal_Character_Set" target="_blank" rel="external">UTF</a>则是一种编码格式，负责将Unicode字符对应的编号转换为计算机可以识别的二进制数据，进行保存和读取。</p>
+<h2 id="Unicode字符集和UTF编码"><a href="#Unicode字符集和UTF编码" class="headerlink" title="Unicode字符集和UTF编码"></a>Unicode字符集和UTF编码</h2><p><a href="http://en.wikipedia.org/wiki/Unicode" target="_blank" rel="noopener">Unicode字符集</a>是一种将全球所有文字都囊括在内的字符集，从而实现跨语言、跨平台的文字信息交换。它由<a href="http://en.wikipedia.org/wiki/Plane_\(Unicode\" target="_blank" rel="noopener">基本多语平面（BMP）</a>#Basic_Multilingual_Plane)和多个扩展平面（non-BMP）组成。前者的编码范围是U+0000-U+FFFF，包括了绝大多数现代语言文字，因此最为常用。</p>
+<p><a href="http://en.wikipedia.org/wiki/Unicode#Unicode_Transformation_Format_and_Universal_Character_Set" target="_blank" rel="noopener">UTF</a>则是一种编码格式，负责将Unicode字符对应的编号转换为计算机可以识别的二进制数据，进行保存和读取。</p>
 <p>比如，磁盘上记录了以下二进制数据：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">1101000 1100101 1101100 1101100 1101111</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1101000 1100101 1101100 1101100 1101111</span><br></pre></td></tr></table></figure>
 <p>读取它的程序知道这是以UTF-8编码保存的字符串，因此将其解析为以下编号：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">104 101 108 108 111</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">104 101 108 108 111</span><br></pre></td></tr></table></figure>
 <p>又因为UTF-8编码对应的字符集是Unicode，所以上面这五个编号对应的字符便是“hello”。</p>
 <p>很多人会将Unicode和UTF混淆，但两者并不具可比性，它们完成的功能是不同的。</p>
-<h2 id="UTF-8编码"><a href="#UTF-8编码" class="headerlink" title="UTF-8编码"></a>UTF-8编码</h2><p>UTF编码家族也有很多成员，其中<a href="http://en.wikipedia.org/wiki/UTF-8" target="_blank" rel="external">UTF-8</a>最为常用。它是一种变长的编码格式，对于ASCII码中的字符使用1个字节进行编码，对于中文等则使用3个字节。这样做的优点是在存储西方语言文字时不会造成空间浪费，不像UTF-16和UTF-32，分别使用两个字节和四个字节对所有字符进行编码。</p>
+<h2 id="UTF-8编码"><a href="#UTF-8编码" class="headerlink" title="UTF-8编码"></a>UTF-8编码</h2><p>UTF编码家族也有很多成员，其中<a href="http://en.wikipedia.org/wiki/UTF-8" target="_blank" rel="noopener">UTF-8</a>最为常用。它是一种变长的编码格式，对于ASCII码中的字符使用1个字节进行编码，对于中文等则使用3个字节。这样做的优点是在存储西方语言文字时不会造成空间浪费，不像UTF-16和UTF-32，分别使用两个字节和四个字节对所有字符进行编码。</p>
 <p>UTF-8编码的字节数上限并不是3个。对于U+0000-U+FFFF范围内的字符，使用3个字节可以表示完全；对于non-BMP中的字符，则会使用4-6个字节来表示。同样，UTF-16编码也会使用四个字节来表示non-BMP中的字符。</p>
-<h2 id="MySQL的UTF-8编码"><a href="#MySQL的UTF-8编码" class="headerlink" title="MySQL的UTF-8编码"></a>MySQL的UTF-8编码</h2><p>根据MySQL的<a href="http://dev.mysql.com/doc/refman/5.5/en/charset-unicode.html" target="_blank" rel="external">官方文档</a>，它的UTF-8编码支持是不完全的，最多使用3个字符，这也是导入数据时报错的原因。</p>
+<h2 id="MySQL的UTF-8编码"><a href="#MySQL的UTF-8编码" class="headerlink" title="MySQL的UTF-8编码"></a>MySQL的UTF-8编码</h2><p>根据MySQL的<a href="http://dev.mysql.com/doc/refman/5.5/en/charset-unicode.html" target="_blank" rel="noopener">官方文档</a>，它的UTF-8编码支持是不完全的，最多使用3个字符，这也是导入数据时报错的原因。</p>
 <p>MySQL5.5开始支持utf8mb4编码，至多使用4个字节，因此能包含到non-BMP字符。只是我们的MySQL版本仍是5.1，因此选择丢弃这些字符。</p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><a href="http://stackoverflow.com/questions/3951722/whats-the-difference-between-unicode-and-utf8" target="_blank" rel="external">http://stackoverflow.com/questions/3951722/whats-the-difference-between-unicode-and-utf8</a></li>
-<li><a href="http://www.joelonsoftware.com/articles/Unicode.html" target="_blank" rel="external">http://www.joelonsoftware.com/articles/Unicode.html</a></li>
-<li><a href="http://apps.timwhitlock.info/emoji/tables/unicode" target="_blank" rel="external">http://apps.timwhitlock.info/emoji/tables/unicode</a></li>
+<li><a href="http://stackoverflow.com/questions/3951722/whats-the-difference-between-unicode-and-utf8" target="_blank" rel="noopener">http://stackoverflow.com/questions/3951722/whats-the-difference-between-unicode-and-utf8</a></li>
+<li><a href="http://www.joelonsoftware.com/articles/Unicode.html" target="_blank" rel="noopener">http://www.joelonsoftware.com/articles/Unicode.html</a></li>
+<li><a href="http://apps.timwhitlock.info/emoji/tables/unicode" target="_blank" rel="noopener">http://apps.timwhitlock.info/emoji/tables/unicode</a></li>
 </ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/" data-id="cj94xgvvr001pj2zjlh70b7jd" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/" data-id="cj6ubcfcz001itam6of13z9lj" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -297,7 +297,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">

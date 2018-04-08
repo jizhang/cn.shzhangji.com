@@ -21,7 +21,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -119,7 +119,7 @@ ga('send', 'pageview');
 <h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><p>1、备份原Nginx二进制文件；</p>
 <p>2、编译新Nginx源码，安装路径需与旧版一致；</p>
 <p>3、向主进程发送<code>USR2</code>信号，Nginx会启动一个新版本的master进程和工作进程，和旧版一起处理请求：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">prey:~ root<span class="comment"># ps -ef|grep nginx</span></div><div class="line"> 127     1   nginx: master process /usr/<span class="built_in">local</span>/nginx-1.2.4/sbin/nginx</div><div class="line"> 129   127   nginx: worker process</div><div class="line">prey:~ root<span class="comment"># kill -USR2 127</span></div><div class="line">prey:~ root<span class="comment"># ps -ef|grep nginx</span></div><div class="line"> 127     1   nginx: master process /usr/<span class="built_in">local</span>/nginx-1.2.4/sbin/nginx</div><div class="line"> 129   127   nginx: worker process  </div><div class="line">5180   127   nginx: master process /usr/<span class="built_in">local</span>/nginx-1.2.4/sbin/nginx</div><div class="line">5182  5180   nginx: worker process</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">prey:~ root<span class="comment"># ps -ef|grep nginx</span></span><br><span class="line"> 127     1   nginx: master process /usr/<span class="built_in">local</span>/nginx-1.2.4/sbin/nginx</span><br><span class="line"> 129   127   nginx: worker process</span><br><span class="line">prey:~ root<span class="comment"># kill -USR2 127</span></span><br><span class="line">prey:~ root<span class="comment"># ps -ef|grep nginx</span></span><br><span class="line"> 127     1   nginx: master process /usr/<span class="built_in">local</span>/nginx-1.2.4/sbin/nginx</span><br><span class="line"> 129   127   nginx: worker process  </span><br><span class="line">5180   127   nginx: master process /usr/<span class="built_in">local</span>/nginx-1.2.4/sbin/nginx</span><br><span class="line">5182  5180   nginx: worker process</span><br></pre></td></tr></table></figure>
         
           <p class="article-more-link">
             <a href="/cnblogs/2012/12/23/nginx-live-upgrade/#more">阅读全文</a>
@@ -128,7 +128,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/" data-id="cj94xgvuf0009j2zjlnv2ycxu" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/" data-id="cj6ubcfb5000etam6lhljd471" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -169,10 +169,10 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="Session和Cookie"><a href="#Session和Cookie" class="headerlink" title="Session和Cookie"></a>Session和Cookie</h2><p>做网络编程的人肯定对这两个概念不陌生，因此这里就不介绍它们的定义和作用了。我们要实现的需求也很简单：用户通过一个表单登录，在当前窗口中保持登录状态，并可以选择“记住我”来免去关闭并新开窗口之后的重登录。显然，前者使用Session，后者使用Cookie。下面我们就来看Noir对这两者的支持。</p>
-<h3 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h3><figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(<span class="name">require</span> 'noir.session)</div><div class="line">(<span class="name">noir.session/put!</span> <span class="symbol">:username</span> <span class="string">"john"</span>)</div><div class="line">(<span class="name">noir.session/get</span> <span class="symbol">:username</span> <span class="string">"nobody"</span>)</div><div class="line">(<span class="name">noir.session/clear!</span>)</div></pre></td></tr></table></figure>
+<h3 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h3><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">require</span> 'noir.session)</span><br><span class="line">(<span class="name">noir.session/put!</span> <span class="symbol">:username</span> <span class="string">"john"</span>)</span><br><span class="line">(<span class="name">noir.session/get</span> <span class="symbol">:username</span> <span class="string">"nobody"</span>)</span><br><span class="line">(<span class="name">noir.session/clear!</span>)</span><br></pre></td></tr></table></figure>
 <p>很简单的API。注意<code>put!</code>函数中的<code>!</code>，和之前遇到的<code>?</code>一样，这种特殊字符是合法的函数名，但<code>!</code>习惯用来表示该方法会改变某个对象的状态，这里<code>put!</code>就表示会改变Session的状态。</p>
 <p>Noir还提供了一种“闪信（Flash）”机制，主要用于在页面跳转之间暂存消息。如用户登录后会跳转到首页，如果想在首页显示“登录成功”的信息，就需要用到闪信了。闪信的API也放置在<code>noir.session</code>命名空间下：</p>
-<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(<span class="name">noir.session/flash-put!</span> <span class="string">"登录成功"</span>)</div><div class="line">(<span class="name">noir.session/flash-get</span>)</div></pre></td></tr></table></figure>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">noir.session/flash-put!</span> <span class="string">"登录成功"</span>)</span><br><span class="line">(<span class="name">noir.session/flash-get</span>)</span><br></pre></td></tr></table></figure>
 <p>闪信的生命周期是一次请求，即在设置了闪信后的下一个请求中，可以多次<code>flash-get</code>，但再下一次请求就获取不到值了。</p>
         
           <p class="article-more-link">
@@ -182,7 +182,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/" data-id="cj94xgvuc0006j2zj1yenhco7" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/" data-id="cj6ubcfak0009tam6i46a6tti" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -226,11 +226,11 @@ ga('send', 'pageview');
 <h3 id="安装Eclipse插件"><a href="#安装Eclipse插件" class="headerlink" title="安装Eclipse插件"></a>安装Eclipse插件</h3><p>Eclipse提供了一个Clojure插件：CounterClockwise，可以用来编写Clojure代码，进行语法高亮、调试等操作。打开Eclipse的Market Place，搜索counterclockwise关键字，点击Install即可。</p>
 <h3 id="将Leiningen项目导入Eclipse"><a href="#将Leiningen项目导入Eclipse" class="headerlink" title="将Leiningen项目导入Eclipse"></a>将Leiningen项目导入Eclipse</h3><p>由于CounterClockwise插件并没有默认使用Leiningen来管理项目，因此需要做一些额外的工作。</p>
 <p>在使用<code>lein new</code>命令创建项目后，在project.clj文件中增加如下一行：</p>
-<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">(<span class="name">defproject</span> ...</div><div class="line">            <span class="symbol">:dev-dependencies</span> [[lein-eclipse <span class="string">"1.0.0"</span>]]</div><div class="line">            ...)</div></pre></td></tr></table></figure>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">defproject</span> ...</span><br><span class="line">            <span class="symbol">:dev-dependencies</span> [[lein-eclipse <span class="string">"1.0.0"</span>]]</span><br><span class="line">            ...)</span><br></pre></td></tr></table></figure>
 <p>然后依次执行<code>lein deps</code>和<code>lein eclipse</code>，会看到项目根目录下生成了.project和.classpath文件。然后就可以进入Eclipse导入这个项目了。如果使用Git进行版本控制，<code>lein</code>已经为你生成好了.gitignore文件。执行了<code>git init</code>后，就能在Eclilpse中选择Share Project菜单项，进行可视化的版本控制。</p>
 <h2 id="使用表单"><a href="#使用表单" class="headerlink" title="使用表单"></a>使用表单</h2><p>我们现在需要编写一个新建文章的功能，它是一个简单的页面，页面上有“标题”和“内容”两个文本框，并有一个“提交”按钮。</p>
 <p>在src/blog/views目录下新建一个文件article.clj，输入以下内容：</p>
-<figure class="highlight clojure"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">(<span class="name"><span class="builtin-name">ns</span></span> blog.views.article</div><div class="line">  (<span class="symbol">:require</span> [blog.views.common <span class="symbol">:as</span> common])</div><div class="line">  (<span class="symbol">:use</span> [noir.core]</div><div class="line">        [hiccup.form-helpers]))</div><div class="line"></div><div class="line">(<span class="name">defpage</span> <span class="string">"/blog/add"</span> []</div><div class="line">  (<span class="name">common/layout</span></div><div class="line">    [<span class="symbol">:h1</span> <span class="string">"新建文章"</span>]</div><div class="line">    (<span class="name">form-to</span> [<span class="symbol">:post</span> <span class="string">"/blog/add"</span>]</div><div class="line">             (<span class="name">label</span> <span class="string">"title"</span> <span class="string">"标题："</span>)</div><div class="line">             (<span class="name">text-field</span> &#123;<span class="symbol">:size</span> <span class="number">50</span>&#125; <span class="string">"title"</span>) [<span class="symbol">:br</span>]</div><div class="line">             (<span class="name">label</span> <span class="string">"content"</span> <span class="string">"内容："</span>)</div><div class="line">             (<span class="name">text-area</span> &#123;<span class="symbol">:rows</span> <span class="number">20</span> <span class="symbol">:cols</span> <span class="number">50</span>&#125; <span class="string">"content"</span>) [<span class="symbol">:br</span>]</div><div class="line">             (<span class="name">submit-button</span> <span class="string">"提交"</span>))))</div></pre></td></tr></table></figure>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> blog.views.article</span><br><span class="line">  (<span class="symbol">:require</span> [blog.views.common <span class="symbol">:as</span> common])</span><br><span class="line">  (<span class="symbol">:use</span> [noir.core]</span><br><span class="line">        [hiccup.form-helpers]))</span><br><span class="line"></span><br><span class="line">(<span class="name">defpage</span> <span class="string">"/blog/add"</span> []</span><br><span class="line">  (<span class="name">common/layout</span></span><br><span class="line">    [<span class="symbol">:h1</span> <span class="string">"新建文章"</span>]</span><br><span class="line">    (<span class="name">form-to</span> [<span class="symbol">:post</span> <span class="string">"/blog/add"</span>]</span><br><span class="line">             (<span class="name">label</span> <span class="string">"title"</span> <span class="string">"标题："</span>)</span><br><span class="line">             (<span class="name">text-field</span> &#123;<span class="symbol">:size</span> <span class="number">50</span>&#125; <span class="string">"title"</span>) [<span class="symbol">:br</span>]</span><br><span class="line">             (<span class="name">label</span> <span class="string">"content"</span> <span class="string">"内容："</span>)</span><br><span class="line">             (<span class="name">text-area</span> &#123;<span class="symbol">:rows</span> <span class="number">20</span> <span class="symbol">:cols</span> <span class="number">50</span>&#125; <span class="string">"content"</span>) [<span class="symbol">:br</span>]</span><br><span class="line">             (<span class="name">submit-button</span> <span class="string">"提交"</span>))))</span><br></pre></td></tr></table></figure>
 <p><code>defpage</code>和<code>common/layout</code>我们之前已经见到过，前者定义了URL<code>/blog/add</code>指向的页面，后者则是套用了一个模板。<code>[:h1 ...]</code>和<code>[:br]</code>也应该熟悉，它们是Hiccup的语法，分别生成<code>&lt;h1&gt;...&lt;/h1&gt;</code>和<code>&lt;br&gt;</code>标签。</p>
         
           <p class="article-more-link">
@@ -240,7 +240,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/" data-id="cj94xgvu70005j2zjo4do1bcg" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/" data-id="cj6ubcfa50006tam6cwcau1f6" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -281,9 +281,9 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>为什么要学习一门新的语言？我的想法很简单，平时OO、PO代码写多了，却从未接触过函数式编程，不免有些遗憾。考察下来，Clojure可以用来尝尝鲜，所以就决定学一学。为了给自己的学习留下些记录，就有了这样一份教程。</p>
-<p>Clojure已经有一些不错的教程，如<a href="http://java.ociweb.com/mark/" target="_blank" rel="external">Mark Volkmann</a>的<a href="http://java.ociweb.com/mark/clojure/article.html" target="_blank" rel="external">Clojure - Functional Programming for the JVM</a>，Storm的主要贡献者<a href="http://xumingming.sinaapp.com/" target="_blank" rel="external">徐明明</a>也对这个教程做了<a href="http://xumingming.sinaapp.com/302/clojure-functional-programming-for-the-jvm-clojure-tutorial/" target="_blank" rel="external">全文翻译</a>。还有一些不错的书籍，像<a href="http://oreilly.com/" target="_blank" rel="external">O’Reilly</a>的<a href="http://www.amazon.com/Clojure-Programming-Chas-Emerick/dp/1449394701" target="_blank" rel="external">Clojure Programming</a>，都值得一读。我是从Mark的教程开始学起的，对其中没有提到的部分则是参考了Clojure Programming这本书。Clojure的<a href="http://clojure.org/" target="_blank" rel="external">官方网站</a>上有详尽的<a href="http://clojure.github.com/clojure/" target="_blank" rel="external">API参考</a>，可以作为工具书查阅。</p>
-<p>但是，上面提到的教程都是针对Clojure语言本身的，从 <em>Hello, world!</em> 开始，讲解Clojure的各种语法，关键字，结构等等。虽然Clojure的语法已经足够吸引你的眼球，在<a href="http://en.wikipedia.org/wiki/Read-eval-print_loop" target="_blank" rel="external">REPL</a>中敲击Clojure代码已经是一种莫大的乐趣了，但似乎还有些不够，我们想看到一个用Clojure编写的应用程序！</p>
-<p>因为平时都是做Web开发，所以先从一个Web框架入手会是不错的选择，因此这份教程会从使用<a href="http://webnoir.org/" target="_blank" rel="external">Noir</a>框架搭建一个博客开始，带你领略Clojure的魅力。</p>
+<p>Clojure已经有一些不错的教程，如<a href="http://java.ociweb.com/mark/" target="_blank" rel="noopener">Mark Volkmann</a>的<a href="http://java.ociweb.com/mark/clojure/article.html" target="_blank" rel="noopener">Clojure - Functional Programming for the JVM</a>，Storm的主要贡献者<a href="http://xumingming.sinaapp.com/" target="_blank" rel="noopener">徐明明</a>也对这个教程做了<a href="http://xumingming.sinaapp.com/302/clojure-functional-programming-for-the-jvm-clojure-tutorial/" target="_blank" rel="noopener">全文翻译</a>。还有一些不错的书籍，像<a href="http://oreilly.com/" target="_blank" rel="noopener">O’Reilly</a>的<a href="http://www.amazon.com/Clojure-Programming-Chas-Emerick/dp/1449394701" target="_blank" rel="noopener">Clojure Programming</a>，都值得一读。我是从Mark的教程开始学起的，对其中没有提到的部分则是参考了Clojure Programming这本书。Clojure的<a href="http://clojure.org/" target="_blank" rel="noopener">官方网站</a>上有详尽的<a href="http://clojure.github.com/clojure/" target="_blank" rel="noopener">API参考</a>，可以作为工具书查阅。</p>
+<p>但是，上面提到的教程都是针对Clojure语言本身的，从 <em>Hello, world!</em> 开始，讲解Clojure的各种语法，关键字，结构等等。虽然Clojure的语法已经足够吸引你的眼球，在<a href="http://en.wikipedia.org/wiki/Read-eval-print_loop" target="_blank" rel="noopener">REPL</a>中敲击Clojure代码已经是一种莫大的乐趣了，但似乎还有些不够，我们想看到一个用Clojure编写的应用程序！</p>
+<p>因为平时都是做Web开发，所以先从一个Web框架入手会是不错的选择，因此这份教程会从使用<a href="http://webnoir.org/" target="_blank" rel="noopener">Noir</a>框架搭建一个博客开始，带你领略Clojure的魅力。</p>
         
           <p class="article-more-link">
             <a href="/cnblogs/2012/11/25/cia-noir-1/#more">阅读全文</a>
@@ -292,7 +292,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/" data-id="cj94xgvtr0000j2zjsgk8kkpw" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/" data-id="cj6ubcf9z0005tam6a41hele8" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -332,8 +332,8 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>作者：<a href="http://www.aosabook.org/en/intro1.html#ziade-tarek" target="_blank" rel="external">Tarek Ziadé</a>，翻译：<a href="mailto:zhangji87@gmail.com" target="_blank" rel="external">张吉</a></p>
-<p>原文：<a href="http://www.aosabook.org/en/packaging.html" target="_blank" rel="external">http://www.aosabook.org/en/packaging.html</a></p>
+        <p>作者：<a href="http://www.aosabook.org/en/intro1.html#ziade-tarek" target="_blank" rel="noopener">Tarek Ziadé</a>，翻译：<a href="mailto:zhangji87@gmail.com" target="_blank" rel="noopener">张吉</a></p>
+<p>原文：<a href="http://www.aosabook.org/en/packaging.html" target="_blank" rel="noopener">http://www.aosabook.org/en/packaging.html</a></p>
 <h2 id="14-1-简介"><a href="#14-1-简介" class="headerlink" title="14.1 简介"></a>14.1 简介</h2><p>对于如何安装软件，目前有两种思想流派。第一种是说软件应该自给自足，不依赖于其它任何部件，这点在Windows和Mac OS X系统中很流行。这种方式简化了软件的管理：每个软件都有自己独立的“领域”，安装和卸载它们不会对操作系统产生影响。如果软件依赖一项不常见的类库，那么这个类库一定是包含在软件安装包之中的。</p>
 <p>第二种流派，主要在类Linux的操作系统中盛行，即软件应该是由一个个独立的、小型的软件包组成的。类库被包含在软件包中，包与包之间可以有依赖关系。安装软件时需要查找和安装它所依赖的其他特定版本的软件包。这些依赖包通常是从一个包含所有软件包的中央仓库中获取的。这种理念也催生了Linux发行版中那些复杂的依赖管理工具，如<code>dpkg</code>和<code>RPM</code>。它们会跟踪软件包的依赖关系，并防止两个软件使用了版本相冲突的第三方包。</p>
 <p>以上两种流派各有优劣。高度模块化的系统可以使得更新和替换某个软件包变的非常方便，因为每个类库都只有一份，所有依赖于它的应用程序都能因此受益。比如，修复某个类库的安全漏洞可以立刻应用到所有程序中，而如果应用程序使用了自带的类库，那安全更新就很难应用进去了，特别是在类库版本不一致的情况下更难处理。</p>
@@ -346,7 +346,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/" data-id="cj94xgvtx0001j2zjp3ef1tom" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/" data-id="cj6ubcf9x0004tam6k2ea98ym" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -386,8 +386,8 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>作者：<a href="http://www.aosabook.org/en/intro2.html#potter-susan" target="_blank" rel="external">Susan Potter</a>，翻译：<a href="mailto:zhangji87@gmail.com" target="_blank" rel="external">张吉</a></p>
-<p>原文：<a href="http://www.aosabook.org/en/git.html" target="_blank" rel="external">http://www.aosabook.org/en/git.html</a></p>
+        <p>作者：<a href="http://www.aosabook.org/en/intro2.html#potter-susan" target="_blank" rel="noopener">Susan Potter</a>，翻译：<a href="mailto:zhangji87@gmail.com" target="_blank" rel="noopener">张吉</a></p>
+<p>原文：<a href="http://www.aosabook.org/en/git.html" target="_blank" rel="noopener">http://www.aosabook.org/en/git.html</a></p>
 <h2 id="6-1-Git概述"><a href="#6-1-Git概述" class="headerlink" title="6.1 Git概述"></a>6.1 Git概述</h2><p>Git能够让不同的协作者通过一个点对点的仓库网络对数据内容（通常是代码，当然不仅限于代码）进行维护。它支持分布式的工作流程，能够让数据内容临时分离，并最终合并到一起。</p>
 <p>本章将阐述Git的内部实现是如何提供以上功能的，以及它和其他版本控制系统（VCS）的区别。</p>
 <h2 id="6-2-Git起源"><a href="#6-2-Git起源" class="headerlink" title="6.2 Git起源"></a>6.2 Git起源</h2><p>为了更好地理解Git的设计思想，我们有必要先了解一下Git项目的发源地——Linux内核开发社区——所面临的问题。</p>
@@ -401,7 +401,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/" data-id="cj94xgvu40004j2zjejbymvag" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/" data-id="cj6ubcf9a0000tam6k285lb0x" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -529,7 +529,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">

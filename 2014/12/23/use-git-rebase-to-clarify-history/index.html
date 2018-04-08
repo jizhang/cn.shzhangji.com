@@ -18,7 +18,7 @@
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/git-rebase/rebase-1.png">
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/git-rebase/rebase-2.png">
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/git-rebase/no-ff.png">
-<meta property="og:updated_time" content="2017-09-15T09:09:10.000Z">
+<meta property="og:updated_time" content="2017-09-30T23:07:36.343Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用 git rebase 让历史变得清晰">
 <meta name="twitter:description" content="当多人协作开发一个分支时，历史记录通常如下方左图所示，比较凌乱。如果希望能像右图那样呈线性提交，就需要学习git rebase的用法。  “Merge branch”提交的产生我们的工作流程是：修改代码→提交到本地仓库→拉取远程改动→推送。正是在git pull这一步产生的Merge branch提交。事实上，git pull等效于get fetch origin和get merge origin">
@@ -32,7 +32,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -131,25 +131,25 @@ ga('send', 'pageview');
 <h2 id="使用git-pull-–rebase"><a href="#使用git-pull-–rebase" class="headerlink" title="使用git pull –rebase"></a>使用git pull –rebase</h2><p>修改代码→commit→git pull –rebase→git push。也就是将get merge origin/master替换成了git rebase origin/master，它的过程是先将HEAD指向origin/master，然后逐一应用本地的修改，这样就不会产生Merge branch提交了。具体过程见下文扩展阅读。</p>
 <a id="more"></a>
 <p>使用git rebase是有条件的，你的本地仓库要“足够干净”。可以用git status命令查看当前改动：：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git status</div><div class="line">On branch master</div><div class="line">Your branch is up-to-date with &apos;origin/master&apos;.</div><div class="line">nothing to commit, working directory clean</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &apos;origin/master&apos;.</span><br><span class="line">nothing to commit, working directory clean</span><br></pre></td></tr></table></figure>
 <p>本地没有任何未提交的改动，这是最“干净”的。稍差一些的是这样：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ git status</div><div class="line">On branch master</div><div class="line">Your branch is up-to-date with &apos;origin/master&apos;.</div><div class="line">Untracked files:</div><div class="line">  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</div><div class="line">    test.txt</div><div class="line">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &apos;origin/master&apos;.</span><br><span class="line">Untracked files:</span><br><span class="line">  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span><br><span class="line">    test.txt</span><br><span class="line">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</span><br></pre></td></tr></table></figure>
 <p>即本地只有新增文件未提交，没有改动文件。我们应该尽量保持本地仓库的“整洁”，这样才能顺利使用git rebase。特殊情况下也可以用git stash来解决问题，有兴趣的可自行搜索。</p>
 <h2 id="修改git-pull的默认行为"><a href="#修改git-pull的默认行为" class="headerlink" title="修改git pull的默认行为"></a>修改git pull的默认行为</h2><p>每次都加–rebase似乎有些麻烦，我们可以指定某个分支在执行git pull时默认采用rebase方式：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git config branch.master.rebase true</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git config branch.master.rebase true</span><br></pre></td></tr></table></figure>
 <p>如果你觉得所有的分支都应该用rebase，那就设置：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git config --global branch.autosetuprebase always</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global branch.autosetuprebase always</span><br></pre></td></tr></table></figure>
 <p>这样对于新建的分支都会设定上面的rebase=true了。已经创建好的分支还是需要手动配置的。</p>
 <h2 id="扩展阅读-1-：git-rebase工作原理"><a href="#扩展阅读-1-：git-rebase工作原理" class="headerlink" title="扩展阅读[1]：git rebase工作原理"></a>扩展阅读[1]：git rebase工作原理</h2><p>先看看git merge的示意图：</p>
 <p><img src="/cnblogs/images/git-rebase/merge.png" alt=""></p>
-<p><a href="https://www.atlassian.com/ja/git/tutorial/git-branches" target="_blank" rel="external">图片来源</a></p>
+<p><a href="https://www.atlassian.com/ja/git/tutorial/git-branches" target="_blank" rel="noopener">图片来源</a></p>
 <p>可以看到Some Feature分支的两个提交通过一个新的提交（蓝色）和master连接起来了。</p>
 <p>再来看git rebase的示意图：</p>
 <p><img src="/cnblogs/images/git-rebase/rebase-1.png" alt=""></p>
 <p><img src="/cnblogs/images/git-rebase/rebase-2.png" alt=""></p>
 <p>Feature分支中的两个提交被“嫁接”到了Master分支的头部，或者说Feature分支的“基”（base）变成了 Master，rebase也因此得名。</p>
 <h2 id="扩展阅读-2-：git-merge-–no-ff"><a href="#扩展阅读-2-：git-merge-–no-ff" class="headerlink" title="扩展阅读[2]：git merge –no-ff"></a>扩展阅读[2]：git merge –no-ff</h2><p>在做项目开发时会用到分支，合并时采用以下步骤：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ git checkout feature-branch</div><div class="line">$ git rebase master</div><div class="line">$ git checkout master</div><div class="line">$ git merge --no-ff feature-branch</div><div class="line">$ git push origin master</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout feature-branch</span><br><span class="line">$ git rebase master</span><br><span class="line">$ git checkout master</span><br><span class="line">$ git merge --no-ff feature-branch</span><br><span class="line">$ git push origin master</span><br></pre></td></tr></table></figure>
 <p>历史就成了这样：</p>
 <p><img src="/cnblogs/images/git-rebase/no-ff.png" alt=""></p>
 <p>可以看到，Merge branch ‘feature-branch’那段可以很好的展现出这些提交是属于某一特性的。</p>
@@ -157,7 +157,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/" data-id="cj94xgvvw001wj2zjfpzlcksp" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/" data-id="cj6ubcfeq002dtam6ho43fjsp" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -307,7 +307,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">

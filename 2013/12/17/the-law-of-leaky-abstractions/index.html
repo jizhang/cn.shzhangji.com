@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="张吉的博客">
 <meta property="og:description" content="原文：http://www.joelonsoftware.com/articles/LeakyAbstractions.html TCP协议是互联网的基石，我们每天都需要依靠它来构建各类互联网应用。也正是在这一协议中，时刻发生着一件近乎神奇的事情。 TCP是一种 可靠的 数据传输协议，也就是说，当你通过TCP协议在网络上传输一条消息时，它一定会到达目的地，而且不会失真或毁坏。 我们可以使用TCP来">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-09-15T09:07:11.000Z">
+<meta property="og:updated_time" content="2017-09-30T23:07:36.333Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="抽象泄漏定律">
 <meta name="twitter:description" content="原文：http://www.joelonsoftware.com/articles/LeakyAbstractions.html TCP协议是互联网的基石，我们每天都需要依靠它来构建各类互联网应用。也正是在这一协议中，时刻发生着一件近乎神奇的事情。 TCP是一种 可靠的 数据传输协议，也就是说，当你通过TCP协议在网络上传输一条消息时，它一定会到达目的地，而且不会失真或毁坏。 我们可以使用TCP来">
@@ -26,7 +26,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -118,7 +118,7 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>原文：<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html" target="_blank" rel="external">http://www.joelonsoftware.com/articles/LeakyAbstractions.html</a></p>
+        <p>原文：<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html" target="_blank" rel="noopener">http://www.joelonsoftware.com/articles/LeakyAbstractions.html</a></p>
 <p>TCP协议是互联网的基石，我们每天都需要依靠它来构建各类互联网应用。也正是在这一协议中，时刻发生着一件近乎神奇的事情。</p>
 <p>TCP是一种 <em>可靠的</em> 数据传输协议，也就是说，当你通过TCP协议在网络上传输一条消息时，它一定会到达目的地，而且不会失真或毁坏。</p>
 <p>我们可以使用TCP来做很多事情，从浏览网页信息到收发邮件。TCP的可靠性使得东非贪污受贿的新闻能够一字一句地传递到世界各地。真是太棒了！</p>
@@ -135,9 +135,9 @@ ga('send', 'pageview');
 </li>
 <li><p>SQL语言意图将过程式的数据库访问操作封装起来，你只需要告诉操作系统你想要的数据，系统会自动生成各个步骤并加以执行。但在有些情况下，某些SQL查询会比其逻辑等同的查询语句要慢得多。一个著名的示例是，对大多数SQL服务器，指定“WHERE a = b AND b = c AND a = c”要比单纯指定“WHERE a = b AND b = c”快的多，即便它们的结果集是一致的。在使用SQL时，我们不需要思考过程，只需关注定义。但有时，这种抽象会造成性能上的大幅下降，你需要去了解SQL语法分析器的工作原理，找出问题的原因，并想出应对措施，让自己的查询运行得更快。</p>
 </li>
-<li><p>即便有NFS、SMB这样的协议可以让你像在处理本地文件一样处理远程文件，如果网络传输很慢，或是完全中断了，程序员就需要手动处理这种情况。所以，这种“远程文件即本地文件”的抽象机制是存在<a href="http://www.joelonsoftware.com/articles/fog0000000041.html" target="_blank" rel="external">泄漏</a>的。这里举一个现实的例子：如果你将用户的home目录加载到NFS上（一次抽象），你的用户创建了.forward文件，用来转发他所有的电子邮件（二次抽象），当NFS服务器宕机，.forward文件会找不到，这样就无法转发邮件了，造成丢失。</p>
+<li><p>即便有NFS、SMB这样的协议可以让你像在处理本地文件一样处理远程文件，如果网络传输很慢，或是完全中断了，程序员就需要手动处理这种情况。所以，这种“远程文件即本地文件”的抽象机制是存在<a href="http://www.joelonsoftware.com/articles/fog0000000041.html" target="_blank" rel="noopener">泄漏</a>的。这里举一个现实的例子：如果你将用户的home目录加载到NFS上（一次抽象），你的用户创建了.forward文件，用来转发他所有的电子邮件（二次抽象），当NFS服务器宕机，.forward文件会找不到，这样就无法转发邮件了，造成丢失。</p>
 </li>
-<li><p>C++的字符串处理类库相当于增加了一种基础数据类型：字符串，将<a href="http://www.joelonsoftware.com/articles/fog0000000319.html" target="_blank" rel="external">各种操作细节</a>封装起来，让程序员可以方便地使用它。几乎所有的C++字符串类都会重载+操作符，这样你就能用 <em>s + “bar”</em> 来拼接字符串了。但是，无论哪种类库都无法实现 <em>“foo” + “bar”</em> 这种语句，因为在C++中，字符串字面量（string literal）都是char *类型的。这就是一种泄漏。（有趣的是，C++语言的发展历程很大一部分是在争论字符串是否应该在语言层面支持。我个人并不太能理解这为何需要争论。）</p>
+<li><p>C++的字符串处理类库相当于增加了一种基础数据类型：字符串，将<a href="http://www.joelonsoftware.com/articles/fog0000000319.html" target="_blank" rel="noopener">各种操作细节</a>封装起来，让程序员可以方便地使用它。几乎所有的C++字符串类都会重载+操作符，这样你就能用 <em>s + “bar”</em> 来拼接字符串了。但是，无论哪种类库都无法实现 <em>“foo” + “bar”</em> 这种语句，因为在C++中，字符串字面量（string literal）都是char *类型的。这就是一种泄漏。（有趣的是，C++语言的发展历程很大一部分是在争论字符串是否应该在语言层面支持。我个人并不太能理解这为何需要争论。）</p>
 </li>
 <li><p>当你在雨天开车，虽然你坐在车里，前窗有雨刷，车内有空调，这些措施将“天气”给抽象走了。但是，你还是要小心雨天的轮胎打滑，有时这雨下得太大，可见度很糟，所以你还是得慢行。也就是说，“天气”因素并没有被完全抽象走，它也是存在泄漏的。</p>
 </li>
@@ -155,7 +155,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/12/17/the-law-of-leaky-abstractions/" data-id="cj94xgvvl001jj2zjey6fujhr" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2013/12/17/the-law-of-leaky-abstractions/" data-id="cj6ubcfcp001etam62fl4r1mi" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2013/12/17/the-law-of-leaky-abstractions/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -305,7 +305,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">

@@ -6,7 +6,7 @@
   <title>Apache Flume 如何解析消息中的事件时间 | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="数据开发工作中，从上游消息队列抽取数据是一项常规的 ETL 流程。在基于 Hadoop 构建的数据仓库体系中，我们通常会使用 Flume 将事件日志从 Kafka 抽取到 HDFS，然后针对其开发 MapReduce 脚本，或直接创建以时间分区的 Hive 外部表。这项流程中的关键一环是提取日志中的事件时间，因为实时数据通常会包含延迟，且在系统临时宕机的情况下，我们需要追回遗漏的数据，因而使用的时">
-<meta name="keywords" content="etl,java,flume">
+<meta name="keywords" content="flume,etl,java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Apache Flume 如何解析消息中的事件时间">
 <meta property="og:url" content="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/index.html">
@@ -14,7 +14,7 @@
 <meta property="og:description" content="数据开发工作中，从上游消息队列抽取数据是一项常规的 ETL 流程。在基于 Hadoop 构建的数据仓库体系中，我们通常会使用 Flume 将事件日志从 Kafka 抽取到 HDFS，然后针对其开发 MapReduce 脚本，或直接创建以时间分区的 Hive 外部表。这项流程中的关键一环是提取日志中的事件时间，因为实时数据通常会包含延迟，且在系统临时宕机的情况下，我们需要追回遗漏的数据，因而使用的时">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/flume.png">
-<meta property="og:updated_time" content="2017-08-07T04:50:24.000Z">
+<meta property="og:updated_time" content="2017-08-06T01:09:06.810Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Apache Flume 如何解析消息中的事件时间">
 <meta name="twitter:description" content="数据开发工作中，从上游消息队列抽取数据是一项常规的 ETL 流程。在基于 Hadoop 构建的数据仓库体系中，我们通常会使用 Flume 将事件日志从 Kafka 抽取到 HDFS，然后针对其开发 MapReduce 脚本，或直接创建以时间分区的 Hive 外部表。这项流程中的关键一环是提取日志中的事件时间，因为实时数据通常会包含延迟，且在系统临时宕机的情况下，我们需要追回遗漏的数据，因而使用的时">
@@ -28,7 +28,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -153,7 +153,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/" data-id="cj94xgvws0035j2zjxbzze3xi" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/" data-id="cj6ubcffn002utam6gndfijn0" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -303,7 +303,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">

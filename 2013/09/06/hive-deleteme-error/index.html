@@ -15,7 +15,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/hive-deleteme-error/1.png">
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/hive-deleteme-error/2.png">
-<meta property="og:updated_time" content="2017-09-15T09:06:58.000Z">
+<meta property="og:updated_time" content="2017-09-30T23:07:36.333Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hive 并发情况下报 DELETEME 表不存在的异常">
 <meta name="twitter:description" content="在每天运行的Hive脚本中，偶尔会抛出以下错误： 123456782013-09-03 01:39:00,973 ERROR parse.SemanticAnalyzer (SemanticAnalyzer.java:getMetaData(1128)) - org.apache.hadoop.hive.ql.metadata.HiveException: Unable to fetch tabl">
@@ -29,7 +29,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -122,7 +122,7 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p>在每天运行的Hive脚本中，偶尔会抛出以下错误：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">2013-09-03 01:39:00,973 ERROR parse.SemanticAnalyzer (SemanticAnalyzer.java:getMetaData(1128)) - org.apache.hadoop.hive.ql.metadata.HiveException: Unable to fetch table dw_xxx_xxx</div><div class="line">        at org.apache.hadoop.hive.ql.metadata.Hive.getTable(Hive.java:896)</div><div class="line">        ...</div><div class="line">Caused by: javax.jdo.JDODataStoreException: Exception thrown obtaining schema column information from datastore</div><div class="line">NestedThrowables:</div><div class="line">com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table &apos;hive.DELETEME1378143540925&apos; doesn&apos;t exist</div><div class="line">        at org.datanucleus.jdo.NucleusJDOHelper.getJDOExceptionForNucleusException(NucleusJDOHelper.java:313)</div><div class="line">        ...</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">2013-09-03 01:39:00,973 ERROR parse.SemanticAnalyzer (SemanticAnalyzer.java:getMetaData(1128)) - org.apache.hadoop.hive.ql.metadata.HiveException: Unable to fetch table dw_xxx_xxx</span><br><span class="line">        at org.apache.hadoop.hive.ql.metadata.Hive.getTable(Hive.java:896)</span><br><span class="line">        ...</span><br><span class="line">Caused by: javax.jdo.JDODataStoreException: Exception thrown obtaining schema column information from datastore</span><br><span class="line">NestedThrowables:</span><br><span class="line">com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table &apos;hive.DELETEME1378143540925&apos; doesn&apos;t exist</span><br><span class="line">        at org.datanucleus.jdo.NucleusJDOHelper.getJDOExceptionForNucleusException(NucleusJDOHelper.java:313)</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
 <p>查阅了网上的资料，是DataNucleus的问题。</p>
 <p>背景1：我们知道MySQL中的库表信息是存放在information_schema库中的，Hive也有类似的机制，它会将库表信息存放在一个第三方的RDBMS中，目前我们线上配置的是本机MySQL，即：</p>
 <p>$ mysql -uhive -ppassword hive</p>
@@ -149,15 +149,15 @@ ga('send', 'pageview');
 <p>为什么HWI没有遇到类似问题？因为它是常驻内存的，DELETEME表只会在启动的时候创建，后续的查询不会创建。而我们这里每次调用hive命令行都会去创建，所以才有这样的问题。</p>
 <p>参考链接：</p>
 <ul>
-<li><a href="http://www.cnblogs.com/ggjucheng/archive/2012/07/25/2608633.html" target="_blank" rel="external">http://www.cnblogs.com/ggjucheng/archive/2012/07/25/2608633.html</a></li>
-<li><a href="https://github.com/dianping/cosmos-hive/issues/10" target="_blank" rel="external">https://github.com/dianping/cosmos-hive/issues/10</a></li>
-<li><a href="https://issues.apache.org/jira/browse/HIVE-1841" target="_blank" rel="external">https://issues.apache.org/jira/browse/HIVE-1841</a></li>
+<li><a href="http://www.cnblogs.com/ggjucheng/archive/2012/07/25/2608633.html" target="_blank" rel="noopener">http://www.cnblogs.com/ggjucheng/archive/2012/07/25/2608633.html</a></li>
+<li><a href="https://github.com/dianping/cosmos-hive/issues/10" target="_blank" rel="noopener">https://github.com/dianping/cosmos-hive/issues/10</a></li>
+<li><a href="https://issues.apache.org/jira/browse/HIVE-1841" target="_blank" rel="noopener">https://issues.apache.org/jira/browse/HIVE-1841</a></li>
 </ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/" data-id="cj94xgvvd0015j2zj2a0buaaj" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/" data-id="cj6ubcfci0018tam6ufhhine5" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -307,7 +307,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">

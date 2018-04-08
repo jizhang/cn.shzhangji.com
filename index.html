@@ -21,7 +21,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -129,7 +129,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2018/04/07/error-handling-in-restful-api/" data-id="cjfq30m8r0000muzjgu2lkzg6" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2018/04/07/error-handling-in-restful-api/" data-id="cjfp8a16m00032or4snyo21v9" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2018/04/07/error-handling-in-restful-api/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -169,11 +169,11 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://flume.apache.org/" target="_blank" rel="external">Apache Flume</a> 是数据仓库体系中用于做实时 ETL 的工具。它提供了丰富的数据源和写入组件，这些组件在运行时都由 Flume 的生命周期管理机制进行监控和维护。本文将对这部分功能的源码进行解析。</p>
+        <p><a href="https://flume.apache.org/" target="_blank" rel="noopener">Apache Flume</a> 是数据仓库体系中用于做实时 ETL 的工具。它提供了丰富的数据源和写入组件，这些组件在运行时都由 Flume 的生命周期管理机制进行监控和维护。本文将对这部分功能的源码进行解析。</p>
 <h2 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h2><p>Flume 的源码可以从 GitHub 上下载。它是一个 Maven 项目，我们将其导入到 IDE 中以便更好地进行源码阅读。以下是代码仓库的基本结构：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">/flume-ng-node</div><div class="line">/flume-ng-code</div><div class="line">/flume-ng-sdk</div><div class="line">/flume-ng-sources/flume-kafka-source</div><div class="line">/flume-ng-channels/flume-kafka-channel</div><div class="line">/flume-ng-sinks/flume-hdfs-sink</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/flume-ng-node</span><br><span class="line">/flume-ng-code</span><br><span class="line">/flume-ng-sdk</span><br><span class="line">/flume-ng-sources/flume-kafka-source</span><br><span class="line">/flume-ng-channels/flume-kafka-channel</span><br><span class="line">/flume-ng-sinks/flume-hdfs-sink</span><br></pre></td></tr></table></figure>
 <h2 id="程序入口"><a href="#程序入口" class="headerlink" title="程序入口"></a>程序入口</h2><p>Flume Agent 的入口 <code>main</code> 函数位于 <code>flume-ng-node</code> 模块的 <code>org.apache.flume.node.Application</code> 类中。下列代码是该函数的摘要：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Application</span> </span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">    CommandLineParser parser = <span class="keyword">new</span> GnuParser();</div><div class="line">    <span class="keyword">if</span> (isZkConfigured) &#123;</div><div class="line">      <span class="keyword">if</span> (reload) &#123;</div><div class="line">        PollingZooKeeperConfigurationProvider zookeeperConfigurationProvider;</div><div class="line">        components.add(zookeeperConfigurationProvider);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        StaticZooKeeperConfigurationProvider zookeeperConfigurationProvider;</div><div class="line">        application.handleConfigurationEvent();</div><div class="line">      &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      <span class="comment">// PropertiesFileConfigurationProvider</span></div><div class="line">    &#125;</div><div class="line">    application.start();</div><div class="line">    Runtime.getRuntime().addShutdownHook(<span class="keyword">new</span> Thread(<span class="string">"agent-shutdown-hook"</span>) &#123;</div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        appReference.stop();</div><div class="line">      &#125;</div><div class="line">    &#125;);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    CommandLineParser parser = <span class="keyword">new</span> GnuParser();</span><br><span class="line">    <span class="keyword">if</span> (isZkConfigured) &#123;</span><br><span class="line">      <span class="keyword">if</span> (reload) &#123;</span><br><span class="line">        PollingZooKeeperConfigurationProvider zookeeperConfigurationProvider;</span><br><span class="line">        components.add(zookeeperConfigurationProvider);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        StaticZooKeeperConfigurationProvider zookeeperConfigurationProvider;</span><br><span class="line">        application.handleConfigurationEvent();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// PropertiesFileConfigurationProvider</span></span><br><span class="line">    &#125;</span><br><span class="line">    application.start();</span><br><span class="line">    Runtime.getRuntime().addShutdownHook(<span class="keyword">new</span> Thread(<span class="string">"agent-shutdown-hook"</span>) &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        appReference.stop();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>启动过程说明如下：</p>
 <ol>
 <li>使用 <code>commons-cli</code> 对命令行参数进行解析，提取 Agent 名称、配置信息读取方式及其路径信息；</li>
@@ -194,7 +194,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/10/24/flume-source-code-component-lifecycle/" data-id="cj94xgvx6003lj2zjitu2m1gl" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/10/24/flume-source-code-component-lifecycle/" data-id="cjfp8a15h00002or42jlnlu3m" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/10/24/flume-source-code-component-lifecycle/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -234,12 +234,12 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在 <a href="https://www.jstatsoft.org/article/view/v059i10" target="_blank" rel="external">Tidy Data</a> 论文中，<a href="https://en.wikipedia.org/wiki/Hadley_Wickham" target="_blank" rel="external">Wickham 博士</a> 提出了这样一种“整洁”的数据结构：每个变量是一列，每次观测结果是一行，不同的观测类型存放在单独的表中。他认为这样的数据结构可以帮助分析师更简单高效地进行处理、建模、和可视化。他在论文中列举了 <em>五种</em> 不符合整洁数据的情况，并演示了如何通过 <a href="https://github.com/hadley/tidy-data/" target="_blank" rel="external">R 语言</a> 对它们进行整理。本文中，我们将使用 Python 和 Pandas 来达到同样的目的。</p>
-<p>文中的源代码和演示数据可以在 GitHub（<a href="https://github.com/jizhang/pandas-tidy-data" target="_blank" rel="external">链接</a>）上找到。读者应该已经安装好 Python 开发环境，推荐各位使用 Anaconda 和 Spyder IDE。</p>
-<h2 id="列名称是数据值，而非变量名"><a href="#列名称是数据值，而非变量名" class="headerlink" title="列名称是数据值，而非变量名"></a>列名称是数据值，而非变量名</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</div><div class="line">df = pd.read_csv(<span class="string">'data/pew.csv'</span>)</div><div class="line">df.head(<span class="number">10</span>)</div></pre></td></tr></table></figure>
+        <p>在 <a href="https://www.jstatsoft.org/article/view/v059i10" target="_blank" rel="noopener">Tidy Data</a> 论文中，<a href="https://en.wikipedia.org/wiki/Hadley_Wickham" target="_blank" rel="noopener">Wickham 博士</a> 提出了这样一种“整洁”的数据结构：每个变量是一列，每次观测结果是一行，不同的观测类型存放在单独的表中。他认为这样的数据结构可以帮助分析师更简单高效地进行处理、建模、和可视化。他在论文中列举了 <em>五种</em> 不符合整洁数据的情况，并演示了如何通过 <a href="https://github.com/hadley/tidy-data/" target="_blank" rel="noopener">R 语言</a> 对它们进行整理。本文中，我们将使用 Python 和 Pandas 来达到同样的目的。</p>
+<p>文中的源代码和演示数据可以在 GitHub（<a href="https://github.com/jizhang/pandas-tidy-data" target="_blank" rel="noopener">链接</a>）上找到。读者应该已经安装好 Python 开发环境，推荐各位使用 Anaconda 和 Spyder IDE。</p>
+<h2 id="列名称是数据值，而非变量名"><a href="#列名称是数据值，而非变量名" class="headerlink" title="列名称是数据值，而非变量名"></a>列名称是数据值，而非变量名</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">df = pd.read_csv(<span class="string">'data/pew.csv'</span>)</span><br><span class="line">df.head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
 <p><img src="/cnblogs/images/tidy-data/pew.png" alt="宗教信仰与收入 - Pew 论坛"></p>
 <p>表中的列“&lt;$10k”、“$10-20k”其实是“收入”变量的具体值。<em>变量</em> 是指某一特性的观测值，如身高、体重，本例中则是收入、宗教信仰。表中的数值数据构成了另一个变量——人数。要做到 <em>每个变量是一列</em> ，我们需要进行以下变换：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">df = df.set_index(<span class="string">'religion'</span>)</div><div class="line">df = df.stack()</div><div class="line">df.index = df.index.rename(<span class="string">'income'</span>, level=<span class="number">1</span>)</div><div class="line">df.name = <span class="string">'frequency'</span></div><div class="line">df = df.reset_index()</div><div class="line">df.head(<span class="number">10</span>)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">df = df.set_index(<span class="string">'religion'</span>)</span><br><span class="line">df = df.stack()</span><br><span class="line">df.index = df.index.rename(<span class="string">'income'</span>, level=<span class="number">1</span>)</span><br><span class="line">df.name = <span class="string">'frequency'</span></span><br><span class="line">df = df.reset_index()</span><br><span class="line">df.head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
 <p><img src="/cnblogs/images/tidy-data/pew-tidy.png" alt="宗教信仰与收入 - 整洁版"></p>
         
           <p class="article-more-link">
@@ -249,7 +249,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/09/30/pandas-and-tidy-data/" data-id="cj94xgvxf003qj2zj3ncjjpff" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/09/30/pandas-and-tidy-data/" data-id="cjfp8a1ap000f2or43nmp37rf" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/09/30/pandas-and-tidy-data/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -289,10 +289,10 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://beam.apache.org/get-started/beam-overview/" target="_blank" rel="external">Apache Beam</a> 是一种大数据处理标准，由谷歌于 2016 年创建。它提供了一套统一的 DSL 用以处理离线和实时数据，并能在目前主流的大数据处理平台上使用，包括 Spark、Flink、以及谷歌自身的商业套件 Dataflow。Beam 的数据模型基于过去的几项研究成果：<a href="https://web.archive.org/web/20160923141630/https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/35650.pdf" target="_blank" rel="external">FlumeJava</a>、<a href="https://web.archive.org/web/20160201091359/http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/41378.pdf" target="_blank" rel="external">Millwheel</a>，适用场景包括 ETL、统计分析、实时计算等。目前，Beam 提供了两种语言的 SDK：Java、Python。本文将讲述如何使用 Python 编写 Beam 应用程序。</p>
+        <p><a href="https://beam.apache.org/get-started/beam-overview/" target="_blank" rel="noopener">Apache Beam</a> 是一种大数据处理标准，由谷歌于 2016 年创建。它提供了一套统一的 DSL 用以处理离线和实时数据，并能在目前主流的大数据处理平台上使用，包括 Spark、Flink、以及谷歌自身的商业套件 Dataflow。Beam 的数据模型基于过去的几项研究成果：<a href="https://web.archive.org/web/20160923141630/https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/35650.pdf" target="_blank" rel="noopener">FlumeJava</a>、<a href="https://web.archive.org/web/20160201091359/http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/41378.pdf" target="_blank" rel="noopener">Millwheel</a>，适用场景包括 ETL、统计分析、实时计算等。目前，Beam 提供了两种语言的 SDK：Java、Python。本文将讲述如何使用 Python 编写 Beam 应用程序。</p>
 <p><img src="/cnblogs/images/beam/arch.jpg" alt="Apache Beam Pipeline"></p>
-<h2 id="安装-Apache-Beam"><a href="#安装-Apache-Beam" class="headerlink" title="安装 Apache Beam"></a>安装 Apache Beam</h2><p>Apache Beam Python SDK 必须使用 Python 2.7.x 版本，你可以安装 <a href="https://github.com/pyenv/pyenv" target="_blank" rel="external">pyenv</a> 来管理不同版本的 Python，或者直接从<a href="https://www.python.org/downloads/source/" target="_blank" rel="external">源代码</a>编译安装（需要支持 SSL）。之后，你便可以在 Python 虚拟环境中安装 Beam SDK 了：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ virtualenv venv --distribute</div><div class="line">$ source venv/bin/activate</div><div class="line">(venv) $ pip install apache-beam</div></pre></td></tr></table></figure>
+<h2 id="安装-Apache-Beam"><a href="#安装-Apache-Beam" class="headerlink" title="安装 Apache Beam"></a>安装 Apache Beam</h2><p>Apache Beam Python SDK 必须使用 Python 2.7.x 版本，你可以安装 <a href="https://github.com/pyenv/pyenv" target="_blank" rel="noopener">pyenv</a> 来管理不同版本的 Python，或者直接从<a href="https://www.python.org/downloads/source/" target="_blank" rel="noopener">源代码</a>编译安装（需要支持 SSL）。之后，你便可以在 Python 虚拟环境中安装 Beam SDK 了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ virtualenv venv --distribute</span><br><span class="line">$ source venv/bin/activate</span><br><span class="line">(venv) $ pip install apache-beam</span><br></pre></td></tr></table></figure>
         
           <p class="article-more-link">
             <a href="/cnblogs/2017/09/13/apache-beam-quick-start-with-python/#more">阅读全文</a>
@@ -301,7 +301,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/09/13/apache-beam-quick-start-with-python/" data-id="cj94xgvxc003oj2zjumyh3xh9" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/09/13/apache-beam-quick-start-with-python/" data-id="cjfp8a1ed00112or4wm24s0xf" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/09/13/apache-beam-quick-start-with-python/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -356,7 +356,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/" data-id="cj94xgvx3003jj2zjkyei958j" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/" data-id="cj7ho4lkv000372m68i0f83l2" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -410,7 +410,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/09/05/hive-window-and-analytical-functions/" data-id="cj94xgvx0003fj2zj5vjv0zcc" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/09/05/hive-window-and-analytical-functions/" data-id="cj7ho4ljh000172m6u0jztpg4" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/09/05/hive-window-and-analytical-functions/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -462,7 +462,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/" data-id="cj94xgvwx003cj2zjxugl4heu" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/" data-id="cj6ubcfgq003gtam6s7ao04fl" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -513,7 +513,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/" data-id="cj94xgvwt0038j2zjgmbjieau" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/" data-id="cj6ubcffx0031tam6d4l7l8l8" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -571,7 +571,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/" data-id="cj94xgvws0035j2zjxbzze3xi" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/" data-id="cj6ubcffn002utam6gndfijn0" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -626,7 +626,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" data-id="cj94xgvwr0031j2zj3lbenja4" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" data-id="cj6ubcfg00034tam6taxr27z3" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -754,7 +754,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">

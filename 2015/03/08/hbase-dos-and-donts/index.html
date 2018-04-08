@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="张吉的博客">
 <meta property="og:description" content="原文：http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/ 最近我在洛杉矶Hadoop用户组做了一次关于HBase适用场景的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-09-15T09:09:36.000Z">
+<meta property="og:updated_time" content="2017-09-30T23:07:36.364Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Apache HBase 的适用场景">
 <meta name="twitter:description" content="原文：http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/ 最近我在洛杉矶Hadoop用户组做了一次关于HBase适用场景的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分">
@@ -26,7 +26,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -118,8 +118,8 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>原文：<a href="http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/" target="_blank" rel="external">http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/</a></p>
-<p>最近我在<a href="http://www.meetup.com/LA-HUG/" target="_blank" rel="external">洛杉矶Hadoop用户组</a>做了一次关于<a href="http://www.meetup.com/LA-HUG/pages/Video_from_April_13th_HBASE_DO%27S_and_DON%27TS/" target="_blank" rel="external">HBase适用场景</a>的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分享中的主要内容做了一个整理。如果你没有时间阅读全文，以下是一些摘要：</p>
+        <p>原文：<a href="http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/" target="_blank" rel="noopener">http://blog.cloudera.com/blog/2011/04/hbase-dos-and-donts/</a></p>
+<p>最近我在<a href="http://www.meetup.com/LA-HUG/" target="_blank" rel="noopener">洛杉矶Hadoop用户组</a>做了一次关于<a href="http://www.meetup.com/LA-HUG/pages/Video_from_April_13th_HBASE_DO%27S_and_DON%27TS/" target="_blank" rel="noopener">HBase适用场景</a>的分享。在场的听众水平都很高，给到了我很多值得深思的反馈。主办方是来自Shopzilla的Jody，我非常感谢他能给我一个在60多位Hadoop使用者面前演讲的机会。可能一些朋友没有机会来洛杉矶参加这次会议，我将分享中的主要内容做了一个整理。如果你没有时间阅读全文，以下是一些摘要：</p>
 <ul>
 <li>HBase很棒，但不是关系型数据库或HDFS的替代者；</li>
 <li>配置得当才能运行良好；</li>
@@ -127,7 +127,7 @@ ga('send', 'pageview');
 </ul>
 <p>Cloudera是HBase的铁杆粉丝。我们热爱这项技术，热爱这个社区，发现它能适用于非常多的应用场景。HBase如今已经有很多<a href="#use-cases">成功案例</a>，所以很多公司也在考虑如何将其应用到自己的架构中。我做这次分享以及写这篇文章的动因就是希望能列举出HBase的适用场景，并提醒各位哪些场景是不适用的，以及如何做好HBase的部署。</p>
 <a id="more"></a>
-<h2 id="何时使用HBase"><a href="#何时使用HBase" class="headerlink" title="何时使用HBase"></a>何时使用HBase</h2><p>虽然HBase是一种绝佳的工具，但我们一定要记住，它并非银弹。HBase并不擅长传统的事务处理程序或关联分析，它也不能完全替代MapReduce过程中使用到的HDFS。从文末的<a href="#use-cases">成功案例</a>中你可以大致了解HBase适用于怎样的应用场景。如果你还有疑问，可以到<a href="http://www.cloudera.com/community/" target="_blank" rel="external">社区</a>中提问，我说过这是一个非常棒的社区。</p>
+<h2 id="何时使用HBase"><a href="#何时使用HBase" class="headerlink" title="何时使用HBase"></a>何时使用HBase</h2><p>虽然HBase是一种绝佳的工具，但我们一定要记住，它并非银弹。HBase并不擅长传统的事务处理程序或关联分析，它也不能完全替代MapReduce过程中使用到的HDFS。从文末的<a href="#use-cases">成功案例</a>中你可以大致了解HBase适用于怎样的应用场景。如果你还有疑问，可以到<a href="http://www.cloudera.com/community/" target="_blank" rel="noopener">社区</a>中提问，我说过这是一个非常棒的社区。</p>
 <p>除去上述限制之外，你为何要选择HBase呢？如果你的应用程序中，数据表每一行的结构是有差别的，那就可以考虑使用HBase，比如在标准化建模的过程中使用它；如果你需要经常追加字段，且大部分字段是NULL值的，那可以考虑HBase；如果你的数据（包括元数据、消息、二进制数据等）都有着同一个主键，那就可以使用HBase；如果你需要通过键来访问和修改数据，使用HBase吧。</p>
 <h2 id="后台服务"><a href="#后台服务" class="headerlink" title="后台服务"></a>后台服务</h2><p>如果你已决定尝试一下HBase，那以下是一些部署过程中的提示。HBase会用到一些后台服务，这些服务非常关键。如果你之前没有了解过ZooKeeper，那现在是个好时候。HBase使用ZooKeeper作为它的分布式协调服务，用于选举Master等。随着HBase的发展，ZooKeeper发挥的作用越来越重要。另外，你需要搭建合适的网络基础设施，如NTP和DNS。HBase要求集群内的所有服务器时间一致，并且能正确地访问其它服务器。正确配置NTP和DNS可以杜绝一些奇怪的问题，如服务器A认为当前是明天，B认为当前是昨天；再如Master要求服务器C开启新的Region，而C不知道自己的机器名，从而无法响应。NTP和DNS服务器可以让你减少很多麻烦。</p>
 <p>我前面提到过，在考虑是否使用HBase时，需要针对你自己的应用场景来进行判别。而在真正使用HBase时，监控则成了第一要务。和大多数分布式服务一样，HBase服务器宕机会有多米诺骨牌效应。如果一台服务器因内存不足开始swap数据，它会失去和Master的联系，这时Master会命令其他服务器接过这部分请求，可能会导致第二台服务器也发生宕机。所以，你需要密切监控服务器的CPU、I/O以及网络延迟，确保每台HBase服务器都在良好地工作。监控对于维护HBase集群的健康至关重要。</p>
@@ -138,16 +138,16 @@ ga('send', 'pageview');
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>最后要提的一点是，在加载数据到HBase时，应该使用MapReduce+HFileOutputFormat来实现。如果仅使用客户端API，不仅速度慢，也没有充分利用HBase的分布式特性。</p>
 <p>用一句话概述，HBase可以让你用键来存储和搜索数据，且无需定义表结构。</p>
 <h2 id="使用案例"><a href="#使用案例" class="headerlink" title="使用案例"></a><a id="use-cases"></a>使用案例</h2><ul>
-<li>Apache HBase: <a href="http://wiki.apache.org/hadoop/Hbase/PoweredBy" target="_blank" rel="external">Powered By HBase Wiki</a></li>
-<li>Mozilla: <a href="http://blog.mozilla.com/webdev/2010/07/26/moving-socorro-to-hbase/" target="_blank" rel="external">Moving Socorro to HBase</a></li>
-<li>Facebook: <a href="http://highscalability.com/blog/2010/11/16/facebooks-new-real-time-messaging-system-hbase-to-store-135.html" target="_blank" rel="external">Facebook’s New Real-Time Messaging System: HBase</a></li>
-<li>StumbleUpon: <a href="http://www.stumbleupon.com/devblog/hbase_at_stumbleupon/" target="_blank" rel="external">HBase at StumbleUpon</a></li>
+<li>Apache HBase: <a href="http://wiki.apache.org/hadoop/Hbase/PoweredBy" target="_blank" rel="noopener">Powered By HBase Wiki</a></li>
+<li>Mozilla: <a href="http://blog.mozilla.com/webdev/2010/07/26/moving-socorro-to-hbase/" target="_blank" rel="noopener">Moving Socorro to HBase</a></li>
+<li>Facebook: <a href="http://highscalability.com/blog/2010/11/16/facebooks-new-real-time-messaging-system-hbase-to-store-135.html" target="_blank" rel="noopener">Facebook’s New Real-Time Messaging System: HBase</a></li>
+<li>StumbleUpon: <a href="http://www.stumbleupon.com/devblog/hbase_at_stumbleupon/" target="_blank" rel="noopener">HBase at StumbleUpon</a></li>
 </ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/" data-id="cj94xgvw10023j2zj35blp156" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/" data-id="cj6ubcfea0021tam6w1g4qsi5" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -297,7 +297,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">

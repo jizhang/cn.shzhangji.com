@@ -21,7 +21,7 @@
     <link rel="icon" href="/favicon.png">
   
   
-    <link href="https://fonts.proxy.ustclug.org/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
   
   <link rel="stylesheet" href="/cnblogs/css/style.css">
   
@@ -115,10 +115,10 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在《<a href="http://www.amazon.com/MapReduce-Design-Patterns-Effective-Algorithms/dp/1449327176" target="_blank" rel="external">MapReduce Design Patterns</a>》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：</p>
+        <p>在《<a href="http://www.amazon.com/MapReduce-Design-Patterns-Effective-Algorithms/dp/1449327176" target="_blank" rel="noopener">MapReduce Design Patterns</a>》一书中，作者给出了Reduce-side Join的实现方法，大致步骤如下：</p>
 <p><img src="/cnblogs/images/reduce-side-join/reduce-side-join.png" alt=""></p>
 <ol>
-<li>使用<a href="https://hadoop.apache.org/docs/r1.0.4/api/org/apache/hadoop/mapred/lib/MultipleInputs.html" target="_blank" rel="external">MultipleInputs</a>指定不同的来源表和相应的Mapper类；</li>
+<li>使用<a href="https://hadoop.apache.org/docs/r1.0.4/api/org/apache/hadoop/mapred/lib/MultipleInputs.html" target="_blank" rel="noopener">MultipleInputs</a>指定不同的来源表和相应的Mapper类；</li>
 <li>Mapper输出的Key为Join的字段内容，Value为打了来源表标签的记录；</li>
 <li>Reducer在接收到同一个Key的记录后，执行以下两步：<ol>
 <li>遍历Values，根据标签将来源表的记录分别放到两个List中；</li>
@@ -126,7 +126,7 @@ ga('send', 'pageview');
 </ol>
 </li>
 </ol>
-<p>具体实现可以参考<a href="https://github.com/jizhang/mapred-sandbox/blob/master/src/main/java/com/shzhangji/mapred_sandbox/join/InnerJoinJob.java" target="_blank" rel="external">这段代码</a>。但是这种实现方法有一个问题：如果同一个Key的记录数过多，存放在List中就会占用很多内存，严重的会造成内存溢出（Out of Memory, OOM）。这种方法在一对一的情况下没有问题，而一对多、多对多的情况就会有隐患。那么，Hive在做Reduce-side Join时是如何避免OOM的呢？两个关键点：</p>
+<p>具体实现可以参考<a href="https://github.com/jizhang/mapred-sandbox/blob/master/src/main/java/com/shzhangji/mapred_sandbox/join/InnerJoinJob.java" target="_blank" rel="noopener">这段代码</a>。但是这种实现方法有一个问题：如果同一个Key的记录数过多，存放在List中就会占用很多内存，严重的会造成内存溢出（Out of Memory, OOM）。这种方法在一对一的情况下没有问题，而一对多、多对多的情况就会有隐患。那么，Hive在做Reduce-side Join时是如何避免OOM的呢？两个关键点：</p>
 <ol>
 <li>Reducer在遍历Values时，会将前面的表缓存在内存中，对于最后一张表则边扫描边输出；</li>
 <li>如果前面几张表内存中放不下，就写入磁盘。</li>
@@ -139,7 +139,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/" data-id="cj94xgvvz001zj2zj1x0dm7y5" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/" data-id="cj6ubcfec0025tam6b46bdtnf" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -192,7 +192,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/" data-id="cj94xgvvw001wj2zjfpzlcksp" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/" data-id="cj6ubcfeq002dtam6ho43fjsp" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -233,26 +233,26 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p><img src="http://spark.apache.org/images/spark-logo.png" alt=""></p>
-<p><a href="http://spark.apache.org" target="_blank" rel="external">Apache Spark</a>是新兴的一种快速通用的大规模数据处理引擎。它的优势有三个方面：</p>
+<p><a href="http://spark.apache.org" target="_blank" rel="noopener">Apache Spark</a>是新兴的一种快速通用的大规模数据处理引擎。它的优势有三个方面：</p>
 <ul>
 <li><strong>通用计算引擎</strong> 能够运行MapReduce、数据挖掘、图运算、流式计算、SQL等多种框架；</li>
 <li><strong>基于内存</strong> 数据可缓存在内存中，特别适用于需要迭代多次运算的场景；</li>
 <li><strong>与Hadoop集成</strong> 能够直接读写HDFS中的数据，并能运行在YARN之上。</li>
 </ul>
-<p>Spark是用<a href="http://www.scala-lang.org/" target="_blank" rel="external">Scala语言</a>编写的，所提供的API也很好地利用了这门语言的特性。它也可以使用Java和Python编写应用。本文将用Scala进行讲解。</p>
+<p>Spark是用<a href="http://www.scala-lang.org/" target="_blank" rel="noopener">Scala语言</a>编写的，所提供的API也很好地利用了这门语言的特性。它也可以使用Java和Python编写应用。本文将用Scala进行讲解。</p>
 <h2 id="安装Spark和SBT"><a href="#安装Spark和SBT" class="headerlink" title="安装Spark和SBT"></a>安装Spark和SBT</h2><ul>
-<li>从<a href="http://spark.apache.org/downloads.html" target="_blank" rel="external">官网</a>上下载编译好的压缩包，解压到一个文件夹中。下载时需注意对应的Hadoop版本，如要读写CDH4 HDFS中的数据，则应下载Pre-built for CDH4这个版本。</li>
+<li>从<a href="http://spark.apache.org/downloads.html" target="_blank" rel="noopener">官网</a>上下载编译好的压缩包，解压到一个文件夹中。下载时需注意对应的Hadoop版本，如要读写CDH4 HDFS中的数据，则应下载Pre-built for CDH4这个版本。</li>
 <li>为了方便起见，可以将spark/bin添加到$PATH环境变量中：</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> SPARK_HOME=/path/to/spark</div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$SPARK_HOME</span>/bin</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> SPARK_HOME=/path/to/spark</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$SPARK_HOME</span>/bin</span><br></pre></td></tr></table></figure>
 <ul>
-<li>在练习例子时，我们还会用到<a href="http://www.scala-sbt.org/" target="_blank" rel="external">SBT</a>这个工具，它是用来编译打包Scala项目的。Linux下的安装过程比较简单：<ul>
-<li>下载<a href="https://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.7/sbt-launch.jar" target="_blank" rel="external">sbt-launch.jar</a>到$HOME/bin目录；</li>
+<li>在练习例子时，我们还会用到<a href="http://www.scala-sbt.org/" target="_blank" rel="noopener">SBT</a>这个工具，它是用来编译打包Scala项目的。Linux下的安装过程比较简单：<ul>
+<li>下载<a href="https://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.7/sbt-launch.jar" target="_blank" rel="noopener">sbt-launch.jar</a>到$HOME/bin目录；</li>
 <li>新建$HOME/bin/sbt文件，权限设置为755，内容如下：</li>
 </ul>
 </li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">SBT_OPTS=<span class="string">"-Xms512M -Xmx1536M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M"</span></div><div class="line">java <span class="variable">$SBT_OPTS</span> -jar `dirname <span class="variable">$0</span>`/sbt-launch.jar <span class="string">"<span class="variable">$@</span>"</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SBT_OPTS=<span class="string">"-Xms512M -Xmx1536M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M"</span></span><br><span class="line">java <span class="variable">$SBT_OPTS</span> -jar `dirname <span class="variable">$0</span>`/sbt-launch.jar <span class="string">"<span class="variable">$@</span>"</span></span><br></pre></td></tr></table></figure>
         
           <p class="article-more-link">
             <a href="/cnblogs/2014/12/16/spark-quick-start/#more">阅读全文</a>
@@ -261,7 +261,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/" data-id="cj94xgvvt001sj2zje5voe7rn" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/" data-id="cj6ubcfe2001vtam6xqt1er1d" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -301,14 +301,14 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在公司网络中使用<a href="http://www.scala-sbt.org/" target="_blank" rel="external">sbt</a>、<a href="http://maven.apache.org/" target="_blank" rel="external">Maven</a>等项目构建工具时，我们通常会搭建一个公用的<a href="http://www.sonatype.org/nexus/" target="_blank" rel="external">Nexus</a>镜像服务，原因有以下几个：</p>
+        <p>在公司网络中使用<a href="http://www.scala-sbt.org/" target="_blank" rel="noopener">sbt</a>、<a href="http://maven.apache.org/" target="_blank" rel="noopener">Maven</a>等项目构建工具时，我们通常会搭建一个公用的<a href="http://www.sonatype.org/nexus/" target="_blank" rel="noopener">Nexus</a>镜像服务，原因有以下几个：</p>
 <ul>
 <li>避免重复下载依赖，节省公司带宽；</li>
 <li>国内网络环境不理想，下载速度慢；</li>
 <li>IDC服务器没有外网访问权限；</li>
 <li>用于发布内部模块。</li>
 </ul>
-<p>sbt的依赖管理基于<a href="http://ant.apache.org/ivy/" target="_blank" rel="external">Ivy</a>，虽然它能直接使用<a href="http://search.maven.org/" target="_blank" rel="external">Maven中央仓库</a>中的Jar包，在配置时还是有一些注意事项的。</p>
+<p>sbt的依赖管理基于<a href="http://ant.apache.org/ivy/" target="_blank" rel="noopener">Ivy</a>，虽然它能直接使用<a href="http://search.maven.org/" target="_blank" rel="noopener">Maven中央仓库</a>中的Jar包，在配置时还是有一些注意事项的。</p>
         
           <p class="article-more-link">
             <a href="/cnblogs/2014/11/07/sbt-offline/#more">阅读全文</a>
@@ -317,7 +317,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/" data-id="cj94xgvvo001lj2zjtkkgkxp4" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/" data-id="cj6ubcfe6001ztam67c8izqyn" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -358,10 +358,10 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p>ETL流程中，我们会将Hive中的数据导入MySQL——先用Hive命令行将数据保存为文本文件，然后用MySQL的LOAD DATA语句进行加载。最近有一张表在加载到MySQL时会报以下错误：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Incorrect string value: &apos;\xF0\x9D\x8C\x86&apos; for column ...</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Incorrect string value: &apos;\xF0\x9D\x8C\x86&apos; for column ...</span><br></pre></td></tr></table></figure>
 <p>经查，这个字段中保存的是用户聊天记录，因此会有一些表情符号。这些符号在UTF-8编码下需要使用4个字节来记录，而MySQL中的utf8编码只支持3个字节，因此无法导入。</p>
 <p>根据UTF-8的编码规范，3个字节支持的Unicode字符范围是U+0000–U+FFFF，因此可以在Hive中对数据做一下清洗：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> REGEXP_REPLACE(<span class="keyword">content</span>, <span class="string">'[^\\u0000-\\uFFFF]'</span>, <span class="string">''</span>) <span class="keyword">FROM</span> ...</div></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> REGEXP_REPLACE(<span class="keyword">content</span>, <span class="string">'[^\\u0000-\\uFFFF]'</span>, <span class="string">''</span>) <span class="keyword">FROM</span> ...</span><br></pre></td></tr></table></figure>
 <p>这样就能排除那些需要使用3个以上字节来记录的字符了，从而成功导入MySQL。</p>
 <p>以下是一些详细说明和参考资料。</p>
         
@@ -372,7 +372,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/" data-id="cj94xgvvr001pj2zjlh70b7jd" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/" data-id="cj6ubcfcz001itam6of13z9lj" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -412,18 +412,18 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="http://spark.apache.org" target="_blank" rel="external">Spark</a>是一个新兴的大数据计算平台，它的优势之一是内存型计算，因此对于需要多次迭代的算法尤为适用。同时，它又能够很好地融合到现有的<a href="http://hadoop.apache.org" target="_blank" rel="external">Hadoop</a>生态环境中，包括直接存取HDFS上的文件，以及运行于YARN之上。对于<a href="http://hive.apache.org" target="_blank" rel="external">Hive</a>，Spark也有相应的替代项目——<a href="http://shark.cs.berkeley.edu/" target="_blank" rel="external">Shark</a>，能做到 <strong>drop-in replacement</strong> ，直接构建在现有集群之上。本文就将简要阐述如何在CDH4.5上搭建Shark0.9集群。</p>
+        <p><a href="http://spark.apache.org" target="_blank" rel="noopener">Spark</a>是一个新兴的大数据计算平台，它的优势之一是内存型计算，因此对于需要多次迭代的算法尤为适用。同时，它又能够很好地融合到现有的<a href="http://hadoop.apache.org" target="_blank" rel="noopener">Hadoop</a>生态环境中，包括直接存取HDFS上的文件，以及运行于YARN之上。对于<a href="http://hive.apache.org" target="_blank" rel="noopener">Hive</a>，Spark也有相应的替代项目——<a href="http://shark.cs.berkeley.edu/" target="_blank" rel="noopener">Shark</a>，能做到 <strong>drop-in replacement</strong> ，直接构建在现有集群之上。本文就将简要阐述如何在CDH4.5上搭建Shark0.9集群。</p>
 <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ul>
 <li>安装方式：Spark使用CDH提供的Parcel，以Standalone模式启动</li>
 <li>软件版本<ul>
 <li>Cloudera Manager 4.8.2</li>
 <li>CDH 4.5</li>
 <li>Spark 0.9.0 Parcel</li>
-<li><a href="http://cloudera.rst.im/shark/" target="_blank" rel="external">Shark 0.9.1 Binary</a></li>
+<li><a href="http://cloudera.rst.im/shark/" target="_blank" rel="noopener">Shark 0.9.1 Binary</a></li>
 </ul>
 </li>
 <li>服务器基础配置<ul>
-<li>可用的软件源（如<a href="http://mirrors.ustc.edu.cn/" target="_blank" rel="external">中科大的源</a>）</li>
+<li>可用的软件源（如<a href="http://mirrors.ustc.edu.cn/" target="_blank" rel="noopener">中科大的源</a>）</li>
 <li>配置主节点至子节点的root账户SSH无密码登录。</li>
 <li>在<code>/etc/hosts</code>中写死IP和主机名，或者DNS做好正反解析。</li>
 </ul>
@@ -437,7 +437,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/" data-id="cj94xgvvj001fj2zjo96nmnmv" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/" data-id="cj6ubcfd6001mtam6urbg2jw0" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/07/05/deploy-shark-0.9-with-cdh-4.5/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -478,7 +478,7 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p>Hive的后端存储是HDFS，它对大文件的处理是非常高效的，如果合理配置文件系统的块大小，NameNode可以支持很大的数据量。但是在数据仓库中，越是上层的表其汇总程度就越高，数据量也就越小。而且这些表通常会按日期进行分区，随着时间的推移，HDFS的文件数目就会逐渐增加。</p>
-<h2 id="小文件带来的问题"><a href="#小文件带来的问题" class="headerlink" title="小文件带来的问题"></a>小文件带来的问题</h2><p>关于这个问题的阐述可以读一读Cloudera的<a href="http://blog.cloudera.com/blog/2009/02/the-small-files-problem/" target="_blank" rel="external">这篇文章</a>。简单来说，HDFS的文件元信息，包括位置、大小、分块信息等，都是保存在NameNode的内存中的。每个对象大约占用150个字节，因此一千万个文件及分块就会占用约3G的内存空间，一旦接近这个量级，NameNode的性能就会开始下降了。</p>
+<h2 id="小文件带来的问题"><a href="#小文件带来的问题" class="headerlink" title="小文件带来的问题"></a>小文件带来的问题</h2><p>关于这个问题的阐述可以读一读Cloudera的<a href="http://blog.cloudera.com/blog/2009/02/the-small-files-problem/" target="_blank" rel="noopener">这篇文章</a>。简单来说，HDFS的文件元信息，包括位置、大小、分块信息等，都是保存在NameNode的内存中的。每个对象大约占用150个字节，因此一千万个文件及分块就会占用约3G的内存空间，一旦接近这个量级，NameNode的性能就会开始下降了。</p>
 <p>此外，HDFS读写小文件时也会更加耗时，因为每次都需要从NameNode获取元信息，并与对应的DataNode建立连接。对于MapReduce程序来说，小文件还会增加Mapper的个数，每个脚本只处理很少的数据，浪费了大量的调度时间。当然，这个问题可以通过使用CombinedInputFile和JVM重用来解决。</p>
         
           <p class="article-more-link">
@@ -488,7 +488,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/" data-id="cj94xgvvi001cj2zjdvxmiohd" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/" data-id="cj6ubcfdv001stam6gg6650ew" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -528,7 +528,7 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>原文：<a href="http://www.programcreek.com/2013/09/java-reflection-tutorial/" target="_blank" rel="external">http://www.programcreek.com/2013/09/java-reflection-tutorial/</a></p>
+        <p>原文：<a href="http://www.programcreek.com/2013/09/java-reflection-tutorial/" target="_blank" rel="noopener">http://www.programcreek.com/2013/09/java-reflection-tutorial/</a></p>
 <p>什么是反射？它有何用处？</p>
 <h2 id="1-什么是反射？"><a href="#1-什么是反射？" class="headerlink" title="1. 什么是反射？"></a>1. 什么是反射？</h2><p>“反射（Reflection）能够让运行于JVM中的程序检测和修改运行时的行为。”这个概念常常会和内省（Introspection）混淆，以下是这两个术语在Wikipedia中的解释：</p>
 <ol>
@@ -545,7 +545,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/01/25/java-reflection-tutorial/" data-id="cj94xgvvg0018j2zj564uq6fn" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/01/25/java-reflection-tutorial/" data-id="cj6ubcfde001ptam6xb8zyohy" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/01/25/java-reflection-tutorial/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -585,7 +585,7 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>原文：<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html" target="_blank" rel="external">http://www.joelonsoftware.com/articles/LeakyAbstractions.html</a></p>
+        <p>原文：<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html" target="_blank" rel="noopener">http://www.joelonsoftware.com/articles/LeakyAbstractions.html</a></p>
 <p>TCP协议是互联网的基石，我们每天都需要依靠它来构建各类互联网应用。也正是在这一协议中，时刻发生着一件近乎神奇的事情。</p>
 <p>TCP是一种 <em>可靠的</em> 数据传输协议，也就是说，当你通过TCP协议在网络上传输一条消息时，它一定会到达目的地，而且不会失真或毁坏。</p>
 <p>我们可以使用TCP来做很多事情，从浏览网页信息到收发邮件。TCP的可靠性使得东非贪污受贿的新闻能够一字一句地传递到世界各地。真是太棒了！</p>
@@ -599,7 +599,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/12/17/the-law-of-leaky-abstractions/" data-id="cj94xgvvl001jj2zjey6fujhr" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2013/12/17/the-law-of-leaky-abstractions/" data-id="cj6ubcfcp001etam62fl4r1mi" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2013/12/17/the-law-of-leaky-abstractions/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -640,7 +640,7 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p>在每天运行的Hive脚本中，偶尔会抛出以下错误：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">2013-09-03 01:39:00,973 ERROR parse.SemanticAnalyzer (SemanticAnalyzer.java:getMetaData(1128)) - org.apache.hadoop.hive.ql.metadata.HiveException: Unable to fetch table dw_xxx_xxx</div><div class="line">        at org.apache.hadoop.hive.ql.metadata.Hive.getTable(Hive.java:896)</div><div class="line">        ...</div><div class="line">Caused by: javax.jdo.JDODataStoreException: Exception thrown obtaining schema column information from datastore</div><div class="line">NestedThrowables:</div><div class="line">com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table &apos;hive.DELETEME1378143540925&apos; doesn&apos;t exist</div><div class="line">        at org.datanucleus.jdo.NucleusJDOHelper.getJDOExceptionForNucleusException(NucleusJDOHelper.java:313)</div><div class="line">        ...</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">2013-09-03 01:39:00,973 ERROR parse.SemanticAnalyzer (SemanticAnalyzer.java:getMetaData(1128)) - org.apache.hadoop.hive.ql.metadata.HiveException: Unable to fetch table dw_xxx_xxx</span><br><span class="line">        at org.apache.hadoop.hive.ql.metadata.Hive.getTable(Hive.java:896)</span><br><span class="line">        ...</span><br><span class="line">Caused by: javax.jdo.JDODataStoreException: Exception thrown obtaining schema column information from datastore</span><br><span class="line">NestedThrowables:</span><br><span class="line">com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table &apos;hive.DELETEME1378143540925&apos; doesn&apos;t exist</span><br><span class="line">        at org.datanucleus.jdo.NucleusJDOHelper.getJDOExceptionForNucleusException(NucleusJDOHelper.java:313)</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
 <p>查阅了网上的资料，是DataNucleus的问题。</p>
 <p>背景1：我们知道MySQL中的库表信息是存放在information_schema库中的，Hive也有类似的机制，它会将库表信息存放在一个第三方的RDBMS中，目前我们线上配置的是本机MySQL，即：</p>
 <p>$ mysql -uhive -ppassword hive</p>
@@ -653,7 +653,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/" data-id="cj94xgvvd0015j2zj2a0buaaj" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/" data-id="cj6ubcfci0018tam6ufhhine5" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2013/09/06/hive-deleteme-error/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -781,7 +781,7 @@ ga('send', 'pageview');
 </script>
 
 
-<script src="https://ajax.proxy.ustclug.org/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/cnblogs/js/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">
