@@ -6,7 +6,7 @@
   <title>2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目 | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="2017 Top 15 Python 数据科学类库 近年来，Python 在数据科学领域得到了越来越多的关注，本文整理归类了使用率最高的数据科学类库，供大家参考。 NumPy、SciPy、Pandas 是 Python 数据科学的核心类库。NumPy 提供了 N 维数组、矩阵、向量等数据结构，能够进行高性能的数学运算；SciPy 包含了线性代数、拟合优化、统计学习的通用方法；Pandas 则一般用">
-<meta name="keywords" content="data science,analytics,opensource">
+<meta name="keywords" content="analytics,data science,opensource">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目">
 <meta property="og:url" content="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/index.html">
@@ -16,7 +16,7 @@
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/digest/google-trends.png">
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/digest/anomaly-detection-cart.png">
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/digest/opensource.jpg">
-<meta property="og:updated_time" content="2017-09-12T14:00:24.078Z">
+<meta property="og:updated_time" content="2017-09-06T02:00:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目">
 <meta name="twitter:description" content="2017 Top 15 Python 数据科学类库 近年来，Python 在数据科学领域得到了越来越多的关注，本文整理归类了使用率最高的数据科学类库，供大家参考。 NumPy、SciPy、Pandas 是 Python 数据科学的核心类库。NumPy 提供了 N 维数组、矩阵、向量等数据结构，能够进行高性能的数学运算；SciPy 包含了线性代数、拟合优化、统计学习的通用方法；Pandas 则一般用">
@@ -128,25 +128,25 @@ ga('send', 'pageview');
 <p>可视化方面，Matplotlib 是最早流行的类库，提供了丰富的图形化接口，但 API 的使用方式偏底层，需要编写较多代码；Seaborn 构建在 Matplotlib 之上，重新定义了图表样式，更适合在报告、演示文档中使用，并且它还预置了诸多探索型分析函数，可以快速地对数据进行描述性可视化；Bokeh 主打交互性，它运行在浏览器中，让使用者可以方便地调节可视化参数；Plotly 也是一款基于页面的可视化工具，但因为是商业软件，需要授权后才能使用。</p>
 <p>SciKit-Learn 是公认的 Python 机器学习标准类库，它提供了准确、统一的接口，可以方便地使用各种机器学习算法；深度学习领域，Theano 是比较老牌的类库之一，特点是能够运行于不同的系统架构之上（CPU、GPU）；Tensorflow 则是最近较火的基础类库，使用它提供的各种算子和数据流工具，我们可以构建出多层神经网络，在集群上对大数据进行运算；Keras 则是一款较上层的工具库，底层使用 Theano 或 Tensorflow 作为引擎，可以通过快速构建实验来验证模型。</p>
 <p>自然语言处理领域中，NLTK 提供了文本标记、分词、构建语料树等功能，用以揭示句中或句间的依赖关系；Gensim 则擅长构建向量空间模型、话题建模、挖掘大量文本中重复出现的模式，其算法都属于非监督学习，因此只需提供语料库就能得到结果。</p>
-<p>原文：<a href="http://www.kdnuggets.com/2017/06/top-15-python-libraries-data-science.html" target="_blank" rel="external">http://www.kdnuggets.com/2017/06/top-15-python-libraries-data-science.html</a></p>
+<p>原文：<a href="http://www.kdnuggets.com/2017/06/top-15-python-libraries-data-science.html" target="_blank" rel="noopener">http://www.kdnuggets.com/2017/06/top-15-python-libraries-data-science.html</a></p>
 <a id="more"></a>
 <h2 id="时间序列数据异常点检测算法"><a href="#时间序列数据异常点检测算法" class="headerlink" title="时间序列数据异常点检测算法"></a>时间序列数据异常点检测算法</h2><p><img src="/cnblogs/images/digest/anomaly-detection-cart.png" alt=""></p>
 <p>异常点检测是指寻找那些偏离标准值或正常值的数据点。异常点有几种常见的类型：短期内产生的峰值，包括最大值、最小值、以及零值；长期的数据合计与上一周期的比较等。检测方法也可以归类为两种：对数据点进行分类，标记异常与否；或是对未来数据走势做预测，给出置信区间。</p>
-<p>使用 STL 分解法将时间序列数据表示成三个要素：季节性、趋势、残差。通过分析残差的背离程度，引入一定的阈值，就可以作为预警依据了。我们可以使用绝对中位差来作为阈值，推特使用并开源了相关类库（<a href="https://github.com/twitter/AnomalyDetection" target="_blank" rel="external">链接</a>）。这种方法的优点是简单，对峰值异常较敏感，并能结合滑动平均来检测周期性的异常。缺点是需要进行调参，且不能检测剧烈变动的指标。</p>
-<p>分类和回归树算法有两种使用方式：一种是准备好已标记过异常点的数据集，进行监督型的机器学习；另一种则是让 CART 算法自动寻找数据集中的模式，预测异常点的置信区间。最常用的开源库是 <a href="https://github.com/dmlc/xgboost" target="_blank" rel="external">xgboost</a>。这一方法可以用各种特征进行学习和预测，当然计算量也会因此上升。</p>
-<p>ARIMA 是一种较为简单的算法，通过历史值来预测下一个数据点的动向。它的特点是每接收一个新的数据点都需要重新构建一次预测模型，并且你的数据必须和时间是无关的。和该算法相似的是指数平滑法，比较有趣的实现是 <a href="https://www.otexts.org/fpp/7/5" target="_blank" rel="external">Holt-Winters 季节性指标</a>，用于检测阶段性长期趋势的异常。</p>
-<p>人工神经网络也能够进行异常检测，只是这一方式还处于<a href="https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2015-56.pdf" target="_blank" rel="external">科研阶段</a>。不过我们想要提醒读者的是，尽量从简单的模型开始，针对你的具体问题进行优化，因为通用的算法并不一定是最优的。</p>
-<p>原文：<a href="https://blog.statsbot.co/time-series-anomaly-detection-algorithms-1cef5519aef2" target="_blank" rel="external">https://blog.statsbot.co/time-series-anomaly-detection-algorithms-1cef5519aef2</a></p>
+<p>使用 STL 分解法将时间序列数据表示成三个要素：季节性、趋势、残差。通过分析残差的背离程度，引入一定的阈值，就可以作为预警依据了。我们可以使用绝对中位差来作为阈值，推特使用并开源了相关类库（<a href="https://github.com/twitter/AnomalyDetection" target="_blank" rel="noopener">链接</a>）。这种方法的优点是简单，对峰值异常较敏感，并能结合滑动平均来检测周期性的异常。缺点是需要进行调参，且不能检测剧烈变动的指标。</p>
+<p>分类和回归树算法有两种使用方式：一种是准备好已标记过异常点的数据集，进行监督型的机器学习；另一种则是让 CART 算法自动寻找数据集中的模式，预测异常点的置信区间。最常用的开源库是 <a href="https://github.com/dmlc/xgboost" target="_blank" rel="noopener">xgboost</a>。这一方法可以用各种特征进行学习和预测，当然计算量也会因此上升。</p>
+<p>ARIMA 是一种较为简单的算法，通过历史值来预测下一个数据点的动向。它的特点是每接收一个新的数据点都需要重新构建一次预测模型，并且你的数据必须和时间是无关的。和该算法相似的是指数平滑法，比较有趣的实现是 <a href="https://www.otexts.org/fpp/7/5" target="_blank" rel="noopener">Holt-Winters 季节性指标</a>，用于检测阶段性长期趋势的异常。</p>
+<p>人工神经网络也能够进行异常检测，只是这一方式还处于<a href="https://www.elen.ucl.ac.be/Proceedings/esann/esannpdf/es2015-56.pdf" target="_blank" rel="noopener">科研阶段</a>。不过我们想要提醒读者的是，尽量从简单的模型开始，针对你的具体问题进行优化，因为通用的算法并不一定是最优的。</p>
+<p>原文：<a href="https://blog.statsbot.co/time-series-anomaly-detection-algorithms-1cef5519aef2" target="_blank" rel="noopener">https://blog.statsbot.co/time-series-anomaly-detection-algorithms-1cef5519aef2</a></p>
 <h2 id="如何加入开源项目"><a href="#如何加入开源项目" class="headerlink" title="如何加入开源项目"></a>如何加入开源项目</h2><p><img src="/cnblogs/images/digest/opensource.jpg" alt="opensource"></p>
 <p>已经蠢蠢欲动了吗？不如马上开始！找一个你正在使用的开源项目，Fork 源码仓库。先从修复 Bug 开始，或者为现有代码编写单元测试。过程中你需要学会读懂别人的代码，遵循代码规范。提交补丁后，你一定会受到猛烈的抨击，千万不要因此胆怯。熟悉代码之后，可以寻求一些更重要的职责，比如提出一个新的特性，或者认领新特性的开发工作。最后，你也可以开启自己的开源项目。</p>
 <p>如何寻找自己想做贡献的开源项目？首先你可以在邮件列表、论坛、Bug 跟踪系统中找到这样的项目，问问自己是否喜欢这里的社区氛围。一开始不要在一棵树上吊死，多观察几个开源项目，找到自己对味的。从小处着手，比如重现 Bug、提交测试代码、改进文档等等。中途不要放弃！</p>
 <p>最直接的加入方式其实是当正在使用的某个项目出现 Bug，或者你有用的不爽的地方，对它加以改进。此外，加入一个对开源项目友好的公司也是不错的选择。</p>
-<p>原文：<a href="https://arstechnica.com/information-technology/2012/03/ask-stack-how-can-i-find-a-good-open-source-project-to-join/" target="_blank" rel="external">https://arstechnica.com/information-technology/2012/03/ask-stack-how-can-i-find-a-good-open-source-project-to-join/</a></p>
+<p>原文：<a href="https://arstechnica.com/information-technology/2012/03/ask-stack-how-can-i-find-a-good-open-source-project-to-join/" target="_blank" rel="noopener">https://arstechnica.com/information-technology/2012/03/ask-stack-how-can-i-find-a-good-open-source-project-to-join/</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/" data-id="cj7ho4lkv000372m68i0f83l2" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/" data-id="cjg4efvue003ktjzjphwwcov2" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -203,7 +203,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15.71px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.43px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 18.57px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.86px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 11.43px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 11.43px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.43px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 12.86px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 14.29px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15.71px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 12.86px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.43px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.43px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 12.86px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.43px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.43px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.43px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 17.14px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.86px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 15.71px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.43px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 14.29px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 18.57px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15.71px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.43px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 18.57px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.86px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 11.43px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 12.86px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.43px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 12.86px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 14.29px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15.71px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 14.29px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.43px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.43px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 12.86px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.43px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.43px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.43px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 17.14px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.86px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 15.71px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.43px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 14.29px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 18.57px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
     </div>
   </div>
 
@@ -225,6 +225,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/">Vuex 严格模式下的表单处理</a>
+          </li>
+        
+          <li>
             <a href="/cnblogs/2018/04/07/error-handling-in-restful-api/">RESTful API 中的错误处理</a>
           </li>
         
@@ -238,10 +242,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/cnblogs/2017/09/13/apache-beam-quick-start-with-python/">Apache Beam 快速入门（Python 版）</a>
-          </li>
-        
-          <li>
-            <a href="/cnblogs/2017/09/06/python-data-science-anomaly-detection-opensource/">2017 Top 15 Python 数据科学类库；时间序列异常点检测；如何加入开源项目</a>
           </li>
         
       </ul>

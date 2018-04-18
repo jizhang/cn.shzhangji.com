@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Vuex 严格模式下的表单处理 | 张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在使用 Vue 进行表单处理时，我们通常会使用 v-model 来建立双向绑定。但是，如果将表单数据交由 Vuex 管理，这时的双向绑定就会引发问题，因为在 严格模式 下，Vuex 是不允许在 Mutation 之外的地方修改状态数据的。以下用一个简单的项目举例说明，完整代码可在 GitHub（链接） 查看。 src/store/table.js 12345678export default &amp;">
+<meta name="keywords" content="javascript,frontend,vue,vuex">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vuex 严格模式下的表单处理">
+<meta property="og:url" content="http://shzhangji.com/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta property="og:description" content="在使用 Vue 进行表单处理时，我们通常会使用 v-model 来建立双向绑定。但是，如果将表单数据交由 Vuex 管理，这时的双向绑定就会引发问题，因为在 严格模式 下，Vuex 是不允许在 Mutation 之外的地方修改状态数据的。以下用一个简单的项目举例说明，完整代码可在 GitHub（链接） 查看。 src/store/table.js 12345678export default &amp;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/vue.png">
+<meta property="og:updated_time" content="2018-04-18T01:08:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vuex 严格模式下的表单处理">
+<meta name="twitter:description" content="在使用 Vue 进行表单处理时，我们通常会使用 v-model 来建立双向绑定。但是，如果将表单数据交由 Vuex 管理，这时的双向绑定就会引发问题，因为在 严格模式 下，Vuex 是不允许在 Mutation 之外的地方修改状态数据的。以下用一个简单的项目举例说明，完整代码可在 GitHub（链接） 查看。 src/store/table.js 12345678export default &amp;">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/vue.png">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/cnblogs/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
+  
+  <link rel="stylesheet" href="/cnblogs/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/cnblogs/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/cnblogs/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/cnblogs/">首页</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Digest">摘译</a>
+        
+          <a class="main-nav-link" href="/cnblogs/archives">全部文章</a>
+        
+          <a class="main-nav-link" href="http://shzhangji.com/">English</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/cnblogs/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com/cnblogs"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-form-handling-in-vuex-strict-mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/" class="article-date">
+  <time datetime="2018-04-18T01:08:41.000Z" itemprop="datePublished">2018-04-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Programming/">Programming</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Vuex 严格模式下的表单处理
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/cnblogs/images/vue.png" alt=""></p>
+<p>在使用 Vue 进行表单处理时，我们通常会使用 <code>v-model</code> 来建立双向绑定。但是，如果将表单数据交由 Vuex 管理，这时的双向绑定就会引发问题，因为在 <strong>严格模式</strong> 下，Vuex 是不允许在 Mutation 之外的地方修改状态数据的。以下用一个简单的项目举例说明，完整代码可在 GitHub（<a href="https://github.com/jizhang/vuex-form" target="_blank" rel="noopener">链接</a>） 查看。</p>
+<p><code>src/store/table.js</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  state: &#123;</span><br><span class="line">    namespaced: <span class="literal">true</span>,</span><br><span class="line">    table: &#123;</span><br><span class="line">      table_name: <span class="string">''</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>src/components/NonStrict.vue</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">b-form-group</span> <span class="attr">label</span>=<span class="string">"表名："</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">b-form-input</span> <span class="attr">v-model</span>=<span class="string">"table.table_name"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">b-form-group</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> &#123; mapState &#125; <span class="keyword">from</span> <span class="string">'vuex'</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="undefined">  computed: &#123;</span></span><br><span class="line"><span class="javascript">    ...mapState(<span class="string">'table'</span>, [</span></span><br><span class="line"><span class="javascript">      <span class="string">'table'</span></span></span><br><span class="line"><span class="undefined">    ])</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>当我们在“表名”字段输入文字时，浏览器会报以下错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">错误：[vuex] 禁止在 Mutation 之外修改 Vuex 状态数据。</span><br><span class="line">    at assert (vuex.esm.js?358c:97)</span><br><span class="line">    at Vue.store._vm.$watch.deep (vuex.esm.js?358c:746)</span><br><span class="line">    at Watcher.run (vue.esm.js?efeb:3233)</span><br></pre></td></tr></table></figure>
+<p>当然，我们可以选择不开启严格模式，只是这样就无法通过工具追踪到每一次的状态变动了。下面我将列举几种解决方案，描述如何在严格模式下进行表单处理。</p>
+<a id="more"></a>
+<h2 id="将状态复制到组件中"><a href="#将状态复制到组件中" class="headerlink" title="将状态复制到组件中"></a>将状态复制到组件中</h2><p>第一种方案是直接将 Vuex 中的表单数据复制到本地的组件状态中，并在表单和本地状态间建立双向绑定。当用户提交表单时，再将本地数据提交到 Vuex 状态库中。</p>
+<p><code>src/components/LocalCopy.vue</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">b-form-input</span> <span class="attr">v-model</span>=<span class="string">"table.table_name"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">import</span> _ <span class="keyword">from</span> <span class="string">'lodash'</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="undefined">  data () &#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">      table: _.cloneDeep(<span class="keyword">this</span>.$store.state.table.table)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">  methods: &#123;</span></span><br><span class="line"><span class="undefined">    handleSubmit (event) &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.$store.commit(<span class="string">'table/setTable'</span>, <span class="keyword">this</span>.table)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>src/store/table.js</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  mutations: &#123;</span><br><span class="line">    setTable (state, payload) &#123;</span><br><span class="line">      state.table = payload</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上方式有两个缺陷。其一，在提交状态更新后，若继续修改表单数据，同样会得到“禁止修改”的错误提示。这是因为 <code>setTable</code> 方法将本地状态对象直接传入了 Vuex，我们可以对该方法稍作修改：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">setTable (state, payload) &#123;</span><br><span class="line">  <span class="comment">// 将对象属性逐一赋值给 Vuex</span></span><br><span class="line">  _.assign(state.table, payload)</span><br><span class="line">  <span class="comment">// 或者，克隆整个对象</span></span><br><span class="line">  state.table = _.cloneDeep(payload)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二个问题在于如果其他组件也向 Vuex 提交了数据变动（如弹出的对话框中包含了一个子表单），当前表单的数据不会得到更新。这时，我们就需要用到 Vue 的监听机制了：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="undefined">  data () &#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">      table: _.cloneDeep(<span class="keyword">this</span>.$store.state.table.table)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">  computed: &#123;</span></span><br><span class="line"><span class="undefined">    storeTable () &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> _.cloneDeep(<span class="keyword">this</span>.$store.state.table.table)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">  watch: &#123;</span></span><br><span class="line"><span class="undefined">    storeTable (newValue) &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.table = newValue</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这个方法还能同时规避第一个问题，因为每当 Vuex 数据更新，本地组件都会重新克隆一份数据。</p>
+<h2 id="响应表单更新事件并提交数据"><a href="#响应表单更新事件并提交数据" class="headerlink" title="响应表单更新事件并提交数据"></a>响应表单更新事件并提交数据</h2><p>一种类似 ReactJS 的做法是，弃用 <code>v-model</code>，转而使用 <code>:value</code> 展示数据，再通过监听 <code>@input</code> 或 <code>@change</code> 事件来提交数据变更。这样就从双向绑定转换为了单向数据流，Vuex 状态库自此成为整个应用程序的唯一数据源（Single Source of Truth）。</p>
+<p><code>src/components/ExplicitUpdate.vue</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">b-form-input</span> <span class="attr">:value</span>=<span class="string">"table.table_name"</span> @<span class="attr">input</span>=<span class="string">"updateTableForm(&#123; table_name: $event &#125;)"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="undefined">  computed: &#123;</span></span><br><span class="line"><span class="javascript">    ...mapState(<span class="string">'table'</span>, [</span></span><br><span class="line"><span class="javascript">      <span class="string">'table'</span></span></span><br><span class="line"><span class="undefined">    ])</span></span><br><span class="line"><span class="undefined">  &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">  methods: &#123;</span></span><br><span class="line"><span class="javascript">    ...mapMutations(<span class="string">'table'</span>, [</span></span><br><span class="line"><span class="javascript">      <span class="string">'updateTableForm'</span></span></span><br><span class="line"><span class="undefined">    ])</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>src/store/table.js</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> table &#123;</span><br><span class="line">  mutations: &#123;</span><br><span class="line">    updateTableForm (state, payload) &#123;</span><br><span class="line">      _.assign(state.table, payload)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上方法也是 <a href="https://vuex.vuejs.org/en/forms.html" target="_blank" rel="noopener">Vuex 文档</a> 所推崇的。而根据 <a href="https://vuejs.org/v2/guide/forms.html" target="_blank" rel="noopener">Vue 文档</a> 的介绍，<code>v-model</code> 本质上也是一个“监听 - 修改”流程的语法糖而已。</p>
+<h2 id="使用-Vue-计算属性"><a href="#使用-Vue-计算属性" class="headerlink" title="使用 Vue 计算属性"></a>使用 Vue 计算属性</h2><p>Vue 的计算属性（Computed Property）可以配置双向的访问器（Getter / Setter），我们可以利用其建立起 Vuex 状态库和本地组件间的桥梁。其中一个限制在于计算属性无法支持嵌套属性（<code>table.table_name</code>），因此我们需要为这些属性设置别名。</p>
+<p><code>src/components/ComputedProperty.vue</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">b-form-input</span> <span class="attr">v-model</span>=<span class="string">"tableName"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">b-form-select</span> <span class="attr">v-model</span>=<span class="string">"tableCategory"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="undefined">  computed: &#123;</span></span><br><span class="line"><span class="undefined">    tableName: &#123;</span></span><br><span class="line"><span class="undefined">      get () &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>.$store.state.table.table.table_name</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="undefined">      set (value) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.updateTableForm(&#123; <span class="attr">table_name</span>: value &#125;)</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    tableCategory: &#123;</span></span><br><span class="line"><span class="undefined">      get () &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>.$store.state.table.table.category</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="undefined">      set (value) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.updateTableForm(&#123; <span class="attr">category</span>: value &#125;)</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">  &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">  methods: &#123;</span></span><br><span class="line"><span class="javascript">    ...mapMutations(<span class="string">'table'</span>, [</span></span><br><span class="line"><span class="javascript">      <span class="string">'updateTableForm'</span></span></span><br><span class="line"><span class="undefined">    ])</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果表单字段数目过多，全部列出不免有些繁琐，我们可以创建一些工具函数来实现。首先，在 Vuex 状态库中新增一个可修改任意属性的 Mutation，它接收一个 Lodash 风格的属性路径。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mutations: &#123;</span><br><span class="line">  myUpdateField (state, payload) &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; path, value &#125; = payload</span><br><span class="line">    _.set(state, path, value)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在组件中，我们将传入的“别名 - 路径”对转换成相应的 Getter / Setter 访问器。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mapFields = <span class="function">(<span class="params">namespace, fields</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> _.mapValues(fields, path =&gt; &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      get () &#123;</span><br><span class="line">        <span class="keyword">return</span> _.get(<span class="keyword">this</span>.$store.state[namespace], path)</span><br><span class="line">      &#125;,</span><br><span class="line">      set (value) &#123;</span><br><span class="line">        <span class="keyword">this</span>.$store.commit(<span class="string">`<span class="subst">$&#123;namespace&#125;</span>/myUpdateField`</span>, &#123; path, value &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  computed: &#123;</span><br><span class="line">    ...mapFields(<span class="string">'table'</span>, &#123;</span><br><span class="line">      tableName: <span class="string">'table.table_name'</span>,</span><br><span class="line">      tableCategory: <span class="string">'table.category'</span>,</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>开源社区中已经有人建立了一个名为 <a href="https://github.com/maoberlehner/vuex-map-fields" target="_blank" rel="noopener">vuex-map-fields</a> 的项目，其 <code>mapFields</code> 方法就实现了上述功能。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://vuex.vuejs.org/en/forms.html" target="_blank" rel="noopener">https://vuex.vuejs.org/en/forms.html</a></li>
+<li><a href="https://ypereirareis.github.io/blog/2017/04/25/vuejs-two-way-data-binding-state-management-vuex-strict-mode/" target="_blank" rel="noopener">https://ypereirareis.github.io/blog/2017/04/25/vuejs-two-way-data-binding-state-management-vuex-strict-mode/</a></li>
+<li><a href="https://markus.oberlehner.net/blog/form-fields-two-way-data-binding-and-vuex/" target="_blank" rel="noopener">https://markus.oberlehner.net/blog/form-fields-two-way-data-binding-and-vuex/</a></li>
+<li><a href="https://forum.vuejs.org/t/vuex-form-best-practices/20084" target="_blank" rel="noopener">https://forum.vuejs.org/t/vuex-form-best-practices/20084</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/" data-id="cjg4efvus003ztjzjmx0y3yoz" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/frontend/">frontend</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/javascript/">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/vue/">vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/vuex/">vuex</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/cnblogs/2018/04/07/error-handling-in-restful-api/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">RESTful API 中的错误处理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Python数据平台</h3>
+    <div class="widget">
+      <img src="/cnblogs/images/pydp-qrcode.jpg" style="width: 100%;"></img>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15.71px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.43px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 18.57px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.86px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 11.43px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 12.86px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.43px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 12.86px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 14.29px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15.71px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 14.29px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.43px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.43px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 12.86px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.43px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.43px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.43px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 17.14px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.86px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 15.71px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.43px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 14.29px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 18.57px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/04/">四月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/">Vuex 严格模式下的表单处理</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/04/07/error-handling-in-restful-api/">RESTful API 中的错误处理</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/10/24/flume-source-code-component-lifecycle/">Flume 源码解析：组件生命周期</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/09/30/pandas-and-tidy-data/">Pandas 与数据整理</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/09/13/apache-beam-quick-start-with-python/">Apache Beam 快速入门（Python 版）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg"></a>
+      <br>
+      &copy; 2018 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/cnblogs/" class="mobile-nav-link">首页</a>
+  
+    <a href="/cnblogs/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/cnblogs/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/cnblogs/categories/Digest" class="mobile-nav-link">摘译</a>
+  
+    <a href="/cnblogs/archives" class="mobile-nav-link">全部文章</a>
+  
+    <a href="http://shzhangji.com/" class="mobile-nav-link">English</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  var disqus_url = 'http://shzhangji.com/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="/cnblogs/js/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">
+  <script src="/cnblogs/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/cnblogs/js/script.js"></script>
+
+  </div>
+</body>
+</html>
