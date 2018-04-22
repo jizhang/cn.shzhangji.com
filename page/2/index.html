@@ -89,6 +89,64 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-how-to-extract-event-time-in-apache-flume" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/" class="article-date">
+  <time datetime="2017-08-06T01:09:06.000Z" itemprop="datePublished">2017-08-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Big-Data/">Big Data</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/">Apache Flume 如何解析消息中的事件时间</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>数据开发工作中，从上游消息队列抽取数据是一项常规的 ETL 流程。在基于 Hadoop 构建的数据仓库体系中，我们通常会使用 Flume 将事件日志从 Kafka 抽取到 HDFS，然后针对其开发 MapReduce 脚本，或直接创建以时间分区的 Hive 外部表。这项流程中的关键一环是提取日志中的事件时间，因为实时数据通常会包含延迟，且在系统临时宕机的情况下，我们需要追回遗漏的数据，因而使用的时间戳必须是事件产生的时间。Flume 提供的诸多工具能帮助我们非常便捷地实现这一点。</p>
+<p><img src="/cnblogs/images/flume.png" alt="Apache Flume"></p>
+<h2 id="HDFS-Sink-和时间戳头信息"><a href="#HDFS-Sink-和时间戳头信息" class="headerlink" title="HDFS Sink 和时间戳头信息"></a>HDFS Sink 和时间戳头信息</h2><p>以下是一个基本的 HDFS Sink 配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a1.sinks = k1</span><br><span class="line">a1.sinks.k1.type = hdfs</span><br><span class="line">a1.sinks.k1.hdfs.path = /user/flume/ds_alog/dt=%Y%m%d</span><br></pre></td></tr></table></figure>
+<p><code>%Y%m%d</code> 是该 Sink 支持的时间占位符，它会使用头信息中 <code>timestamp</code> 的值来替换这些占位符。HDFS Sink 还提供了 <code>hdfs.useLocalTimeStamp</code> 选项，直接使用当前系统时间来替换时间占位符，但这并不是我们想要达到的目的。</p>
+<p>我们还可以使用 Hive Sink 直接将事件日志导入成 Hive 表，它能直接和 Hive 元数据库通信，自动创建表分区，并支持分隔符分隔和 JSON 两种序列化形式。当然，它同样需要一个 <code>timestamp</code> 头信息。不过，我们没有选择 Hive Sink，主要出于以下原因：</p>
+<ul>
+<li>它不支持正则表达式，因此我们无法从类似访问日志这样的数据格式中提取字段列表；</li>
+<li>它所提取的字段列表是根据 Hive 表信息产生的。假设上游数据源在 JSON 日志中加入了新的键值，直至我们主动更新 Hive 元信息，这些新增字段将被直接丢弃。对于数据仓库来说，完整保存原始数据是很有必要的。</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/" data-id="cjgasrw0o0036xgr4e5ci6j89" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/etl/">etl</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/flume/">flume</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/java/">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-how-to-achieve-exactly-once-semantics-in-spark-streaming" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" class="article-date">
@@ -130,7 +188,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" data-id="cjg4efvtv0035tjzjmfns8mae" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" data-id="cjgasrw0j0030xgr4qn3rwhfy" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -186,7 +244,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/" data-id="cjg4efvtt0031tjzjzkyqqib1" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/" data-id="cjgasrw0l0033xgr4g5kbox2j" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -237,7 +295,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/" data-id="cjg4efvtr002ytjzjuiqpsb76" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/" data-id="cjgasrw0f002xxgr4esgp8zpp" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -289,7 +347,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/" data-id="cjg4efvto002vtjzj6w8suhc4" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/" data-id="cjgasrw0d002vxgr4amxvfpri" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -340,7 +398,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/" data-id="cjg4efvtm002ttjzjkcf69lt6" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/" data-id="cjgasrw0a002rxgr4mmysi38w" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -393,7 +451,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/" data-id="cjg4efvt9002itjzjzwiyam61" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/" data-id="cjgasrw06002oxgr4if1ijl4o" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -458,7 +516,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/" data-id="cjg4efvtf002ptjzjy6npqvgf" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/" data-id="cjgasrw03002kxgr48k9v9dx8" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -509,7 +567,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/" data-id="cjg4efvtc002mtjzjnygcwdgn" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/" data-id="cjgasrvzz002hxgr4o2h6hfbq" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -561,74 +619,12 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/" data-id="cjg4efvt5002ftjzjnwfc0sft" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/" data-id="cjgasrvzx002exgr4jiyd5iyq" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/#disqus_thread" class="article-comment-link">留言</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/translation/">translation</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-compressed-oops-in-the-hotspot-jvm" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/" class="article-date">
-  <time datetime="2015-06-25T09:41:00.000Z" itemprop="datePublished">2015-06-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/cnblogs/categories/Programming/">Programming</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/">HotSpot JVM 中的对象指针压缩</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>原文：<a href="https://wiki.openjdk.java.net/display/HotSpot/CompressedOops" target="_blank" rel="noopener">https://wiki.openjdk.java.net/display/HotSpot/CompressedOops</a></p>
-<h2 id="什么是一般对象指针？"><a href="#什么是一般对象指针？" class="headerlink" title="什么是一般对象指针？"></a>什么是一般对象指针？</h2><p>一般对象指针（oop, ordinary object pointer）是HotSpot虚拟机的一个术语，表示受托管的对象指针。它的大小通常和本地指针是一样的。Java应用程序和GC子系统会非常小心地跟踪这些受托管的指针，以便在销毁对象时回收内存空间，或是在对空间进行整理时移动（复制）对象。</p>
-<p>在一些从Smalltalk和Self演变而来的虚拟机实现中都有一般对象指针这个术语，包括：</p>
-<ul>
-<li><a href="https://github.com/russellallen/self/blob/master/vm/src/any/objects/oop.hh" target="_blank" rel="noopener">Self</a>：一门基于原型的语言，是Smalltalk的近亲</li>
-<li><a href="http://code.google.com/p/strongtalk/wiki/VMTypesForSmalltalkObjects" target="_blank" rel="noopener">Strongtalk</a>：Smalltalk的一种实现</li>
-<li><a href="http://hg.openjdk.java.net/hsx/hotspot-main/hotspot/file/0/src/share/vm/oops/oop.hpp" target="_blank" rel="noopener">Hotspot</a></li>
-<li><a href="http://code.google.com/p/v8/source/browse/trunk/src/objects.h" target="_blank" rel="noopener">V8</a></li>
-</ul>
-<p>部分系统中会使用小整型（smi, small integers）这个名称，表示一个指向30位整型的虚拟指针。这个术语在Smalltalk的V8实现中也可以看到。</p>
-<h2 id="为什么需要压缩？"><a href="#为什么需要压缩？" class="headerlink" title="为什么需要压缩？"></a>为什么需要压缩？</h2><p>在<a href="http://docs.oracle.com/cd/E19620-01/805-3024/lp64-1/index.html" target="_blank" rel="noopener">LP64</a>系统中，指针需要使用64位来表示；<a href="http://docs.oracle.com/cd/E19620-01/805-3024/lp64-1/index.html" target="_blank" rel="noopener">ILP32</a>系统中则只需要32位。在ILP32系统中，堆内存的大小只能支持到4Gb，这对很多应用程序来说是不够的。在LP64系统中，所有应用程序运行时占用的空间都会比ILP32大1.5倍左右，这是因为指针占用的空间增加了。虽然内存是比较廉价的，但网络带宽和缓存容量是紧张的。所以，为了解决4Gb的限制而增加堆内存的占用空间，就有些得不偿失了。</p>
-<p>在x86芯片中，ILP32模式可用的寄存器数量是LP64模式的一半。SPARC没有此限制；RISC芯片本来就提供了很多寄存器，LP64模式下会提供更多。</p>
-<p>压缩后的一般对象指针在使用时需要将32位整型按因数8进行扩展，并加到一个64位的基础地址上，从而找到所指向的对象。这种方法可以表示四十亿个对象，相当于32Gb的堆内存。同时，使用此法压缩数据结构也能达到和ILP32系统相近的效果。</p>
-<p>我们使用<em>解码</em>来表示从32位对象指针转换成64位地址的过程，其反过程则称为<em>编码</em>。</p>
-        
-          <p class="article-more-link">
-            <a href="/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/" data-id="cjg4efvsz002btjzj1gz2ddut" class="article-share-link">分享</a>
-      
-        <a href="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/#disqus_thread" class="article-comment-link">留言</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/jvm/">jvm</a></li></ul>
 
     </footer>
   </div>
@@ -660,7 +656,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15.71px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.43px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 18.57px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.86px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 11.43px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 12.86px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.43px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 12.86px;">hadoop</a> <a href="/cnblogs/tags/hive/" style="font-size: 14.29px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15.71px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 14.29px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.43px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.43px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 12.86px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.43px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.43px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.43px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 17.14px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.86px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 15.71px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.43px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 14.29px;">stream processing</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 18.57px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 16.67px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.67px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 18.33px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 13.33px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 11.67px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 13.33px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.67px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 13.33px;">hadoop</a> <a href="/cnblogs/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/cnblogs/tags/hive/" style="font-size: 15px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 16.67px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 15px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.67px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.67px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 13.33px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.67px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.67px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.67px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 18.33px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 11.67px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.67px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 15px;">stream processing</a> <a href="/cnblogs/tags/thrift/" style="font-size: 10px;">thrift</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 18.33px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
     </div>
   </div>
 
@@ -682,6 +678,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/cnblogs/2018/04/22/connect-hbase-with-python-and-thrift/">使用 Python 和 Thrift 连接 HBase</a>
+          </li>
+        
+          <li>
             <a href="/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/">Vuex 严格模式下的表单处理</a>
           </li>
         
@@ -695,10 +695,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/cnblogs/2017/09/30/pandas-and-tidy-data/">Pandas 与数据整理</a>
-          </li>
-        
-          <li>
-            <a href="/cnblogs/2017/09/13/apache-beam-quick-start-with-python/">Apache Beam 快速入门（Python 版）</a>
           </li>
         
       </ul>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>使用 Python 和 Thrift 连接 HBase | 张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Apache HBase 是 Hadoop 生态环境中的键值存储系统（Key-value Store）。它构建在 HDFS 之上，可以对大型数据进行高速的读写操作。HBase 的开发语言是 Java，因此提供了原生的 Java 语言客户端。不过，借助于 Thrift 和其丰富的语言扩展，我们可以十分便捷地在任何地方调用 HBase 服务。文本将讲述的就是如何使用 Thrift 和 Python 来">
+<meta name="keywords" content="python,hbase,thrift">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Python 和 Thrift 连接 HBase">
+<meta property="og:url" content="http://shzhangji.com/cnblogs/2018/04/22/connect-hbase-with-python-and-thrift/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta property="og:description" content="Apache HBase 是 Hadoop 生态环境中的键值存储系统（Key-value Store）。它构建在 HDFS 之上，可以对大型数据进行高速的读写操作。HBase 的开发语言是 Java，因此提供了原生的 Java 语言客户端。不过，借助于 Thrift 和其丰富的语言扩展，我们可以十分便捷地在任何地方调用 HBase 服务。文本将讲述的就是如何使用 Thrift 和 Python 来">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/hbase.png">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/hbase-thrift-ha.png">
+<meta property="og:updated_time" content="2018-04-22T12:36:08.031Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 Python 和 Thrift 连接 HBase">
+<meta name="twitter:description" content="Apache HBase 是 Hadoop 生态环境中的键值存储系统（Key-value Store）。它构建在 HDFS 之上，可以对大型数据进行高速的读写操作。HBase 的开发语言是 Java，因此提供了原生的 Java 语言客户端。不过，借助于 Thrift 和其丰富的语言扩展，我们可以十分便捷地在任何地方调用 HBase 服务。文本将讲述的就是如何使用 Thrift 和 Python 来">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/hbase.png">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/cnblogs/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
+  
+  <link rel="stylesheet" href="/cnblogs/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/cnblogs/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/cnblogs/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/cnblogs/">首页</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Digest">摘译</a>
+        
+          <a class="main-nav-link" href="/cnblogs/archives">全部文章</a>
+        
+          <a class="main-nav-link" href="http://shzhangji.com/">English</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/cnblogs/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com/cnblogs"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-connect-hbase-with-python-and-thrift" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2018/04/22/connect-hbase-with-python-and-thrift/" class="article-date">
+  <time datetime="2018-04-22T12:36:08.000Z" itemprop="datePublished">2018-04-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Big-Data/">Big Data</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用 Python 和 Thrift 连接 HBase
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://hbase.apache.org/" target="_blank" rel="noopener">Apache HBase</a> 是 Hadoop 生态环境中的键值存储系统（Key-value Store）。它构建在 HDFS 之上，可以对大型数据进行高速的读写操作。HBase 的开发语言是 Java，因此提供了原生的 Java 语言客户端。不过，借助于 Thrift 和其丰富的语言扩展，我们可以十分便捷地在任何地方调用 HBase 服务。文本将讲述的就是如何使用 Thrift 和 Python 来读写 HBase。</p>
+<p><img src="/cnblogs/images/hbase.png" alt=""></p>
+<h2 id="生成-Thrift-类定义"><a href="#生成-Thrift-类定义" class="headerlink" title="生成 Thrift 类定义"></a>生成 Thrift 类定义</h2><p>如果你对 <a href="https://thrift.apache.org/" target="_blank" rel="noopener">Apache Thrift</a> 并不熟悉，它提供了一套 IDL（接口描述语言），用于定义远程服务的方法签名和数据类型，并能将其转换成所需要的目标语言。举例来说，以下是用该 IDL 定义的一个数据结构：</p>
+<figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct TColumn &#123;</span><br><span class="line">  1: required binary family,</span><br><span class="line">  2: optional binary qualifier,</span><br><span class="line">  3: optional i64 timestamp</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>转换后的 Python 代码是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TColumn</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, family=None, qualifier=None, timestamp=None,)</span>:</span></span><br><span class="line">        self.family = family</span><br><span class="line">        self.qualifier = qualifier</span><br><span class="line">        self.timestamp = timestamp</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">read</span><span class="params">(self, iprot)</span>:</span></span><br><span class="line">        iprot.readStructBegin()</span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">            (fname, ftype, fid) = iprot.readFieldBegin()</span><br><span class="line">            <span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">write</span><span class="params">(self, oprot)</span>:</span></span><br><span class="line">        oprot.writeStructBegin(<span class="string">'TColumn'</span>)</span><br><span class="line">        <span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h3 id="HBase-Thrift-vs-Thrift2"><a href="#HBase-Thrift-vs-Thrift2" class="headerlink" title="HBase Thrift vs Thrift2"></a>HBase Thrift vs Thrift2</h3><p>HBase 提供了 <a href="https://github.com/apache/hbase/tree/master/hbase-thrift/src/main/resources/org/apache/hadoop/hbase" target="_blank" rel="noopener">两个版本</a> 的 IDL 文件，它们有以下两个不同点：</p>
+<p>首先，<code>thrift2</code> 模仿了 HBase Java API 的数据类型和方法定义，调用方式更人性化一些。比如，构建一个 <code>Get</code> 操作的 Java 代码是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Get get = <span class="keyword">new</span> Get(Bytes.toBytes(<span class="string">"rowkey"</span>));</span><br><span class="line">get.addColumn(Bytes.toBytes(<span class="string">"cf"</span>), Bytes.toBytes(<span class="string">"col1"</span>));</span><br><span class="line">get.addColumn(Bytes.toBytes(<span class="string">"cf"</span>), Bytes.toBytes(<span class="string">"col2"</span>));</span><br></pre></td></tr></table></figure>
+<p>在 <code>thrift2</code> 中有对应的 <code>TGet</code> 类型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tget = TGet(</span><br><span class="line">    row=<span class="string">'rowkey'</span>,</span><br><span class="line">    columns=[</span><br><span class="line">        TColumn(family=<span class="string">'cf'</span>, qualifier=<span class="string">'col1'</span>),</span><br><span class="line">        TColumn(family=<span class="string">'cf'</span>, qualifier=<span class="string">'col2'</span>),</span><br><span class="line">    ]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>如果使用旧版的 <code>thrift</code>，我们就需要直接调用其众多的 <code>get</code> 方法之一了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">client.getRowWithColumns(</span><br><span class="line">    tableName=<span class="string">'tbl'</span>,</span><br><span class="line">    row=<span class="string">'rowkey'</span>,</span><br><span class="line">    columns=[<span class="string">'cf:col1'</span>, <span class="string">'cf:col2'</span>],</span><br><span class="line">    attributes=<span class="keyword">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>第二个不同点在于 <code>thrift2</code> 目前尚缺少 HBase 管理相关的接口，如 <code>createTable</code>、<code>majorCompact</code> 等。这些 API 仍在开发过程中，因此如果你需要通过 Thrift 来建表或维护 HBase，就只能使用旧版的 <code>thrift</code> 了。</p>
+<p>决定了使用哪个版本的描述文件后，我们就可以将 <code>hbase.thrift</code> 下载到本地，通过它来生成 Python 代码。对于 Apache Thrift 本身的版本这里还要强调一点：由于我们使用的是 Python 3.x，而 Thrift 从 0.10 版本才开始支持，因此请确认自己安装了正确的版本。执行以下命令，我们就可以得到一组 Python 文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ thrift -gen py hbase.thrift</span><br><span class="line">$ find gen-py</span><br><span class="line">gen-py/hbase/__init__.py</span><br><span class="line">gen-py/hbase/constants.py</span><br><span class="line">gen-py/hbase/THBaseService.py</span><br><span class="line">gen-py/hbase/ttypes.py</span><br></pre></td></tr></table></figure>
+<h2 id="在单机模式下运行-HBase"><a href="#在单机模式下运行-HBase" class="headerlink" title="在单机模式下运行 HBase"></a>在单机模式下运行 HBase</h2><p>如果你手边没有可供测试的 HBase 服务，可以根据官网上的快速开始指引（<a href="https://hbase.apache.org/book.html#quickstart" target="_blank" rel="noopener">链接</a>），下载 HBase 二进制包，做一下简单的配合，并执行下列命令来启动 HBase 服务及 Thrift2 Server。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bin/start-hbase.sh</span><br><span class="line">bin/hbase-daemon.sh start thrift2</span><br><span class="line">bin/hbase shell</span><br></pre></td></tr></table></figure>
+<p>进入 HBase 命令行后，我们可以创建一个测试表，并尝试读写数据：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; create <span class="string">"tsdata"</span>, NAME =&gt; <span class="string">"cf"</span></span><br><span class="line">&gt; put <span class="string">"tsdata"</span>, <span class="string">"sys.cpu.user:20180421:192.168.1.1"</span>, <span class="string">"cf:1015"</span>, <span class="string">"0.28"</span></span><br><span class="line">&gt; get <span class="string">"tsdata"</span>, <span class="string">"sys.cpu.user:20180421:192.168.1.1"</span></span><br><span class="line">COLUMN                                        CELL</span><br><span class="line"> <span class="symbol">cf:</span><span class="number">1015</span>                                      timestamp=<span class="number">1524277135973</span>, value=<span class="number">0</span>.<span class="number">28</span></span><br><span class="line"><span class="number">1</span> row(s) <span class="keyword">in</span> <span class="number">0</span>.<span class="number">0330</span> seconds</span><br></pre></td></tr></table></figure>
+<h2 id="通过-Thrift2-Server-连接-HBase"><a href="#通过-Thrift2-Server-连接-HBase" class="headerlink" title="通过 Thrift2 Server 连接 HBase"></a>通过 Thrift2 Server 连接 HBase</h2><p>以下是创建 Thrift 连接的样板代码。需要注意的是，Thrift 客户端并不是线程安全的，因此无法在多个线程间共享。而且，它也没有提供类似连接池的特性。通常我们会选择每次查询都创建新的连接，当然你也可以引入自己的连接池机制。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> thrift.transport <span class="keyword">import</span> TSocket</span><br><span class="line"><span class="keyword">from</span> thrift.protocol <span class="keyword">import</span> TBinaryProtocol</span><br><span class="line"><span class="keyword">from</span> thrift.transport <span class="keyword">import</span> TTransport</span><br><span class="line"><span class="keyword">from</span> hbase <span class="keyword">import</span> THBaseService</span><br><span class="line"></span><br><span class="line">transport = TTransport.TBufferedTransport(TSocket.TSocket(<span class="string">'127.0.0.1'</span>, <span class="number">9090</span>))</span><br><span class="line">protocol = TBinaryProtocol.TBinaryProtocolAccelerated(transport)</span><br><span class="line">client = THBaseService.Client(protocol)</span><br><span class="line">transport.open()</span><br><span class="line"><span class="comment"># 使用 client 实例进行操作</span></span><br><span class="line">transport.close()</span><br></pre></td></tr></table></figure>
+<p>我们来尝试编写几个基本的读写操作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> hbase.ttypes <span class="keyword">import</span> TPut, TColumnValue, TGet</span><br><span class="line">tput = TPut(</span><br><span class="line">    row=<span class="string">'sys.cpu.user:20180421:192.168.1.1'</span>,</span><br><span class="line">    columnValues=[</span><br><span class="line">        TColumnValue(family=<span class="string">'cf'</span>, qualifier=<span class="string">'1015'</span>, value=<span class="string">'0.28'</span>),</span><br><span class="line">    ]</span><br><span class="line">)</span><br><span class="line">client.put(<span class="string">'tsdata'</span>, tput)</span><br><span class="line"></span><br><span class="line">tget = TGet(row=<span class="string">'sys.cpu.user:20180421:192.168.1.1'</span>)</span><br><span class="line">tresult = client.get(<span class="string">'tsdata'</span>, tget)</span><br><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> tresult.columnValues:</span><br><span class="line">    print(col.qualifier, <span class="string">'='</span>, col.value)</span><br></pre></td></tr></table></figure>
+<h2 id="Thrift2-数据类型和方法一览"><a href="#Thrift2-数据类型和方法一览" class="headerlink" title="Thrift2 数据类型和方法一览"></a>Thrift2 数据类型和方法一览</h2><p>完整的方法列表可以直接查阅 <code>hbase.thrift</code> 和 <code>hbase/THBaseService.py</code> 这两个文件。下面是对常用方法的总结：</p>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TColumn</td>
+<td>表示一个列族或单个列。</td>
+<td>TColumn(family=’cf’, qualifier=’gender’)</td>
+</tr>
+<tr>
+<td>TColumnValue</td>
+<td>列名及其包含的值。</td>
+<td>TColumnValue(family=’cf’, qualifier=’gender’, value=’male’)</td>
+</tr>
+<tr>
+<td>TResult</td>
+<td>查询结果（一行）。若 <code>row</code> 属性的值为 <code>None</code>，则表示查无结果。</td>
+<td>TResult(row=’employee_001’, columnValues=[TColumnValue])</td>
+</tr>
+<tr>
+<td>TGet</td>
+<td>查询单行。</td>
+<td>TGet(row=’employee_001’, columns=[TColumn])</td>
+</tr>
+<tr>
+<td>TPut</td>
+<td>修改一行数据.</td>
+<td>TPut(row=’employee_001’, columnValues=[TColumnValue])</td>
+</tr>
+<tr>
+<td>TDelete</td>
+<td>删除整行或部分列。</td>
+<td>TDelete(row=’employee_001’, columns=[TColumn])</td>
+</tr>
+<tr>
+<td>TScan</td>
+<td>扫描多行数据。</td>
+<td>见下文</td>
+</tr>
+</tbody>
+</table>
+<h3 id="THBaseService-类方法"><a href="#THBaseService-类方法" class="headerlink" title="THBaseService 类方法"></a>THBaseService 类方法</h3><table>
+<thead>
+<tr>
+<th>方法签名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>get(table: str, tget: TGet) -&gt; TResult</td>
+<td>查询单行。</td>
+</tr>
+<tr>
+<td>getMultiple(table: str, tgets: List[TGet]) -&gt; List[TResult]</td>
+<td>查询多行。</td>
+</tr>
+<tr>
+<td>put(table: str, tput: TPut) -&gt; None</td>
+<td>修改单行。</td>
+</tr>
+<tr>
+<td>putMultiple(table: str, tputs: List[TPut]) -&gt; None</td>
+<td>修改多行。</td>
+</tr>
+<tr>
+<td>deleteSingle(table: str, tdelete: TDelete) -&gt; None</td>
+<td>删除单行。</td>
+</tr>
+<tr>
+<td>deleteMultiple(table: str, tdeletes: List[TDelete]) -&gt; None</td>
+<td>删除多行。</td>
+</tr>
+<tr>
+<td>openScanner(table: str, tscan: TScan) -&gt; int</td>
+<td>打开一个扫描器，返回其唯一标识。</td>
+</tr>
+<tr>
+<td>getScannerRows(scannerId: int, numRows: int) -&gt; List[TResult]</td>
+<td>返回扫描结果。</td>
+</tr>
+<tr>
+<td>closeScanner(scannerId: int) -&gt; None</td>
+<td>关闭扫描器。</td>
+</tr>
+<tr>
+<td>getScannerResults(table: str, tscan: TScan, numRows: int) -&gt; List[TResult]</td>
+<td>直接获取扫描结果的快捷方法。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Scan-操作示例"><a href="#Scan-操作示例" class="headerlink" title="Scan 操作示例"></a>Scan 操作示例</h3><p>我在 GitHub（<a href="https://github.com/jizhang/python-hbase" target="_blank" rel="noopener">链接</a>）上放置了一些样例代码，以下是 <code>Scan</code> 操作的样例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">scanner_id = client.openScanner(</span><br><span class="line">    table=<span class="string">'tsdata'</span>,</span><br><span class="line">    tscan=TScan(</span><br><span class="line">        startRow=<span class="string">'sys.cpu.user:20180421'</span>,</span><br><span class="line">        stopRow=<span class="string">'sys.cpu.user:20180422'</span>,</span><br><span class="line">        columns=[TColumn(<span class="string">'cf'</span>, <span class="string">'1015'</span>)]</span><br><span class="line">    )</span><br><span class="line">)</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    num_rows = <span class="number">10</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        tresults = client.getScannerRows(scanner_id, num_rows)</span><br><span class="line">        <span class="keyword">for</span> tresult <span class="keyword">in</span> tresults:</span><br><span class="line">            print(tresult)</span><br><span class="line">        <span class="keyword">if</span> len(tresults) &lt; num_rows:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    client.closeScanner(scanner_id)</span><br></pre></td></tr></table></figure>
+<h2 id="Thrift-Server-高可用"><a href="#Thrift-Server-高可用" class="headerlink" title="Thrift Server 高可用"></a>Thrift Server 高可用</h2><p>Thrift Server 的单点问题有几种解决方案：</p>
+<ol>
+<li>在客户端中配置多个 Thrift Server 地址，发送请求时随机选择一个，并做好错误重试；</li>
+<li>搭建代理，对 TCP 连接做负载均衡；</li>
+<li>在客户端服务器上配置独立的 Thrift Server，每个客户端直接创建本地连接。</li>
+</ol>
+<p>通常我们会选择第二种方案，这就需要和运维工程师一起配合搭建了。</p>
+<p><img src="/cnblogs/images/hbase-thrift-ha.png" alt=""></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://blog.cloudera.com/blog/2013/09/how-to-use-the-hbase-thrift-interface-part-1/" target="_blank" rel="noopener">https://blog.cloudera.com/blog/2013/09/how-to-use-the-hbase-thrift-interface-part-1/</a></li>
+<li><a href="https://thrift.apache.org/tutorial/py" target="_blank" rel="noopener">https://thrift.apache.org/tutorial/py</a></li>
+<li><a href="https://yq.aliyun.com/articles/88299" target="_blank" rel="noopener">https://yq.aliyun.com/articles/88299</a></li>
+<li><a href="http://opentsdb.net/docs/build/html/user_guide/backends/hbase.html" target="_blank" rel="noopener">http://opentsdb.net/docs/build/html/user_guide/backends/hbase.html</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2018/04/22/connect-hbase-with-python-and-thrift/" data-id="cjgasrw3r007zxgr4v4yxv6wj" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2018/04/22/connect-hbase-with-python-and-thrift/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/hbase/">hbase</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/thrift/">thrift</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Vuex 严格模式下的表单处理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Python数据平台</h3>
+    <div class="widget">
+      <img src="/cnblogs/images/pydp-qrcode.jpg" style="width: 100%;"></img>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 16.67px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.67px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 18.33px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 13.33px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 11.67px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 13.33px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.67px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 13.33px;">hadoop</a> <a href="/cnblogs/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/cnblogs/tags/hive/" style="font-size: 15px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 16.67px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 15px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.67px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.67px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 13.33px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.67px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.67px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.67px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 18.33px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 11.67px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.67px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 15px;">stream processing</a> <a href="/cnblogs/tags/thrift/" style="font-size: 10px;">thrift</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 18.33px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/04/">四月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/cnblogs/2018/04/22/connect-hbase-with-python-and-thrift/">使用 Python 和 Thrift 连接 HBase</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/">Vuex 严格模式下的表单处理</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/04/07/error-handling-in-restful-api/">RESTful API 中的错误处理</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/10/24/flume-source-code-component-lifecycle/">Flume 源码解析：组件生命周期</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2017/09/30/pandas-and-tidy-data/">Pandas 与数据整理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg"></a>
+      <br>
+      &copy; 2018 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/cnblogs/" class="mobile-nav-link">首页</a>
+  
+    <a href="/cnblogs/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/cnblogs/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/cnblogs/categories/Digest" class="mobile-nav-link">摘译</a>
+  
+    <a href="/cnblogs/archives" class="mobile-nav-link">全部文章</a>
+  
+    <a href="http://shzhangji.com/" class="mobile-nav-link">English</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  var disqus_url = 'http://shzhangji.com/cnblogs/2018/04/22/connect-hbase-with-python-and-thrift/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="/cnblogs/js/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">
+  <script src="/cnblogs/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/cnblogs/js/script.js"></script>
+
+  </div>
+</body>
+</html>
