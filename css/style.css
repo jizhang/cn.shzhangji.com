@@ -620,7 +620,7 @@ a.article-title:hover {
 }
 .article-entry td {
   border-bottom: 1px solid #ddd;
-  padding: 10px 10px 10px 0;
+  padding: 10px 0;
 }
 .article-entry blockquote {
   font-family: Georgia, "Times New Roman", serif;

@@ -89,6 +89,59 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-currying-and-partial-application" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2013/03/07/currying-and-partial-application/" class="article-date">
+  <time datetime="2013-03-07T12:59:00.000Z" itemprop="datePublished">2013-03-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Programming/">Programming</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/cnblogs/2013/03/07/currying-and-partial-application/">柯里化与偏应用（JavaScript 描述）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文：<a href="http://raganwald.com/2013/03/07/currying-and-partial-application.html" target="_blank" rel="noopener">http://raganwald.com/2013/03/07/currying-and-partial-application.html</a></p>
+<p>上周末我参加了<a href="http://wrocloverb.com/" target="_blank" rel="noopener">wroc_love.rb大会</a>，其间<a href="http://steveklabnik.com/" target="_blank" rel="noopener">Steve Klabnik</a>的一张PPT中提到了<a href="https://en.wikipedia.org/wiki/Partial_application" target="_blank" rel="noopener">偏应用（Partial Application）</a>和<a href="https://en.wikipedia.org/wiki/Currying" target="_blank" rel="noopener">柯里化（Currying）</a>，并说这两者之间的区别如今已经不重要了。但是我不这么认为。</p>
+<p>在这周发布的博文中，我用五种方式对<code>this</code>和闭包做了解释，但只有三到四种提到了柯里化。所以这篇博文就重点来谈谈这个。</p>
+<h2 id="函数参数的个数"><a href="#函数参数的个数" class="headerlink" title="函数参数的个数"></a>函数参数的个数</h2><p>在讲解之前，我们先明确一些术语。函数定义时会写明它所接收的参数个数（Arity）。“一元函数”（Unary）接收一个参数，“多元函数”（Polyadic）接收多个参数。还有一些特殊的名称，如“二元函数”（Binary）接收两个参数，“三元函数”（Ternary）接收三个参数等。你可以对照希腊语或拉丁语词汇来创造这些特殊的名称。</p>
+<p>有些函数能够接收不定数量的参数，我们称之为“可变参数函数”（Variadic）。不过这类函数、以及不接收参数的函数并不是本文讨论的重点。</p>
+        
+          <p class="article-more-link">
+            <a href="/cnblogs/2013/03/07/currying-and-partial-application/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2013/03/07/currying-and-partial-application/" data-id="cjg4efvqy000ltjzjzblfcnkq" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2013/03/07/currying-and-partial-application/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/functional-programming/">functional programming</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/javascript/">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/translation/">translation</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-cia-hadoop" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/cnblogs/2013/02/09/cia-hadoop/" class="article-date">
@@ -126,7 +179,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/02/09/cia-hadoop/" data-id="cjgasrvy8000fxgr46vnapk9f" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2013/02/09/cia-hadoop/" data-id="cjg4efvqw000jtjzjdqmgnhvr" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2013/02/09/cia-hadoop/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -179,7 +232,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/" data-id="cjgasrvya000gxgr4n8u84byu" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/" data-id="cjg4efvqs000ftjzjeqj1zphq" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2013/01/04/clojure-style-guide/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -232,7 +285,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/" data-id="cjgasrvy4000bxgr40dyr373z" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/" data-id="cjg4efvqp000etjzjov0yw8bi" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -286,7 +339,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/" data-id="cjgasrvy1000axgr4qioywu2k" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/" data-id="cjg4efvql000btjzjg2yv32zo" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -344,7 +397,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/" data-id="cjgasrvxw0005xgr4zm9nn0il" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/" data-id="cjg4efvqf000atjzjcvy9qb2n" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/12/08/cia-noir-2/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -396,7 +449,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/" data-id="cjgasrvxy0006xgr4a91mye9p" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/" data-id="cjg4efvqd0009tjzjybgi08ea" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/11/25/cia-noir-1/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -450,7 +503,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/" data-id="cjgasrvxs0004xgr4r0im94gh" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/" data-id="cjg4efvq40005tjzjlxlhh50e" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/11/18/aosa-python-packaging/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -505,7 +558,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/" data-id="cjgasrvxm0001xgr40bwm9cp7" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/" data-id="cjg4efvq90006tjzjbpkee4a7" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2012/11/16/aosa-git/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -542,7 +595,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 16.67px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.67px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 18.33px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 13.33px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 11.67px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 13.33px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.67px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 13.33px;">hadoop</a> <a href="/cnblogs/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/cnblogs/tags/hive/" style="font-size: 15px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 16.67px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 15px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 10px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.67px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.67px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 13.33px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.67px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.67px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.67px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 18.33px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 11.67px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.67px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 15px;">stream processing</a> <a href="/cnblogs/tags/thrift/" style="font-size: 10px;">thrift</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 18.33px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15.71px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.43px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 17.14px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.86px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 11.43px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 12.86px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.43px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 12.86px;">hadoop</a> <a href="/cnblogs/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/cnblogs/tags/hive/" style="font-size: 14.29px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15.71px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 14.29px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 11.43px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.43px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.43px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 12.86px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.43px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.43px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.43px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 18.57px;">python</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.86px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 15.71px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.43px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 14.29px;">stream processing</a> <a href="/cnblogs/tags/tensorflow/" style="font-size: 10px;">tensorflow</a> <a href="/cnblogs/tags/thrift/" style="font-size: 10px;">thrift</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 17.14px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
     </div>
   </div>
 
@@ -551,7 +604,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/04/">四月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/04/">四月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
     </div>
   </div>
 
@@ -562,6 +615,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/cnblogs/2018/05/14/serve-tensorflow-estimator-with-savedmodel/">TensorFlow 模型如何对外提供服务</a>
+          </li>
         
           <li>
             <a href="/cnblogs/2018/04/22/connect-hbase-with-python-and-thrift/">使用 Python 和 Thrift 连接 HBase</a>
@@ -577,10 +634,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/cnblogs/2017/10/24/flume-source-code-component-lifecycle/">Flume 源码解析：组件生命周期</a>
-          </li>
-        
-          <li>
-            <a href="/cnblogs/2017/09/30/pandas-and-tidy-data/">Pandas 与数据整理</a>
           </li>
         
       </ul>
