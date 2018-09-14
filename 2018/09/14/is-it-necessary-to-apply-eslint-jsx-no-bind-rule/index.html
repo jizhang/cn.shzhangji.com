@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>是否需要使用 ESLint jsx-no-bind 规则？ | 张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在使用 ESLint React 插件时，有一条名为 jsx-no-bind 的检测规则，它会禁止我们在 JSX 属性中使用 .bind 方法和箭头函数。比如下列代码，ESLint 会提示 onClick 属性中的箭头函数不合法： 1234567891011class ListArrow extends React.Component &amp;#123;  render() &amp;#123;    retu">
+<meta name="keywords" content="javascript,react,eslint">
+<meta property="og:type" content="article">
+<meta property="og:title" content="是否需要使用 ESLint jsx-no-bind 规则？">
+<meta property="og:url" content="http://shzhangji.com/cnblogs/2018/09/14/is-it-necessary-to-apply-eslint-jsx-no-bind-rule/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta property="og:description" content="在使用 ESLint React 插件时，有一条名为 jsx-no-bind 的检测规则，它会禁止我们在 JSX 属性中使用 .bind 方法和箭头函数。比如下列代码，ESLint 会提示 onClick 属性中的箭头函数不合法： 1234567891011class ListArrow extends React.Component &amp;#123;  render() &amp;#123;    retu">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/jsx-no-bind/should-component-update.png">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/jsx-no-bind/top-level-delegation.jpg">
+<meta property="og:updated_time" content="2018-09-14T01:21:01.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="是否需要使用 ESLint jsx-no-bind 规则？">
+<meta name="twitter:description" content="在使用 ESLint React 插件时，有一条名为 jsx-no-bind 的检测规则，它会禁止我们在 JSX 属性中使用 .bind 方法和箭头函数。比如下列代码，ESLint 会提示 onClick 属性中的箭头函数不合法： 1234567891011class ListArrow extends React.Component &amp;#123;  render() &amp;#123;    retu">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/jsx-no-bind/should-component-update.png">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/cnblogs/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
+  
+  <link rel="stylesheet" href="/cnblogs/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/cnblogs/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/cnblogs/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/cnblogs/">首页</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Digest">摘译</a>
+        
+          <a class="main-nav-link" href="/cnblogs/archives">全部文章</a>
+        
+          <a class="main-nav-link" href="http://shzhangji.com/">English</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/cnblogs/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com/cnblogs"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-is-it-necessary-to-apply-eslint-jsx-no-bind-rule" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2018/09/14/is-it-necessary-to-apply-eslint-jsx-no-bind-rule/" class="article-date">
+  <time datetime="2018-09-14T01:18:52.000Z" itemprop="datePublished">2018-09-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Programming/">Programming</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      是否需要使用 ESLint jsx-no-bind 规则？
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在使用 <a href="https://github.com/yannickcr/eslint-plugin-react" target="_blank" rel="noopener">ESLint React</a> 插件时，有一条名为 <a href="https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-no-bind.md" target="_blank" rel="noopener"><code>jsx-no-bind</code></a> 的检测规则，它会禁止我们在 JSX 属性中使用 <code>.bind</code> 方法和箭头函数。比如下列代码，ESLint 会提示 <code>onClick</code> 属性中的箭头函数不合法：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ListArrow</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;ul&gt;</span><br><span class="line">        &#123;<span class="keyword">this</span>.state.items.map(<span class="function"><span class="params">item</span> =&gt;</span> (</span><br><span class="line">          &lt;li key=&#123;item.id&#125; onClick=&#123;() =&gt; &#123; alert(item.id) &#125;&#125;&gt;&#123;item.text&#125;&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">        ))&#125;</span></span><br><span class="line"><span class="regexp">      &lt;/u</span>l&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这条规则的引入原因有二。首先，每次执行 <code>render</code> 方法时都会生成一个新的匿名函数对象，这样就会对垃圾回收器造成负担；其次，属性中的箭头函数会影响渲染过程：当你使用了 <code>PureComponent</code>，或者自己实现了 <code>shouldComponentUpdate</code> 方法，使用对象比较的方式来决定是否要重新渲染组件，那么组件属性中的箭头函数就会让该方法永远返回真值，引起不必要的重复渲染。</p>
+<p>然而，反对的声音认为这两个原因还不足以要求我们在所有代码中应用该规则，特别是当需要引入更多代码、并牺牲一定可读性的情况下。在 <a href="https://github.com/airbnb/javascript/blob/eslint-config-airbnb-v17.1.0/packages/eslint-config-airbnb/rules/react.js#L93" target="_blank" rel="noopener">Airbnb ESLint</a> 预设规则集中，只禁止了 <code>.bind</code> 方法的使用，而允许在属性（props）或引用（refs）中使用箭头函数。对此我翻阅了文档，阅读了一些关于这个话题的博客，也认为这条规则有些过于严格。甚至还有博主称该规则是一种过早优化（premature optimization），我们需要先做基准测试，再着手修改代码。下文中，我将简要叙述箭头函数是如何影响渲染过程的，有哪些可行的解决方案，以及它为何不太重要。</p>
+<a id="more"></a>
+<h2 id="不同类型的-React-组件"><a href="#不同类型的-React-组件" class="headerlink" title="不同类型的 React 组件"></a>不同类型的 React 组件</h2><p>通常我们会通过继承 <code>React.Component</code> 类并实现 <code>render</code> 方法来创建一个 React 组件。另一个内置的组件基类是 <code>React.PureComponent</code>，它的区别在于已经为我们实现了 <code>shouldComponentUpdate</code> 方法。在普通的 React 组件中，该方法默认返回 <code>true</code>，也就是说当属性（props）或状态（state）发生改变时，一定会重新进行渲染。而 <code>PureComponent</code> 实现的该方法中，会对新、旧属性和状态的键值做一个等值比较，只有当内容发生改变时才会重新渲染。下面定义的这两个组件产生的效果是一致的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PureChild</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">PureComponent</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;&#123;<span class="keyword">this</span>.props.message&#125;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">class RegularChildB extends React.Component &#123;</span></span><br><span class="line"><span class="regexp">  shouldComponentUpdate(nextProps, nextStates) &#123;</span></span><br><span class="line"><span class="regexp">    return this.props.message !== nextProps.message</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  render() &#123;</span></span><br><span class="line"><span class="regexp">    return (</span></span><br><span class="line"><span class="regexp">      &lt;div&gt;&#123;this.props.message&#125;&lt;/</span>div&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当它们的属性发生变化时，会检查 <code>message</code> 变量中的值是否和原来相等。属性和状态都是 <code>object</code> 类型，React 会遍历所有键值进行 <code>===</code> 等值比较。在 JavaScript 中，只有基础类型之间的比较、或同一个对象和自身比较时才能通过。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> === <span class="number">1</span></span><br><span class="line"><span class="string">'hello world'</span> === <span class="string">'hello world'</span></span><br><span class="line">[] !== []</span><br><span class="line">(<span class="function"><span class="params">()</span> =&gt;</span> &#123;&#125;) !== <span class="function">(<span class="params">(</span>) =&gt;</span> &#123;&#125;)</span><br></pre></td></tr></table></figure>
+<p>显然，箭头函数是无法通过这个等值检查的。如果父组件将箭头函数作为属性传入 <code>PureComponent</code>，那么每次渲染都会引发子组件的渲染。相反地，如果我们没有使用 <code>PureComponent</code>，或进行类似的等值比较，那么组件一定会进行更新，也就没有应用该规则的必要了。</p>
+<p>另一个种较为流行的组件定义方式是“无状态函数式组件（SFC）”。这类组件好比一个数学函数，其渲染结果完全依赖于输入的属性值。不过，它本质上是一个普通的组件，并没有实现 <code>shouldComponentUpdate</code> 方法，且组件的定义方式也不允许我们自己来实现。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> StatelessChild = <span class="function">(<span class="params">props</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div&gt;&#123;props.message&#125;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="如何修复-jsx-no-bind-错误警告"><a href="#如何修复-jsx-no-bind-错误警告" class="headerlink" title="如何修复 jsx-no-bind 错误警告"></a>如何修复 <code>jsx-no-bind</code> 错误警告</h2><p>箭头函数通常会用作事件处理。如果我们直接使用普通的函数或类方法，<code>this</code> 关键字将无法正确绑定到当前实例，它的值是 <code>undefined</code>。只有使用了 <code>.bind</code> 方法或箭头函数时，我们才能在函数体中通过 <code>this</code> 来访问到类的其他成员，只是这样就会触发 <code>jsx-no-bind</code> 报警。解决方法是在构造函数中对方法进行绑定，或者使用尚在草案阶段的类属性语法，并通过 <a href="https://babeljs.io/docs/plugins/transform-class-properties/" target="_blank" rel="noopener">Babel</a> 进行转换。更多信息可以查阅 <a href="https://reactjs.org/docs/handling-events.html" target="_blank" rel="noopener">React 官方文档</a>，以下用 <a href="https://github.com/jizhang/jsx-no-bind/blob/master/src/components/NoArgument.js" target="_blank" rel="noopener">代码</a> 演示不同的做法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">NoArgument</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">this</span>.handleClickBoundA = <span class="keyword">this</span>.handleClickUnbound.bind(<span class="keyword">this</span>)</span><br><span class="line">    <span class="keyword">this</span>.handleClickBoundC = <span class="function"><span class="params">()</span> =&gt;</span> &#123; <span class="keyword">this</span>.setState() &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  handleClickUnbound() &#123; <span class="comment">/* "this" 的值是未定义 */</span> &#125;</span><br><span class="line">  handleClickBoundB = <span class="function"><span class="params">()</span> =&gt;</span> &#123; <span class="keyword">this</span>.setState() &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        <span class="built_in">Error</span>: jsx-no-bind</span><br><span class="line">        &lt;button onClick=&#123;() =&gt; &#123; <span class="keyword">this</span>.setState() &#125;&#125;&gt;ArrowA&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">        &lt;button onClick=&#123;() =&gt; &#123; this.handleClickUnbound() &#125;&#125;&gt;ArrowB&lt;/</span>button&gt;</span><br><span class="line">        &lt;button onClick=&#123;<span class="keyword">this</span>.handleClickUnbound.bind(<span class="keyword">this</span>)&#125;&gt;Bind&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">        No error:</span></span><br><span class="line"><span class="regexp">        &lt;button onClick=&#123;this.handleClickBoundA&#125;&gt;BoundA&lt;/</span>button&gt;</span><br><span class="line">        &lt;button onClick=&#123;<span class="keyword">this</span>.handleClickBoundB&#125;&gt;BoundB&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">        &lt;button onClick=&#123;this.handleClickBoundC&#125;&gt;BoundC&lt;/</span>button&gt;</span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>如果事件处理需要用到额外的参数，比如渲染列表时捕捉每一项的点击事件，就不那么容易了。有两种解决方案，一是将列表项作为独立的组件拆分出来，通过组件属性来传递事件处理函数和它的参数，示例如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Item</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">PureComponent</span> </span>&#123;</span><br><span class="line">  handleClick = <span class="function"><span class="params">()</span> =&gt;</span> &#123; <span class="keyword">this</span>.props.onClick(<span class="keyword">this</span>.props.item.id) &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;li onClick=&#123;<span class="keyword">this</span>.handleClick&#125;&gt;&#123;<span class="keyword">this</span>.props.item.text&#125;&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export default class ListSeparate extends React.Component &#123;</span></span><br><span class="line"><span class="regexp">  handleClick = (itemId) =&gt; &#123; alert(itemId) &#125;</span></span><br><span class="line"><span class="regexp">  render() &#123;</span></span><br><span class="line"><span class="regexp">    return (</span></span><br><span class="line"><span class="regexp">      &lt;ul&gt;</span></span><br><span class="line"><span class="regexp">        &#123;this.props.items.map(item =&gt; (</span></span><br><span class="line"><span class="regexp">          &lt;Item key=&#123;item.id&#125; item=&#123;item&#125; onClick=&#123;this.handleClick&#125; /</span>&gt;</span><br><span class="line">        ))&#125;</span><br><span class="line">      &lt;<span class="regexp">/ul&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这种方式也称之为关注点分离（separation of concerns），因为 <code>List</code> 组件只需负责遍历列表项，而由 <code>Item</code> 组件来负责渲染。不过这样一来也会增加许多模板代码，我们需要跟踪多个属性值来确定事件处理过程，因此降低了代码可读性。若直接使用箭头函数，事件处理和组件渲染是在一处的，便于理解，也是 React 社区所推崇的方式。</p>
+<p>另一种方式是使用 DOM <a href="https://developer.mozilla.org/en/docs/Web/API/HTMLElement/dataset" target="_blank" rel="noopener"><code>dataset</code></a> 属性，也就是将需要传递的参数暂存在 HTML 标签的 <code>data-*</code> 属性中， 然后通过 <code>event</code> 变量来读取。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">ListDataset</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  handleClick = <span class="function">(<span class="params">event</span>) =&gt;</span> &#123; alert(event.target.dataset.itemId) &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;ul&gt;</span><br><span class="line">        &#123;<span class="keyword">this</span>.props.items.map(<span class="function"><span class="params">item</span> =&gt;</span> (</span><br><span class="line">          &lt;li key=&#123;item.id&#125; data-item-id=&#123;item.id&#125; onClick=&#123;<span class="keyword">this</span>.handleClick&#125;&gt;&#123;item.text&#125;&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">        ))&#125;</span></span><br><span class="line"><span class="regexp">      &lt;/u</span>l&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="虚拟-DOM-与-React-协调"><a href="#虚拟-DOM-与-React-协调" class="headerlink" title="虚拟 DOM 与 React 协调"></a>虚拟 DOM 与 React 协调</h2><p>上文说到，箭头函数会引发 <code>PureComponent</code> 不必要的渲染，这个结论只正确了一半。React 的渲染过程可以分为几个步骤：首先，调用 <code>render</code> 方法，返回一个 React 元素的树形结构；将该结构与内存中的虚拟 DOM 树进行对比，将差异部分应用到浏览器的真实 DOM 树中。这个过程在 React 中称为协调（<a href="https://reactjs.org/docs/reconciliation.html" target="_blank" rel="noopener">reconciliation</a>）。因此，即便 <code>render</code> 方法被调用了多次，如果其返回的 React 元素树都是相同的，那么也不会触发真实 DOM 渲染，而这个过程通常会比纯 JavaScript 要来得耗时。这样看来，如果一个组件的确需要频繁变动，那么继承了 <code>PureComponent</code> 反而会增加一次比对的消耗，得不偿失。</p>
+<p><img src="/cnblogs/images/jsx-no-bind/should-component-update.png" alt="shouldComponentUpdate 生命周期方法"></p>
+<p><a href="https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action" target="_blank" rel="noopener">图片来源</a></p>
+<p>此外，在事件绑定属性中使用箭头函数，一般也不会触发真实 DOM 的渲染，原因是 React 的事件监听器是绑定在顶层的 <code>document</code> 元素上的，当 <code>li</code> 上触发了 <code>onClick</code> 事件后，该事件会向上冒泡（bubble up）至顶层元素，由 React 事件管理系统接收和处理。</p>
+<p><img src="/cnblogs/images/jsx-no-bind/top-level-delegation.jpg" alt="顶层事件委托"></p>
+<p><a href="https://levelup.gitconnected.com/how-exactly-does-react-handles-events-71e8b5e359f2" target="_blank" rel="noopener">图片来源</a></p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>可以看到，在修复 <code>jsx-no-bind</code> 的过程中，我们需要牺牲一定的代码可读性，而获得的性能收益也许是微不足道甚至是相反的。与其猜测箭头函数会引发性能问题，不如先用最自然的方式来编写代码，当遇到真正的性能瓶颈时加以测度，最终找出合适的技术方案。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-no-bind.md" target="_blank" rel="noopener">https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-no-bind.md</a></li>
+<li><a href="https://cdb.reacttraining.com/react-inline-functions-and-performance-bdff784f5578" target="_blank" rel="noopener">https://cdb.reacttraining.com/react-inline-functions-and-performance-bdff784f5578</a></li>
+<li><a href="https://maarten.mulders.it/blog/2017/07/no-bind-or-arrow-in-jsx-props-why-how.html" target="_blank" rel="noopener">https://maarten.mulders.it/blog/2017/07/no-bind-or-arrow-in-jsx-props-why-how.html</a></li>
+<li><a href="https://reactjs.org/docs/faq-functions.html#example-passing-params-using-data-attributes" target="_blank" rel="noopener">https://reactjs.org/docs/faq-functions.html#example-passing-params-using-data-attributes</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2018/09/14/is-it-necessary-to-apply-eslint-jsx-no-bind-rule/" data-id="cjm1begie004ab0zj6hvtsruk" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2018/09/14/is-it-necessary-to-apply-eslint-jsx-no-bind-rule/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/eslint/">eslint</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/javascript/">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/react/">react</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/cnblogs/2018/05/14/serve-tensorflow-estimator-with-savedmodel/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">TensorFlow 模型如何对外提供服务</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Python数据平台</h3>
+    <div class="widget">
+      <img src="/cnblogs/images/pydp-qrcode.jpg" style="width: 100%;"></img>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15.71px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.43px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 17.14px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/eslint/" style="font-size: 10px;">eslint</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.86px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 11.43px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 12.86px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.43px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 12.86px;">hadoop</a> <a href="/cnblogs/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/cnblogs/tags/hive/" style="font-size: 14.29px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15.71px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 15.71px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 11.43px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.43px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.43px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 12.86px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.43px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.43px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.43px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 18.57px;">python</a> <a href="/cnblogs/tags/react/" style="font-size: 10px;">react</a> <a href="/cnblogs/tags/restful/" style="font-size: 10px;">restful</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.86px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 15.71px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.43px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 14.29px;">stream processing</a> <a href="/cnblogs/tags/tensorflow/" style="font-size: 10px;">tensorflow</a> <a href="/cnblogs/tags/thrift/" style="font-size: 10px;">thrift</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 17.14px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/09/">九月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/04/">四月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/cnblogs/2018/09/14/is-it-necessary-to-apply-eslint-jsx-no-bind-rule/">是否需要使用 ESLint jsx-no-bind 规则？</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/05/14/serve-tensorflow-estimator-with-savedmodel/">TensorFlow 模型如何对外提供服务</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/04/22/connect-hbase-with-python-and-thrift/">使用 Python 和 Thrift 连接 HBase</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/">Vuex 严格模式下的表单处理</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/04/07/error-handling-in-restful-api/">RESTful API 中的错误处理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg"></a>
+      <br>
+      &copy; 2018 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/cnblogs/" class="mobile-nav-link">首页</a>
+  
+    <a href="/cnblogs/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/cnblogs/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/cnblogs/categories/Digest" class="mobile-nav-link">摘译</a>
+  
+    <a href="/cnblogs/archives" class="mobile-nav-link">全部文章</a>
+  
+    <a href="http://shzhangji.com/" class="mobile-nav-link">English</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  var disqus_url = 'http://shzhangji.com/cnblogs/2018/09/14/is-it-necessary-to-apply-eslint-jsx-no-bind-rule/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="/cnblogs/js/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">
+  <script src="/cnblogs/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/cnblogs/js/script.js"></script>
+
+  </div>
+</body>
+</html>
