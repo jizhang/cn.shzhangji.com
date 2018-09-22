@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Java 空指针异常的若干解决方案 | 张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Java 中任何对象都有可能为空，当我们调用空对象的方法时就会抛出 NullPointerException 空指针异常，这是一种非常常见的错误类型。我们可以使用若干种方法来避免产生这类异常，使得我们的代码更为健壮。本文将列举这些解决方案，包括传统的空值检测、编程规范、以及使用现代 Java 语言引入的各类工具来作为辅助。 运行时检测最显而易见的方法就是使用 if (obj == null) 来对">
+<meta name="keywords" content="java,spring,eclipse">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 空指针异常的若干解决方案">
+<meta property="og:url" content="http://shzhangji.com/cnblogs/2018/09/22/how-to-avoid-null-pointer-exception/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta property="og:description" content="Java 中任何对象都有可能为空，当我们调用空对象的方法时就会抛出 NullPointerException 空指针异常，这是一种非常常见的错误类型。我们可以使用若干种方法来避免产生这类异常，使得我们的代码更为健壮。本文将列举这些解决方案，包括传统的空值检测、编程规范、以及使用现代 Java 语言引入的各类工具来作为辅助。 运行时检测最显而易见的方法就是使用 if (obj == null) 来对">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/java-npe/eclipse.png">
+<meta property="og:updated_time" content="2018-09-22T12:42:08.824Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 空指针异常的若干解决方案">
+<meta name="twitter:description" content="Java 中任何对象都有可能为空，当我们调用空对象的方法时就会抛出 NullPointerException 空指针异常，这是一种非常常见的错误类型。我们可以使用若干种方法来避免产生这类异常，使得我们的代码更为健壮。本文将列举这些解决方案，包括传统的空值检测、编程规范、以及使用现代 Java 语言引入的各类工具来作为辅助。 运行时检测最显而易见的方法就是使用 if (obj == null) 来对">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/java-npe/eclipse.png">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/cnblogs/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
+  
+  <link rel="stylesheet" href="/cnblogs/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/cnblogs/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/cnblogs/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/cnblogs/">首页</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Digest">摘译</a>
+        
+          <a class="main-nav-link" href="/cnblogs/archives">全部文章</a>
+        
+          <a class="main-nav-link" href="http://shzhangji.com/">English</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/cnblogs/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com/cnblogs"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-how-to-avoid-null-pointer-exception" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2018/09/22/how-to-avoid-null-pointer-exception/" class="article-date">
+  <time datetime="2018-09-22T12:27:36.000Z" itemprop="datePublished">2018-09-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Programming/">Programming</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java 空指针异常的若干解决方案
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Java 中任何对象都有可能为空，当我们调用空对象的方法时就会抛出 <code>NullPointerException</code> 空指针异常，这是一种非常常见的错误类型。我们可以使用若干种方法来避免产生这类异常，使得我们的代码更为健壮。本文将列举这些解决方案，包括传统的空值检测、编程规范、以及使用现代 Java 语言引入的各类工具来作为辅助。</p>
+<h2 id="运行时检测"><a href="#运行时检测" class="headerlink" title="运行时检测"></a>运行时检测</h2><p>最显而易见的方法就是使用 <code>if (obj == null)</code> 来对所有需要用到的对象来进行检测，包括函数参数、返回值、以及类实例的成员变量。当你检测到 <code>null</code> 值时，可以选择抛出更具针对性的异常类型，如 <code>IllegalArgumentException</code>，并添加消息内容。我们可以使用一些库函数来简化代码，如 Java 7 开始提供的 <a href="https://docs.oracle.com/javase/7/docs/api/java/util/Objects.html" target="_blank" rel="noopener"><code>Objects#requireNonNull</code></a> 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testObjects</span><span class="params">(Object arg)</span> </span>&#123;</span><br><span class="line">  Object checked = Objects.requireNonNull(arg, <span class="string">"arg must not be null"</span>);</span><br><span class="line">  checked.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Guava 的 <a href="https://github.com/google/guava/wiki/PreconditionsExplained" target="_blank" rel="noopener"><code>Preconditions</code></a> 类中也提供了一系列用于检测参数合法性的工具函数，其中就包含空值检测：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testGuava</span><span class="params">(Object arg)</span> </span>&#123;</span><br><span class="line">  Object checked = Preconditions.checkNotNull(arg, <span class="string">"%s must not be null"</span>, <span class="string">"arg"</span>);</span><br><span class="line">  checked.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们还可以使用 <a href="https://projectlombok.org/features/NonNull" target="_blank" rel="noopener">Lombok</a> 来生成空值检测代码，并抛出带有提示信息的空指针异常：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testLombok</span><span class="params">(@NonNull Object arg)</span> </span>&#123;</span><br><span class="line">  arg.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>生成的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testLombokGenerated</span><span class="params">(Object arg)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (arg == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"arg is marked @NonNull but is null"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  arg.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个注解还可以用在类实例的成员变量上，所有的赋值操作会自动进行空值检测。</p>
+<a id="more"></a>
+<h2 id="编程规范"><a href="#编程规范" class="headerlink" title="编程规范"></a>编程规范</h2><p>通过遵守某些编程规范，也可以从一定程度上减少空指针异常的发生。</p>
+<ul>
+<li>使用那些已经对 <code>null</code> 值做过判断的方法，如 <code>String#equals</code>、<code>String#valueOf</code>、以及三方库中用来判断字符串和集合是否为空的函数：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (str != <span class="keyword">null</span> &amp;&amp; str.equals(<span class="string">"text"</span>)) &#123;&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="string">"text"</span>.equals(str)) &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (obj != <span class="keyword">null</span>) &#123; obj.toString(); &#125;</span><br><span class="line">String.valueOf(obj); <span class="comment">// "null"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// from spring-core</span></span><br><span class="line">StringUtils.isEmpty(str);</span><br><span class="line">CollectionUtils.isEmpty(col);</span><br><span class="line"><span class="comment">// from guava</span></span><br><span class="line">Strings.isNullOrEmpty(str);</span><br><span class="line"><span class="comment">// from commons-collections4</span></span><br><span class="line">CollectionUtils.isEmpty(col);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果函数的某个参数可以接收 <code>null</code> 值，考虑改写成两个函数，使用不同的函数签名，这样就可以强制要求每个参数都不为空了：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">methodA</span><span class="params">(Object arg1)</span> </span>&#123;</span><br><span class="line">  methodB(arg1, <span class="keyword">new</span> Object[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">methodB</span><span class="params">(Object arg1, Object[] arg2)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (Object obj : arg2) &#123;&#125; <span class="comment">// no null check</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果函数的返回值是集合类型，当结果为空时，不要返回 <code>null</code> 值，而是返回一个空的集合；如果返回值类型是对象，则可以选择抛出异常。Spring JdbcTemplate 正是使用了这种处理方式：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当查询结果为空时，返回 new ArrayList&lt;&gt;()</span></span><br><span class="line">jdbcTemplate.queryForList(<span class="string">"SELECT * FROM person"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 若找不到该条记录，则抛出 EmptyResultDataAccessException</span></span><br><span class="line">jdbcTemplate.queryForObject(<span class="string">"SELECT age FROM person WHERE id = 1"</span>, Integer.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 支持泛型集合</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">List&lt;T&gt; <span class="title">testReturnCollection</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> Collections.emptyList();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="静态代码分析"><a href="#静态代码分析" class="headerlink" title="静态代码分析"></a>静态代码分析</h2><p>Java 语言有许多静态代码分析工具，如 Eclipse IDE、SpotBugs、Checker Framework 等，它们可以帮助程序员检测出编译期的错误。结合 <code>@Nullable</code> 和 <code>@Nonnull</code> 等注解，我们就可以在程序运行之前发现可能抛出空指针异常的代码。</p>
+<p>但是，空值检测注解还没有得到标准化。虽然 2006 年 9 月社区提出了 <a href="https://jcp.org/en/jsr/detail?id=305" target="_blank" rel="noopener">JSR 305</a> 规范，但它长期处于搁置状态。很多第三方库提供了类似的注解，且得到了不同工具的支持，其中使用较多的有：</p>
+<ul>
+<li><code>javax.annotation.Nonnull</code>：由 JSR 305 提出，其参考实现为 <code>com.google.code.findbugs.jsr305</code>；</li>
+<li><code>org.eclipse.jdt.annotation.NonNull</code>：Eclipse IDE 原生支持的空值检测注解；</li>
+<li><code>edu.umd.cs.findbugs.annotations.NonNull</code>：SpotBugs 使用的注解，基于 <code>findbugs.jsr305</code>；</li>
+<li><code>org.springframework.lang.NonNull</code>：Spring Framework 5.0 开始提供；</li>
+<li><code>org.checkerframework.checker.nullness.qual.NonNull</code>：Checker Framework 使用；</li>
+<li><code>android.support.annotation.NonNull</code>：集成在安卓开发工具中；</li>
+</ul>
+<p>我建议使用一种跨 IDE 的解决方案，如 SpotBugs 或 Checker Framework，它们都能和 Maven 结合得很好。</p>
+<h3 id="SpotBugs-与-NonNull、-CheckForNull"><a href="#SpotBugs-与-NonNull、-CheckForNull" class="headerlink" title="SpotBugs 与 @NonNull、@CheckForNull"></a>SpotBugs 与 <code>@NonNull</code>、<code>@CheckForNull</code></h3><p>SpotBugs 是 FindBugs 的后继者。通过在方法的参数和返回值上添加 <code>@NonNull</code> 和 <code>@CheckForNull</code> 注解，SpotBugs 可以帮助我们进行编译期的空值检测。需要注意的是，SpotBugs 不支持 <code>@Nullable</code> 注解，必须用 <code>@CheckForNull</code> 代替。如官方文档中所说，仅当需要覆盖 <code>@ParametersAreNonnullByDefault</code> 时才会用到 <code>@Nullable</code>。</p>
+<p><a href="https://spotbugs.readthedocs.io/en/latest/maven.html" target="_blank" rel="noopener">官方文档</a> 中说明了如何将 SpotBugs 应用到 Maven 和 Eclipse 中去。我们还需要将 <code>spotbugs-annotations</code> 加入到项目依赖中，以便使用对应的注解。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.spotbugs<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spotbugs-annotations<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.1.7<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>以下是对不同使用场景的说明：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NonNull</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Object <span class="title">returnNonNull</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 错误：returnNonNull() 可能返回空值，但其已声明为 @Nonnull</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@CheckForNull</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Object <span class="title">returnNullable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testReturnNullable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Object obj = returnNullable();</span><br><span class="line">  <span class="comment">// 错误：方法的返回值可能为空</span></span><br><span class="line">  System.out.println(obj.toString());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">argumentNonNull</span><span class="params">(@NonNull Object arg)</span> </span>&#123;</span><br><span class="line">  System.out.println(arg.toString());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testArgumentNonNull</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 错误：不能将 null 传递给非空参数</span></span><br><span class="line">  argumentNonNull(<span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testNullableArgument</span><span class="params">(@CheckForNull Object arg)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 错误：参数可能为空</span></span><br><span class="line">  System.out.println(arg.toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于 Eclipse 用户，还可以使用 IDE 内置的空值检测工具，只需将默认的注解 <code>org.eclipse.jdt.annotation.Nullable</code> 替换为 SpotBugs 的注解即可：</p>
+<p><img src="/cnblogs/images/java-npe/eclipse.png" alt="Eclipse null analysis"></p>
+<h3 id="Checker-Framework-与-NonNull、-Nullable"><a href="#Checker-Framework-与-NonNull、-Nullable" class="headerlink" title="Checker Framework 与 @NonNull、@Nullable"></a>Checker Framework 与 <code>@NonNull</code>、<code>@Nullable</code></h3><p>Checker Framework 能够作为 <code>javac</code> 编译器的插件运行，对代码中的数据类型进行检测，预防各类问题。我们可以参照 <a href="https://checkerframework.org/manual/#maven" target="_blank" rel="noopener">官方文档</a>，将 Checker Framework 与 <code>maven-compiler-plugin</code> 结合，之后每次执行 <code>mvn compile</code> 时就会进行检查。Checker Framework 的空值检测程序支持几乎所有的注解，包括 JSR 305、Eclipse、甚至 <code>lombok.NonNull</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.checkerframework.checker.nullness.qual.Nullable;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Object <span class="title">returnNullable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testReturnNullable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Object obj = returnNullable();</span><br><span class="line">  <span class="comment">// 错误：obj 可能为空</span></span><br><span class="line">  System.out.println(obj.toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Checker Framework 默认会将 <code>@NonNull</code> 应用到所有的函数参数和返回值上，因此，即使不添加这个注解，以下程序也是无法编译通过的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Object <span class="title">returnNonNull</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 错误：方法声明为 @NonNull，但返回的是 null。</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">argumentNonNull</span><span class="params">(Object arg)</span> </span>&#123;</span><br><span class="line">  System.out.println(arg.toString());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testArgumentNonNull</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 错误：参数声明为 @NonNull，但传入的是 null。</span></span><br><span class="line">  argumentNonNull(<span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Checker Framework 对使用 Spring Framework 5.0 以上的用户非常有用，因为 Spring 提供了内置的空值检测注解，且能够被 Checker Framework 支持。一方面我们无需再引入额外的 Jar 包，更重要的是 Spring Framework 代码本身就使用了这些注解，这样我们在调用它的 API 时就能有效地处理空值了。举例来说，<code>StringUtils</code> 类里可以传入空值的函数、以及会返回空值的函数都添加了 <code>@Nullable</code> 注解，而未添加的方法则继承了整个框架的 <code>@NonNull</code> 注解，因此，下列代码中的空指针异常就可以被 Checker Framework 检测到了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这是 spring-core 中定义的类和方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">StringUtils</span> </span>&#123;</span><br><span class="line">  <span class="comment">// str 参数继承了全局的 @NonNull 注解</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">capitalize</span><span class="params">(String str)</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Nullable</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getFilename</span><span class="params">(@Nullable String path)</span> </span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 错误：参数声明为 @NonNull，但传入的是 null。</span></span><br><span class="line">StringUtils.capitalize(<span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">String filename = StringUtils.getFilename(<span class="string">"/path/to/file"</span>);</span><br><span class="line"><span class="comment">// 错误：filename 可能为空。</span></span><br><span class="line">System.out.println(filename.length());</span><br></pre></td></tr></table></figure>
+<h2 id="Optional-类型"><a href="#Optional-类型" class="headerlink" title="Optional 类型"></a><code>Optional</code> 类型</h2><p>Java 8 引入了 <code>Optional&lt;T&gt;</code> 类型，我们可以用它来对函数的返回值进行包装。这种方式的优点是可以明确定义该方法是有可能返回空值的，因此调用方必须做好相应处理，这样也就不会引发空指针异常。但是，也不可避免地需要编写更多代码，而且会产生很多垃圾对象，增加 GC 的压力，因此在使用时需要酌情考虑。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Optional&lt;String&gt; opt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建</span></span><br><span class="line">opt = Optional.empty();</span><br><span class="line">opt = Optional.of(<span class="string">"text"</span>);</span><br><span class="line">opt = Optional.ofNullable(<span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断并读取</span></span><br><span class="line"><span class="keyword">if</span> (opt.isPresent()) &#123;</span><br><span class="line">  opt.get();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 默认值</span></span><br><span class="line">opt.orElse(<span class="string">"default"</span>);</span><br><span class="line">opt.orElseGet(() -&gt; <span class="string">"default"</span>);</span><br><span class="line">opt.orElseThrow(() -&gt; <span class="keyword">new</span> NullPointerException());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 相关操作</span></span><br><span class="line">opt.ifPresent(value -&gt; &#123;</span><br><span class="line">  System.out.println(value);</span><br><span class="line">&#125;);</span><br><span class="line">opt.filter(value -&gt; value.length() &gt; <span class="number">5</span>);</span><br><span class="line">opt.map(value -&gt; value.trim());</span><br><span class="line">opt.flatMap(value -&gt; &#123;</span><br><span class="line">  String trimmed = value.trim();</span><br><span class="line">  <span class="keyword">return</span> trimmed.isEmpty() ? Optional.empty() : Optional.of(trimmed);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>方法的链式调用很容易引发空指针异常，但如果返回值都用 <code>Optional</code> 包装起来，就可以用 <code>flatMap</code> 方法来实现安全的链式调用了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">String zipCode = getUser()</span><br><span class="line">    .flatMap(User::getAddress)</span><br><span class="line">    .flatMap(Address::getZipCode)</span><br><span class="line">    .orElse(<span class="string">""</span>);</span><br></pre></td></tr></table></figure>
+<p>Java 8 <a href="https://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html" target="_blank" rel="noopener">Stream API</a> 同样使用了 <code>Optional</code> 作为返回类型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">stringList.stream().findFirst().orElse(<span class="string">"default"</span>);</span><br><span class="line">stringList.stream()</span><br><span class="line">    .max(Comparator.naturalOrder())</span><br><span class="line">    .ifPresent(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>此外，Java 8 还针对基础类型提供了单独的 <code>Optional</code> 类，如 <code>OptionalInt</code>、<code>OptionalDouble</code> 等，在性能要求比较高的场景下很适用。</p>
+<h2 id="其它-JVM-语言中的空指针异常"><a href="#其它-JVM-语言中的空指针异常" class="headerlink" title="其它 JVM 语言中的空指针异常"></a>其它 JVM 语言中的空指针异常</h2><p>Scala 语言中的 <a href="https://www.scala-lang.org/api/current/scala/Option.html" target="_blank" rel="noopener"><code>Option</code></a> 类可以对标 Java 8 的 <code>Optional</code>。它有两个子类型，<code>Some</code> 表示有值，<code>None</code> 表示空。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> opt: <span class="type">Option</span>[<span class="type">String</span>] = <span class="type">Some</span>(<span class="string">"text"</span>)</span><br><span class="line">opt.getOrElse(<span class="string">"default"</span>)</span><br></pre></td></tr></table></figure>
+<p>除了使用 <code>Option#isEmpty</code> 判断，还可以使用 Scala 的模式匹配：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">opt <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="type">Some</span>(text) =&gt; println(text)</span><br><span class="line">  <span class="keyword">case</span> <span class="type">None</span> =&gt; println(<span class="string">"default"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Scala 的集合处理函数库非常强大，<code>Option</code> 则可直接作为集合进行操作，如 <code>filer</code>、<code>map</code>、以及列表解析（for-comprehension）：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">opt.map(_.trim).filter(_.length &gt; <span class="number">0</span>).map(_.toUpperCase).getOrElse(<span class="string">"DEFAULT"</span>)</span><br><span class="line"><span class="keyword">val</span> upper = <span class="keyword">for</span> &#123;</span><br><span class="line">  text &lt;- opt</span><br><span class="line">  trimmed &lt;- <span class="type">Some</span>(text.trim())</span><br><span class="line">  upper &lt;- <span class="type">Some</span>(trimmed) <span class="keyword">if</span> trimmed.length &gt; <span class="number">0</span></span><br><span class="line">&#125; <span class="keyword">yield</span> upper</span><br><span class="line">upper.getOrElse(<span class="string">"DEFAULT"</span>)</span><br></pre></td></tr></table></figure>
+<p>Kotlin 使用了另一种方式，用户在定义变量时就需要明确区分 <a href="https://kotlinlang.org/docs/reference/java-interop.html#nullability-annotations" target="_blank" rel="noopener">可空和不可空类型</a>。当可空类型被使用时，就必须进行空值检测。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a: String = <span class="string">"text"</span></span><br><span class="line">a = <span class="literal">null</span> <span class="comment">// 错误：无法将 null 赋值给非空 String 类型。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> b: String? = <span class="string">"text"</span></span><br><span class="line"><span class="comment">// 错误：操作可空类型时必须使用安全操作符（?.）或强制忽略（!!.）。</span></span><br><span class="line">println(b.length)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> l: <span class="built_in">Int</span>? = b?.length <span class="comment">// 安全操作</span></span><br><span class="line">b!!.length <span class="comment">// 强制忽略，可能引发空值异常</span></span><br></pre></td></tr></table></figure>
+<p>Kotlin 的特性之一是与 Java 的可互操作性，但 Kotlin 编译器无法知晓 Java 类型是否为空，这就需要在 Java 代码中使用注解了，而 Kotlin 支持的 <a href="https://kotlinlang.org/docs/reference/java-interop.html#nullability-annotations" target="_blank" rel="noopener">注解</a> 也非常广泛。Spring Framework 5.0 起原生支持 Kotlin，其空值检测也是通过注解进行的，使得 Kotlin 可以安全地调用 Spring Framework 的所有 API。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>在以上这些方案中，我比较推荐使用注解来预防空指针异常，因为这种方式十分有效，对代码的侵入性也较小。所有的公共 API 都应该使用 <code>@Nullable</code> 和 <code>@NonNull</code> 进行注解，这样就能强制调用方对空指针异常进行预防，让我们的程序更为健壮。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://howtodoinjava.com/java/exception-handling/how-to-effectively-handle-nullpointerexception-in-java/" target="_blank" rel="noopener">https://howtodoinjava.com/java/exception-handling/how-to-effectively-handle-nullpointerexception-in-java/</a></li>
+<li><a href="http://jmri.sourceforge.net/help/en/html/doc/Technical/SpotBugs.shtml" target="_blank" rel="noopener">http://jmri.sourceforge.net/help/en/html/doc/Technical/SpotBugs.shtml</a></li>
+<li><a href="https://dzone.com/articles/features-to-avoid-null-reference-exceptions-java-a" target="_blank" rel="noopener">https://dzone.com/articles/features-to-avoid-null-reference-exceptions-java-a</a></li>
+<li><a href="https://medium.com/@fatihcoskun/kotlin-nullable-types-vs-java-optional-988c50853692" target="_blank" rel="noopener">https://medium.com/@fatihcoskun/kotlin-nullable-types-vs-java-optional-988c50853692</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2018/09/22/how-to-avoid-null-pointer-exception/" data-id="cjmdet5q90046i4r4rlbcpums" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2018/09/22/how-to-avoid-null-pointer-exception/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/eclipse/">eclipse</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/spring/">spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/cnblogs/2018/09/14/is-it-necessary-to-apply-eslint-jsx-no-bind-rule/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">是否需要使用 ESLint jsx-no-bind 规则？</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Python数据平台</h3>
+    <div class="widget">
+      <img src="/cnblogs/images/pydp-qrcode.jpg" style="width: 100%;"></img>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.25px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 17.5px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/eclipse/" style="font-size: 10px;">eclipse</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/eslint/" style="font-size: 10px;">eslint</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.5px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 11.25px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 12.5px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.25px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 12.5px;">hadoop</a> <a href="/cnblogs/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/cnblogs/tags/hive/" style="font-size: 13.75px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 16.25px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 15px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 11.25px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.25px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.25px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 12.5px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.25px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.25px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.25px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 18.75px;">python</a> <a href="/cnblogs/tags/react/" style="font-size: 10px;">react</a> <a href="/cnblogs/tags/restful/" style="font-size: 10px;">restful</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.5px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 15px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 12.5px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.25px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 13.75px;">stream processing</a> <a href="/cnblogs/tags/tensorflow/" style="font-size: 10px;">tensorflow</a> <a href="/cnblogs/tags/thrift/" style="font-size: 10px;">thrift</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 17.5px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/09/">九月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/04/">四月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/cnblogs/2018/09/22/how-to-avoid-null-pointer-exception/">Java 空指针异常的若干解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/09/14/is-it-necessary-to-apply-eslint-jsx-no-bind-rule/">是否需要使用 ESLint jsx-no-bind 规则？</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/05/14/serve-tensorflow-estimator-with-savedmodel/">TensorFlow 模型如何对外提供服务</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/04/22/connect-hbase-with-python-and-thrift/">使用 Python 和 Thrift 连接 HBase</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/">Vuex 严格模式下的表单处理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg"></a>
+      <br>
+      &copy; 2018 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/cnblogs/" class="mobile-nav-link">首页</a>
+  
+    <a href="/cnblogs/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/cnblogs/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/cnblogs/categories/Digest" class="mobile-nav-link">摘译</a>
+  
+    <a href="/cnblogs/archives" class="mobile-nav-link">全部文章</a>
+  
+    <a href="http://shzhangji.com/" class="mobile-nav-link">English</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  var disqus_url = 'http://shzhangji.com/cnblogs/2018/09/22/how-to-avoid-null-pointer-exception/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="/cnblogs/js/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">
+  <script src="/cnblogs/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/cnblogs/js/script.js"></script>
+
+  </div>
+</body>
+</html>

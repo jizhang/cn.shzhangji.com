@@ -89,6 +89,60 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-hive-window-and-analytical-functions" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2017/09/05/hive-window-and-analytical-functions/" class="article-date">
+  <time datetime="2017-09-05T04:17:10.000Z" itemprop="datePublished">2017-09-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Big-Data/">Big Data</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/cnblogs/2017/09/05/hive-window-and-analytical-functions/">Hive 窗口与分析型函数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>SQL 结构化查询语言是数据分析领域的重要工具之一。它提供了数据筛选、转换、聚合等操作，并能借助 Hive 和 Hadoop 进行大数据量的处理。但是，传统的 SQL 语句并不能支持诸如分组排名、滑动平均值等计算，原因是 <code>GROUP BY</code> 语句只能为每个分组的数据返回一行结果，而非每条数据一行。幸运的是，新版的 SQL 标准引入了窗口查询功能，使用 <code>WINDOW</code> 语句我们可以基于分区和窗口为每条数据都生成一行结果记录，这一标准也已得到了 Hive 的支持。</p>
+<p><img src="/cnblogs/images/hive-window/window-stock.png" alt="滑动平均值"></p>
+<p>举例来说，我们想要计算表中每只股票的两日滑动平均值，可以编写以下查询语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">  <span class="string">`date`</span>, <span class="string">`stock`</span>, <span class="string">`close`</span></span><br><span class="line">  ,<span class="keyword">AVG</span>(<span class="string">`close`</span>) <span class="keyword">OVER</span> <span class="string">`w`</span> <span class="keyword">AS</span> <span class="string">`mavg`</span></span><br><span class="line"><span class="keyword">FROM</span> <span class="string">`t_stock`</span></span><br><span class="line">WINDOW <span class="string">`w`</span> <span class="keyword">AS</span> (<span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="string">`stock`</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="string">`date`</span></span><br><span class="line">               <span class="keyword">ROWS</span> <span class="keyword">BETWEEN</span> <span class="number">1</span> <span class="keyword">PRECEDING</span> <span class="keyword">AND</span> <span class="keyword">CURRENT</span> <span class="keyword">ROW</span>)</span><br></pre></td></tr></table></figure>
+<p><code>OVER</code>、<code>WINDOW</code>、以及 <code>ROWS BETWEEN AND</code> 都是新增的窗口查询关键字。在这个查询中，<code>PARTITION BY</code> 和 <code>ORDER BY</code> 的工作方式与 <code>GROUP BY</code>、<code>ORDER BY</code> 相似，区别在于它们不会将多行记录聚合成一条结果，而是将它们拆分到互不重叠的分区中进行后续处理。其后的 <code>ROWS BETWEEN AND</code> 语句用于构建一个 <em>窗口帧</em>。此例中，每一个窗口帧都包含了当前记录和上一条记录。下文会对窗口帧做进一步描述。最后，<code>AVG</code> 是一个窗口函数，用于计算每个窗口帧的结果。窗口帧的定义（<code>WINDOW</code> 语句）还可以直接附加到窗口函数之后：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">AVG</span>(<span class="string">`close`</span>) <span class="keyword">OVER</span> (<span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="string">`stock`</span>) <span class="keyword">AS</span> <span class="string">`mavg`</span> <span class="keyword">FROM</span> <span class="string">`t_stock`</span>;</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/cnblogs/2017/09/05/hive-window-and-analytical-functions/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2017/09/05/hive-window-and-analytical-functions/" data-id="cjmdet5pq003gi4r4nzxue3cl" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2017/09/05/hive-window-and-analytical-functions/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/analytics/">analytics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/hive/">hive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/sql/">sql</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-an-introduction-to-stream-lib-the-stream-processing-utilities" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/" class="article-date">
@@ -127,7 +181,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/" data-id="cjm1beghw003gb0zjfdtmb14n" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/" data-id="cjmdet5pn003di4r42vdneczh" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/27/an-introduction-to-stream-lib-the-stream-processing-utilities/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -178,7 +232,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/" data-id="cjm1beghu003db0zj8526ba48" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/" data-id="cjmdet5py003ri4r47j20r0a9" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/13/extract-data-from-mysql-with-binlog-and-canal/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -236,7 +290,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/" data-id="cjm1beghr0036b0zjgygeil81" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/" data-id="cjmdet5pi0036i4r49tx245dc" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/06/how-to-extract-event-time-in-apache-flume/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -291,7 +345,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" data-id="cjm1beghs0039b0zjdskhvnl3" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" data-id="cjmdet5pd002zi4r4t5lsfexp" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -347,7 +401,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/" data-id="cjm1beghq0033b0zjkhnqpm0i" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/" data-id="cjmdet5pf0032i4r4srr62wcv" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/07/23/learn-pandas-from-a-sql-perspective/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -398,7 +452,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/" data-id="cjm1begho0030b0zjpqtz6jwd" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/" data-id="cjmdet5pk0039i4r4hbn0jgi2" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/07/16/log-tailer-with-websocket-and-python/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -450,7 +504,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/" data-id="cjm1beghn002yb0zjn5v13f2w" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/" data-id="cjmdet5pa002wi4r471uyr874" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/06/29/why-use-lodash-when-es6-is-available/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -501,7 +555,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/" data-id="cjm1beghj002rb0zjlufcpv8i" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/" data-id="cjmdet5p4002ri4r4fdmod2vw" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -554,7 +608,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/" data-id="cjm1beghl002ub0zjfcdmzinh" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/" data-id="cjmdet5oy002ki4r42l0akvu5" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -568,75 +622,10 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-top-5-frameworks" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/cnblogs/2016/03/13/top-5-frameworks/" class="article-date">
-  <time datetime="2016-03-13T08:25:00.000Z" itemprop="datePublished">2016-03-13</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/cnblogs/categories/Programming/">Programming</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/cnblogs/2016/03/13/top-5-frameworks/">开发人员必知的 5 种开源框架</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>作者：<a href="https://opensource.com/business/15/12/top-5-frameworks" target="_blank" rel="noopener">John Esposito</a></p>
-<p>软件侵吞着世界<a href="http://www.wsj.com/articles/SB10001424053111903480904576512250915629460" target="_blank" rel="noopener">已经四年多了</a>，但开发人员看待软件的方式稍有不同。我们一直在致力于<a href="http://www.dougengelbart.org/pubs/augment-3906.html" target="_blank" rel="noopener">解决实际问题</a>，而<a href="http://worrydream.com/refs/Brooks-NoSilverBullet.pdf" target="_blank" rel="noopener">很少思考软件开发的基石</a>。当问题变得更庞大、解决方案更复杂时，一些实用的、不怎么<a href="http://www.joelonsoftware.com/articles/LeakyAbstractions.html" target="_blank" rel="noopener">产生泄漏</a>的抽象工具就显得越来越重要。</p>
-<p>简单地来说，在那些追求生产效率的开发者眼中，<em>框架</em> 正在吞食着世界。那究竟是哪些框架、各自又在吞食着哪一部分呢？</p>
-<p>开源界的开发框架实在太多了，多到近乎疯狂的地步。我从2015年各种领域的榜单中选取了最受欢迎的5种框架。对于前端框架（我所擅长的领域），我只选取那些真正的客户端框架，这是因为现今的浏览器和移动设备已经具备非常好的性能，越来越多的单页应用（SPA）正在避免和服务端交换数据。</p>
-<ol>
-<li>展现层：Bootstrap</li>
-</ol>
-<hr>
-<p>我们从技术栈的顶端开始看——展现层，这一开发者和普通用户都会接触到的技术。展现层的赢家毫无疑问仍是<a href="http://getbootstrap.com/" target="_blank" rel="noopener">Bootstrap</a>。Bootstrap的<a href="https://www.google.com/trends/explore#q=%2Fm%2F0j671ln" target="_blank" rel="noopener">流行度</a>非常之惊人，<a href="https://www.google.com/trends/explore#q=%2Fm%2F0j671ln%2C%20%2Fm%2F0ll4n18%2C%20Material%20Design%20Lite&amp;cmpt=q&amp;tz=Etc%2FGMT%2B5" target="_blank" rel="noopener">远远甩开</a>了它的老对手<a href="http://foundation.zurb.com/" target="_blank" rel="noopener">Foundation</a>，以及新星<a href="http://www.getmdl.io/" target="_blank" rel="noopener">Material Design Lite</a>。在<a href="http://trends.builtwith.com/docinfo/Twitter-Bootstrap" target="_blank" rel="noopener">BuiltWith</a>上，Bootstrap占据主导地位；而在GitHub上则长期保持<a href="https://github.com/search?q=stars:%3E1&amp;s=stars&amp;type=Repositories" target="_blank" rel="noopener">Star数</a>和<a href="https://github.com/search?o=desc&amp;q=stars:%3E1&amp;s=forks&amp;type=Repositories" target="_blank" rel="noopener">Fork数</a>最多的记录。</p>
-<p>如今，Bootstrap仍然有着非常活跃的开发社区。8月，Bootstrap发布了<a href="http://v4-alpha.getbootstrap.com/" target="_blank" rel="noopener">v4</a><a href="http://blog.getbootstrap.com/2015/08/19/bootstrap-4-alpha/" target="_blank" rel="noopener">内测版</a>，庆祝它的四岁生日。这个版本是对现有功能的<a href="http://v4-alpha.getbootstrap.com/migration/" target="_blank" rel="noopener">简化和扩充</a>，主要包括：增强可编程性；从Less迁移至Sass；将所有HTML重置代码集中到一个模块；大量自定义样式可直接通过Sass变量指定；所有JavaScript插件都改用ES6重写等。开发团队还开设了<a href="http://themes.getbootstrap.com/" target="_blank" rel="noopener">官方主题市场</a>，进一步扩充现有的<a href="https://www.google.com/search?q=bootstrap+theme+sites" target="_blank" rel="noopener">主题生态</a>。</p>
-<ol start="2">
-<li>网页MVC：AngularJS</li>
-</ol>
-<hr>
-<p>随着网页平台技术越来越<a href="https://www.w3.org/blog/news/" target="_blank" rel="noopener">成熟</a>，开发者们可以远离仍在使用标记语言进行着色的DOM对象，转而面对日渐完善的抽象层进行开发。这一趋势始于现代单页应用（SPA）对XMLHttpRequest的高度依赖，而其中<a href="https://www.google.com/trends/explore#q=%2Fm%2F0j45p7w%2C%20EmberJS%2C%20MeteorJS%2C%20BackboneJS&amp;cmpt=q&amp;tz=Etc%2FGMT%2B5" target="_blank" rel="noopener">最</a><a href="https://www.pluralsight.com/browse#tab-courses-popular" target="_blank" rel="noopener">流行</a>的SPA框架当属<a href="https://angularjs.org/" target="_blank" rel="noopener">AngularJS</a>。</p>
-<p>AngularJS有什么特别之处呢？一个词：指令（<a href="https://docs.angularjs.org/guide/directive" target="_blank" rel="noopener">directive</a>）。一个简单的<code>ng-</code>就能让标签“起死回生”（从静态的标记到动态的JS代码）。依赖注入也是很重要的功能，许多Angular特性都致力于简化维护成本，并进一步从DOM中抽象出来。其基本原则就是将声明式的展现层代码和命令式的领域逻辑充分隔离开来，这种做法对于使用过POM或ORM的人尤为熟悉（我们之中还有人体验过XAML）。这一思想令人振奋，解放了开发者，甚至让人第一眼看上去有些奇怪——因为它赋予了HTML所不该拥有的能力。</p>
-<p>有些遗憾的是，AngualrJS的“杀手锏”双向绑定（让视图和模型数据保持一致）将在<a href="https://www.quora.com/Why-is-the-two-way-data-binding-being-dropped-in-Angular-2" target="_blank" rel="noopener">Angular2</a>中移除，已经<a href="http://angularjs.blogspot.com/2015/11/highlights-from-angularconnect-2015.html" target="_blank" rel="noopener">临近公测</a>。虽然这一魔法般的特性即将消失，却带来了极大的性能提升，并降低了调试的难度（可以想象一下在悬崖边行走的感觉）。随着单页应用越来越庞大和复杂，这种权衡会变得更有价值。</p>
-        
-          <p class="article-more-link">
-            <a href="/cnblogs/2016/03/13/top-5-frameworks/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/" data-id="cjm1beghi002nb0zj9fq2b4if" class="article-share-link">分享</a>
-      
-        <a href="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/#disqus_thread" class="article-comment-link">留言</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/angular/">angular</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/bootstrap/">bootstrap</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/spring/">spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/translation/">translation</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/cnblogs/">&laquo; 上一页</a><a class="page-number" href="/cnblogs/">1</a><span class="page-number current">2</span><a class="page-number" href="/cnblogs/page/3/">3</a><a class="page-number" href="/cnblogs/page/4/">4</a><a class="page-number" href="/cnblogs/page/5/">5</a><a class="extend next" rel="next" href="/cnblogs/page/3/">下一页 &raquo;</a>
+    <a class="extend prev" rel="prev" href="/cnblogs/">&laquo; 上一页</a><a class="page-number" href="/cnblogs/">1</a><span class="page-number current">2</span><a class="page-number" href="/cnblogs/page/3/">3</a><a class="page-number" href="/cnblogs/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/cnblogs/page/6/">6</a><a class="extend next" rel="next" href="/cnblogs/page/3/">下一页 &raquo;</a>
   </nav>
 </section>
         
@@ -656,7 +645,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15.71px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.43px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 17.14px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/eslint/" style="font-size: 10px;">eslint</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.86px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 11.43px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 12.86px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.43px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 12.86px;">hadoop</a> <a href="/cnblogs/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/cnblogs/tags/hive/" style="font-size: 14.29px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 15.71px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 15.71px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 11.43px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.43px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.43px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 12.86px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.43px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.43px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.43px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 18.57px;">python</a> <a href="/cnblogs/tags/react/" style="font-size: 10px;">react</a> <a href="/cnblogs/tags/restful/" style="font-size: 10px;">restful</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.86px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 15.71px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.43px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 14.29px;">stream processing</a> <a href="/cnblogs/tags/tensorflow/" style="font-size: 10px;">tensorflow</a> <a href="/cnblogs/tags/thrift/" style="font-size: 10px;">thrift</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 17.14px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.25px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 17.5px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/eclipse/" style="font-size: 10px;">eclipse</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/eslint/" style="font-size: 10px;">eslint</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.5px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 11.25px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 12.5px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.25px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 12.5px;">hadoop</a> <a href="/cnblogs/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/cnblogs/tags/hive/" style="font-size: 13.75px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 16.25px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 15px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 11.25px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.25px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.25px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 12.5px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.25px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.25px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.25px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 18.75px;">python</a> <a href="/cnblogs/tags/react/" style="font-size: 10px;">react</a> <a href="/cnblogs/tags/restful/" style="font-size: 10px;">restful</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.5px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 15px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 12.5px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.25px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 13.75px;">stream processing</a> <a href="/cnblogs/tags/tensorflow/" style="font-size: 10px;">tensorflow</a> <a href="/cnblogs/tags/thrift/" style="font-size: 10px;">thrift</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 17.5px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
     </div>
   </div>
 
@@ -678,6 +667,10 @@ ga('send', 'pageview');
       <ul>
         
           <li>
+            <a href="/cnblogs/2018/09/22/how-to-avoid-null-pointer-exception/">Java 空指针异常的若干解决方案</a>
+          </li>
+        
+          <li>
             <a href="/cnblogs/2018/09/14/is-it-necessary-to-apply-eslint-jsx-no-bind-rule/">是否需要使用 ESLint jsx-no-bind 规则？</a>
           </li>
         
@@ -691,10 +684,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/">Vuex 严格模式下的表单处理</a>
-          </li>
-        
-          <li>
-            <a href="/cnblogs/2018/04/07/error-handling-in-restful-api/">RESTful API 中的错误处理</a>
           </li>
         
       </ul>
