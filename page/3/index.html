@@ -128,7 +128,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/" data-id="cjmu5v8py002sn8r4fwevbxdl" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/" data-id="cjm1beghl002ub0zjfcdmzinh" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -193,7 +193,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/" data-id="cjmu5v8py002in8r4tm12yl0j" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/" data-id="cjm1beghi002nb0zj9fq2b4if" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2016/03/13/top-5-frameworks/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -244,7 +244,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/" data-id="cjmu5v8py002on8r4wtivm9x2" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/" data-id="cjm1beghg002kb0zj3vhpijt2" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/09/12/model-dependency-injection-with-spring-aop/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -296,7 +296,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/" data-id="cjmu5v8ph002bn8r4ityrd1hf" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/" data-id="cjm1beghe002hb0zj0mv6p1ka" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -358,7 +358,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/" data-id="cjmu5v8py002en8r4w07aar56" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/" data-id="cjm1beghc002eb0zjnm60qdg1" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -414,7 +414,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/" data-id="cjmu5v8ph0027n8r4oziutjml" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/" data-id="cjm1begha002ab0zj78ydg2uv" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -465,7 +465,7 @@ ga('send', 'pageview');
 </ol>
 </li>
 </ol>
-<p>具体实现可以参考<a href="https://github.com/jizhang/mapred-sandbox/blob/master/src/main/java/com/shzhangji/mapred_sandbox/join/InnerJoinJob.java" target="_blank" rel="noopener">这段代码</a>。但是这种实现方法有一个问题：如果同一个Key的记录数过多，存放在List中就会占用很多内存，严重的会造成内存溢出（Out of Memory, OOM）。这种方法在一对一的情况下没有问题，而一对多、多对多的情况就会有隐患。那么，Hive在做Reduce-side Join时是如何避免OOM的呢？两个关键点：</p>
+<p>具体实现可以参考<a href="https://github.com/jizhang/mapred-sandbox/blob/master/src/main/java/com/shzhangji/mapredsandbox/join/InnerJoinJob.java" target="_blank" rel="noopener">这段代码</a>。但是这种实现方法有一个问题：如果同一个Key的记录数过多，存放在List中就会占用很多内存，严重的会造成内存溢出（Out of Memory, OOM）。这种方法在一对一的情况下没有问题，而一对多、多对多的情况就会有隐患。那么，Hive在做Reduce-side Join时是如何避免OOM的呢？两个关键点：</p>
 <ol>
 <li>Reducer在遍历Values时，会将前面的表缓存在内存中，对于最后一张表则边扫描边输出；</li>
 <li>如果前面几张表内存中放不下，就写入磁盘。</li>
@@ -478,7 +478,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/" data-id="cjmu5v8ph0020n8r4anjt9gil" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/" data-id="cjm1begh90027b0zj8poyuuby" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2015/01/13/understand-reduce-side-join/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -531,7 +531,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/" data-id="cjmu5v8ph001xn8r4f3yl0sp8" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/" data-id="cjm1begh70023b0zj67eqld3n" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/12/23/use-git-rebase-to-clarify-history/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -600,7 +600,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/" data-id="cjmu5v8ph0024n8r4hvxr9241" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/" data-id="cjm1begh40020b0zjdc58ks6a" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -656,7 +656,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/" data-id="cjmu5v8p1001mn8r409piapkm" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/" data-id="cjm1begh1001wb0zjxwq7st2h" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/#disqus_thread" class="article-comment-link">留言</a>
       

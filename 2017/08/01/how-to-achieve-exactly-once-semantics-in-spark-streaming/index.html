@@ -6,7 +6,7 @@
   <title>Spark Streaming 中如何实现 Exactly-Once 语义 | 张吉的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Exactly-once 语义是实时计算的难点之一。要做到每一条记录只会被处理一次，即使服务器或网络发生故障时也能保证没有遗漏，这不仅需要实时计算框架本身的支持，还对上游的消息系统、下游的数据存储有所要求。此外，我们在编写计算流程时也需要遵循一定规范，才能真正实现 Exactly-once。本文将讲述如何结合 Spark Streaming 框架、Kafka 消息系统、以及 MySQL 数据库来实">
-<meta name="keywords" content="scala,spark,stream processing,spark streaming,kafka">
+<meta name="keywords" content="spark,scala,stream processing,spark streaming,kafka">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spark Streaming 中如何实现 Exactly-Once 语义">
 <meta property="og:url" content="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/index.html">
@@ -14,7 +14,7 @@
 <meta property="og:description" content="Exactly-once 语义是实时计算的难点之一。要做到每一条记录只会被处理一次，即使服务器或网络发生故障时也能保证没有遗漏，这不仅需要实时计算框架本身的支持，还对上游的消息系统、下游的数据存储有所要求。此外，我们在编写计算流程时也需要遵循一定规范，才能真正实现 Exactly-once。本文将讲述如何结合 Spark Streaming 框架、Kafka 消息系统、以及 MySQL 数据库来实">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://spark.apache.org/docs/latest/img/streaming-arch.png">
-<meta property="og:updated_time" content="2017-08-05T00:47:06.615Z">
+<meta property="og:updated_time" content="2017-08-01T04:54:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark Streaming 中如何实现 Exactly-Once 语义">
 <meta name="twitter:description" content="Exactly-once 语义是实时计算的难点之一。要做到每一条记录只会被处理一次，即使服务器或网络发生故障时也能保证没有遗漏，这不仅需要实时计算框架本身的支持，还对上游的消息系统、下游的数据存储有所要求。此外，我们在编写计算流程时也需要遵循一定规范，才能真正实现 Exactly-once。本文将讲述如何结合 Spark Streaming 框架、Kafka 消息系统、以及 MySQL 数据库来实">
@@ -160,7 +160,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" data-id="cjmu5v8qd0030n8r4cgiueoj4" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/" data-id="cjm1beghs0039b0zjdskhvnl3" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2017/08/01/how-to-achieve-exactly-once-semantics-in-spark-streaming/#disqus_thread" class="article-comment-link">留言</a>
       
