@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Spark DataSource API V2 | 张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Spark 1.3 引入了第一版的数据源 API，我们可以使用它将常见的数据格式整合到 Spark SQL 中。但是，随着 Spark 的不断发展，这一 API 也体现出了其局限性，故而 Spark 团队不得不加入越来越多的专有代码来编写数据源，以获得更好的性能。Spark 2.3 中，新一版的数据源 API 初见雏形，它克服了上一版 API 的种种问题，原来的数据源代码也在逐步重写。本文将演示这">
+<meta name="keywords" content="spark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark DataSource API V2">
+<meta property="og:url" content="http://shzhangji.com/cnblogs/2018/12/09/spark-datasource-api-v2/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta property="og:description" content="Spark 1.3 引入了第一版的数据源 API，我们可以使用它将常见的数据格式整合到 Spark SQL 中。但是，随着 Spark 的不断发展，这一 API 也体现出了其局限性，故而 Spark 团队不得不加入越来越多的专有代码来编写数据源，以获得更好的性能。Spark 2.3 中，新一版的数据源 API 初见雏形，它克服了上一版 API 的种种问题，原来的数据源代码也在逐步重写。本文将演示这">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-09T03:16:45.354Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spark DataSource API V2">
+<meta name="twitter:description" content="Spark 1.3 引入了第一版的数据源 API，我们可以使用它将常见的数据格式整合到 Spark SQL 中。但是，随着 Spark 的不断发展，这一 API 也体现出了其局限性，故而 Spark 团队不得不加入越来越多的专有代码来编写数据源，以获得更好的性能。Spark 2.3 中，新一版的数据源 API 初见雏形，它克服了上一版 API 的种种问题，原来的数据源代码也在逐步重写。本文将演示这">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/cnblogs/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
+  
+  <link rel="stylesheet" href="/cnblogs/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/cnblogs/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/cnblogs/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/cnblogs/">首页</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Digest">摘译</a>
+        
+          <a class="main-nav-link" href="/cnblogs/archives">全部文章</a>
+        
+          <a class="main-nav-link" href="http://shzhangji.com/">English</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/cnblogs/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com/cnblogs"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-spark-datasource-api-v2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2018/12/09/spark-datasource-api-v2/" class="article-date">
+  <time datetime="2018-12-09T03:10:59.000Z" itemprop="datePublished">2018-12-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Big-Data/">Big Data</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spark DataSource API V2
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Spark 1.3 引入了第一版的数据源 API，我们可以使用它将常见的数据格式整合到 Spark SQL 中。但是，随着 Spark 的不断发展，这一 API 也体现出了其局限性，故而 Spark 团队不得不加入越来越多的专有代码来编写数据源，以获得更好的性能。Spark 2.3 中，新一版的数据源 API 初见雏形，它克服了上一版 API 的种种问题，原来的数据源代码也在逐步重写。本文将演示这两版 API 的使用方法，比较它们的不同之处，以及新版 API 的优势在哪里。</p>
+<h2 id="DataSource-V1-API"><a href="#DataSource-V1-API" class="headerlink" title="DataSource V1 API"></a>DataSource V1 API</h2><p>V1 API 由一系列的抽象类和接口组成，它们位于 <a href="https://github.com/apache/spark/blob/v2.3.2/sql/core/src/main/scala/org/apache/spark/sql/sources/interfaces.scala" target="_blank" rel="noopener">spark/sql/sources/interfaces.scala</a> 文件中。主要的内容有：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">RelationProvider</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">createRelation</span></span>(sqlContext: <span class="type">SQLContext</span>, parameters: <span class="type">Map</span>[<span class="type">String</span>, <span class="type">String</span>]): <span class="type">BaseRelation</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseRelation</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">sqlContext</span></span>: <span class="type">SQLContext</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">schema</span></span>: <span class="type">StructType</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">TableScan</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buildScan</span></span>(): <span class="type">RDD</span>[<span class="type">Row</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过实现 <code>RelationProvider</code> 接口，表明该类是一种新定义的数据源，可以供 Spark SQL 取数所用。传入 <code>createRelation</code> 方法的参数可以用来做初始化，如文件路径、权限信息等。<code>BaseRelation</code> 抽象类则用来定义数据源的表结构，它的来源可以是数据库、Parquet 文件等外部系统，也可以直接由用户指定。该类还必须实现某个 <code>Scan</code> 接口，Spark 会调用 <code>buildScan</code> 方法来获取数据源的 RDD，我们将在下文看到。</p>
+<a id="more"></a>
+<h3 id="JdbcSourceV1"><a href="#JdbcSourceV1" class="headerlink" title="JdbcSourceV1"></a>JdbcSourceV1</h3><p>下面我们来使用 V1 API 实现一个通过 JDBC 读取数据库的自定义数据源。为简单起见，表结构信息是直接写死在代码里的，我们先从整表扫描开始。完整的代码可以在 GitHub（<a href="https://github.com/jizhang/spark-sandbox/blob/master/src/main/scala/datasource/JdbcExampleV1.scala" target="_blank" rel="noopener">链接</a>）中找到，数据源表则可以在这个 <a href="https://github.com/jizhang/spark-sandbox/blob/master/data/employee.sql" target="_blank" rel="noopener">链接</a> 中查看。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JdbcSourceV1</span> <span class="keyword">extends</span> <span class="title">RelationProvider</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">createRelation</span></span>(parameters: <span class="type">Map</span>[<span class="type">String</span>, <span class="type">String</span>]): <span class="type">BaseRelation</span> = &#123;</span><br><span class="line">    <span class="keyword">new</span> <span class="type">JdbcRelationV1</span>(parameters(<span class="string">"url"</span>))</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JdbcRelationV1</span>(<span class="params">url: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">BaseRelation</span> <span class="keyword">with</span> <span class="title">TableScan</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">schema</span></span>: <span class="type">StructType</span> = <span class="type">StructType</span>(<span class="type">Seq</span>(</span><br><span class="line">    <span class="type">StructField</span>(<span class="string">"id"</span>, <span class="type">IntegerType</span>),</span><br><span class="line">    <span class="type">StructField</span>(<span class="string">"emp_name"</span>, <span class="type">StringType</span>)</span><br><span class="line">  ))</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">buildScan</span></span>(): <span class="type">RDD</span>[<span class="type">Row</span>] = <span class="keyword">new</span> <span class="type">JdbcRDD</span>(url)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JdbcRDD</span>(<span class="params">url: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">RDD</span>[<span class="type">Row</span>] </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">compute</span></span>(): <span class="type">Iterator</span>[<span class="type">Row</span>] = &#123;</span><br><span class="line">    <span class="keyword">val</span> conn = <span class="type">DriverManager</span>.getConnection(url)</span><br><span class="line">    <span class="keyword">val</span> stmt = conn.prepareStatement(<span class="string">"SELECT * FROM employee"</span>)</span><br><span class="line">    <span class="keyword">val</span> rs = stmt.executeQuery()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">new</span> <span class="type">Iterator</span>[<span class="type">Row</span>] &#123;</span><br><span class="line">      <span class="function"><span class="keyword">def</span> <span class="title">hasNext</span></span>: <span class="type">Boolean</span> = rs.next()</span><br><span class="line">      <span class="function"><span class="keyword">def</span> <span class="title">next</span></span>: <span class="type">Row</span> = <span class="type">Row</span>(rs.getInt(<span class="string">"id"</span>), rs.getString(<span class="string">"emp_name"</span>))</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>JdbcRDD#compute</code> 负责实际的读取操作，它从上游获取到数据库连接信息、选取的字段、以及过滤条件，拼装 SQL 后执行，并返回一个 <code>Row</code> 类型的迭代器对象，每一行数据的结构和请求的字段列表相符。定义好数据源后，我们就可以用 <code>DataFrame</code> 对象来直接操作了：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> df = spark.read</span><br><span class="line">  .format(<span class="string">"JdbcSourceV2"</span>)</span><br><span class="line">  .option(<span class="string">"url"</span>, <span class="string">"jdbc:mysql://localhost/spark"</span>)</span><br><span class="line">  .load()</span><br><span class="line"></span><br><span class="line">df.printSchema()</span><br><span class="line">df.show()</span><br></pre></td></tr></table></figure>
+<p>上述代码输出的内容是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">root</span><br><span class="line"> |-- id: integer (nullable = true)</span><br><span class="line"> |-- emp_name: string (nullable = true)</span><br><span class="line"> |-- dep_name: string (nullable = true)</span><br><span class="line"> |-- salary: decimal(7,2) (nullable = true)</span><br><span class="line"> |-- age: decimal(3,0) (nullable = true)</span><br><span class="line"></span><br><span class="line">+---+--------+----------+-------+---+</span><br><span class="line">| id|emp_name|  dep_name| salary|age|</span><br><span class="line">+---+--------+----------+-------+---+</span><br><span class="line">|  1| Matthew|Management|4500.00| 55|</span><br><span class="line">|  2|  Olivia|Management|4400.00| 61|</span><br><span class="line">|  3|   Grace|Management|4000.00| 42|</span><br><span class="line">|  4|     Jim|Production|3700.00| 35|</span><br><span class="line">|  5|   Alice|Production|3500.00| 24|</span><br><span class="line">+---+--------+----------+-------+---+</span><br></pre></td></tr></table></figure>
+<h3 id="V1-API-的局限性"><a href="#V1-API-的局限性" class="headerlink" title="V1 API 的局限性"></a>V1 API 的局限性</h3><p>我们可以看到，V1 API 使用起来非常方便，因此能够满足 Spark SQL 初期的需求，但也不免存在很多局限性：</p>
+<h4 id="依赖上层-API"><a href="#依赖上层-API" class="headerlink" title="依赖上层 API"></a>依赖上层 API</h4><p><code>createRelation</code> 接收 <code>SQLContext</code> 作为参数；<code>buildScan</code> 方法返回的是 <code>RDD[Row]</code> 类型；而在实现写操作时，<code>insert</code> 方法会直接接收 <code>DataFrame</code> 类型的参数：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">InsertableRelation</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">insert</span></span>(data: <span class="type">DataFrame</span>, overwrite: <span class="type">Boolean</span>): <span class="type">Unit</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这些类型都属于较为上层的 Spark API，其中某些类已经发生了变化，如 <code>SQLContext</code> 已被 <code>SparkSession</code> 取代，而 <code>DataFrame</code> 也改为了 <code>Dataset[Row]</code> 类型的一个别称。这些改变不应该体现到底层的数据源 API 中。</p>
+<h4 id="难以添加新的优化算子"><a href="#难以添加新的优化算子" class="headerlink" title="难以添加新的优化算子"></a>难以添加新的优化算子</h4><p>除了上文中的 <code>TableScan</code> 接口，V1 API 还提供了 <code>PrunedScan</code> 接口，用来裁剪不需要的字段；<code>PrunedFilteredScan</code> 接口则可以将过滤条件下推到数据源中。在 <code>JdbcSourceV1</code> 示例中，这类下推优化会体现在 SQL 语句里：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JdbcRelationV1</span> <span class="keyword">extends</span> <span class="title">BaseRelation</span> <span class="keyword">with</span> <span class="title">PrunedFilteredScan</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buildScan</span></span>(requiredColumns: <span class="type">Array</span>[<span class="type">String</span>], filters: <span class="type">Array</span>[<span class="type">Filter</span>]) = &#123;</span><br><span class="line">    <span class="keyword">new</span> <span class="type">JdbcRDD</span>(requiredColumns, filters)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JdbcRDD</span>(<span class="params">columns: <span class="type">Array</span>[<span class="type">String</span>], filters: <span class="type">Array</span>[<span class="type">Filter</span>]</span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">compute</span></span>() = &#123;</span><br><span class="line">    <span class="keyword">val</span> wheres = filters.flatMap &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="type">EqualTo</span>(attribute, value) =&gt; <span class="type">Some</span>(<span class="string">s"<span class="subst">$attribute</span> = '<span class="subst">$value</span>'"</span>)</span><br><span class="line">      <span class="keyword">case</span> _ =&gt; <span class="type">None</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">val</span> sql = <span class="string">s"SELECT <span class="subst">$&#123;columns.mkString(", ")&#125;</span> FROM employee WHERE <span class="subst">$&#123;wheres.mkString(" AND ")&#125;</span>"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果我们想添加新的优化算子（如 LIMIT 子句），就不免要引入一系列的 <code>Scan</code> 接口组合：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">LimitedScan</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buildScan</span></span>(limit: <span class="type">Int</span>): <span class="type">RDD</span>[<span class="type">Row</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">PrunedLimitedScan</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buildScan</span></span>(requiredColumns: <span class="type">Array</span>[<span class="type">String</span>], limit: <span class="type">Int</span>): <span class="type">RDD</span>[<span class="type">Row</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">PrunedFilteredLimitedScan</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buildScan</span></span>(requiredColumns: <span class="type">Array</span>[<span class="type">String</span>], filters: <span class="type">Array</span>[<span class="type">Filter</span>], limit: <span class="type">Int</span>): <span class="type">RDD</span>[<span class="type">Row</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="难以传递分区信息"><a href="#难以传递分区信息" class="headerlink" title="难以传递分区信息"></a>难以传递分区信息</h4><p>对于支持数据分区的数据源，如 HDFS、Kafka 等，V1 API 没有提供原生的支持，因而也不能利用数据局部性（Data Locality）。我们需要自己继承 RDD 来实现，比如下面的代码就对 Kafka 数据源进行了分区，并告知 Spark 可以将数据读取操作放入 Kafka Broker 所在的服务器上执行，以提升效率：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">KafkaPartition</span>(<span class="params">partitionId: <span class="type">Int</span>, leaderHost: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">Partition</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">index</span></span>: <span class="type">Int</span> = partitionId</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KafkaRDD</span>(<span class="params">sc: <span class="type">SparkContext</span></span>) <span class="keyword">extends</span> <span class="title">RDD</span>[<span class="type">Row</span>](<span class="params">sc, <span class="type">Nil</span></span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">getPartitions</span></span>: <span class="type">Array</span>[<span class="type">Partition</span>] = <span class="type">Array</span>(</span><br><span class="line">    <span class="comment">// populate with Kafka PartitionInfo</span></span><br><span class="line">    <span class="type">KafkaPartition</span>(<span class="number">0</span>, <span class="string">"broker_0"</span>),</span><br><span class="line">    <span class="type">KafkaPartition</span>(<span class="number">1</span>, <span class="string">"broker_1"</span>)</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">getPreferredLocations</span></span>(split: <span class="type">Partition</span>): <span class="type">Seq</span>[<span class="type">String</span>] = <span class="type">Seq</span>(</span><br><span class="line">    split.asInstanceOf[<span class="type">KafkaPartition</span>].leaderHost</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此外，类似 Cassandra 这样的数据库，会按主键对数据进行分片。那么，如果查询语句中包含了按该主键进行分组的子句，Spark 就可以省去一次 Shuffle 操作。这在 V1 API 中也是不支持的，而 V2 API 则提供了 <a href="https://github.com/apache/spark/blob/v2.3.2/sql/core/src/main/java/org/apache/spark/sql/sources/v2/reader/SupportsReportPartitioning.java" target="_blank" rel="noopener"><code>SupportsReportPartitioning</code></a> 接口来支持。</p>
+<h4 id="缺少事务性的写操作"><a href="#缺少事务性的写操作" class="headerlink" title="缺少事务性的写操作"></a>缺少事务性的写操作</h4><p>Spark 任务是有可能失败的，使用 V1 API 时就会留下部分写入的数据。当然，对于 HDFS 这样的文件系统来说问题不大，因为可以用 <code>_SUCCESS</code> 来标记该次写操作是否执行成功。但这一逻辑也需要最终用户来实现，而 V2 API 则提供了明确的接口来支持事务性的写操作。</p>
+<h4 id="缺少列存储和流式计算支持"><a href="#缺少列存储和流式计算支持" class="headerlink" title="缺少列存储和流式计算支持"></a>缺少列存储和流式计算支持</h4><p>Spark SQL 目前已支持列存储和流式计算，但两者都不是用 V1 API 实现的。<code>ParquetFileFormat</code> 和 <code>KafkaSource</code> 等类型都使用了专有代码和内部 API。这些特性也在 V2 API 中得到支持。</p>
+<h2 id="DataSource-V2-API"><a href="#DataSource-V2-API" class="headerlink" title="DataSource V2 API"></a>DataSource V2 API</h2><p>V2 API 首先使用了一个标记性的 <code>DataSourceV2</code> 接口，实现了该接口的类还必须实现 <code>ReadSupport</code> 或 <code>WriteSupport</code>，用来表示自身支持读或写操作。<code>ReadSupport</code> 接口中的方法会被用来创建 <code>DataSourceReader</code> 类，同时接收到初始化参数；该类继而创建 <code>DataReaderFactory</code> 和 <code>DataReader</code> 类，后者负责真正的读操作，接口中定义的方法和迭代器类似。此外，<code>DataSourceReader</code> 还可以实现各类 <code>Support</code> 接口，表明自己支持某些优化下推操作，如裁剪字段、过滤条件等。<code>WriteSupport</code> API 的层级结构与之类似。这些接口都是用 Java 语言编写，以获得更好的交互支持。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DataSourceV2</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ReadSupport</span> <span class="keyword">extends</span> <span class="title">DataSourceV2</span> </span>&#123;</span><br><span class="line">  <span class="function">DataSourceReader <span class="title">createReader</span><span class="params">(DataSourceOptions options)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DataSourceReader</span> </span>&#123;</span><br><span class="line">  <span class="function">StructType <span class="title">readSchema</span><span class="params">()</span></span>;</span><br><span class="line">  List&lt;DataReaderFactory&lt;Row&gt;&gt; createDataReaderFactories();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SupportsPushDownRequiredColumns</span> <span class="keyword">extends</span> <span class="title">DataSourceReader</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">pruneColumns</span><span class="params">(StructType requiredSchema)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DataReaderFactory</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">  <span class="function">DataReader&lt;T&gt; <span class="title">createDataReader</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DataReader</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">Closeable</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">boolean</span> <span class="title">next</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function">T <span class="title">get</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可能你会注意到，<code>DataSourceReader#createDataReaderFactories</code> 仍然捆绑了 <code>Row</code> 类型，这是因为目前 V2 API 只支持 <code>Row</code> 类型的返回值，且这套 API 仍处于进化状态（Evolving）。</p>
+<h3 id="JdbcSourceV2"><a href="#JdbcSourceV2" class="headerlink" title="JdbcSourceV2"></a>JdbcSourceV2</h3><p>让我们使用 V2 API 来重写 JDBC 数据源。下面是一个整表扫描的示例，完整代码可以在 GitHub（<a href="https://github.com/jizhang/spark-sandbox/blob/master/src/main/scala/datasource/JdbcExampleV2.scala" target="_blank" rel="noopener">链接</a>）上查看。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JdbcDataSourceReader</span> <span class="keyword">extends</span> <span class="title">DataSourceReader</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">readSchema</span> </span>= <span class="type">StructType</span>(<span class="type">Seq</span>(</span><br><span class="line">    <span class="type">StructField</span>(<span class="string">"id"</span>, <span class="type">IntegerType</span>),</span><br><span class="line">    <span class="type">StructField</span>(<span class="string">"emp_name"</span>, <span class="type">StringType</span>)</span><br><span class="line">  ))</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">createDataReaderFactories</span></span>() = &#123;</span><br><span class="line">    <span class="type">Seq</span>(<span class="keyword">new</span> <span class="type">JdbcDataReaderFactory</span>(url)).asJava</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JdbcDataReader</span>(<span class="params">url: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">DataReader</span>[<span class="type">Row</span>] </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">var</span> conn: <span class="type">Connection</span> = <span class="literal">null</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">var</span> rs: <span class="type">ResultSet</span> = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">next</span></span>() = &#123;</span><br><span class="line">    <span class="keyword">if</span> (rs == <span class="literal">null</span>) &#123;</span><br><span class="line">      conn = <span class="type">DriverManager</span>.getConnection(url)</span><br><span class="line">      <span class="keyword">val</span> stmt = conn.prepareStatement(<span class="string">"SELECT * FROM employee"</span>)</span><br><span class="line">      rs = stmt.executeQuery()</span><br><span class="line">    &#125;</span><br><span class="line">    rs.next()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">get</span></span>() = <span class="type">Row</span>(rs.getInt(<span class="string">"id"</span>), rs.getString(<span class="string">"emp_name"</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="裁剪字段"><a href="#裁剪字段" class="headerlink" title="裁剪字段"></a>裁剪字段</h4><p>通过实现 <code>SupportsPushDownRequiredColumns</code> 接口，Spark 会调用其 <code>pruneColumns</code> 方法，传入用户所指定的字段列表（<code>StructType</code>），<code>DataSourceReader</code> 可以将该信息传给 <code>DataReader</code> 使用。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JdbcDataSourceReader</span> <span class="keyword">with</span> <span class="title">SupportsPushDownRequiredColumns</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> requiredSchema = <span class="type">JdbcSourceV2</span>.schema</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">pruneColumns</span></span>(requiredSchema: <span class="type">StructType</span>)  = &#123;</span><br><span class="line">    <span class="keyword">this</span>.requiredSchema = requiredSchema</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">createDataReaderFactories</span></span>() = &#123;</span><br><span class="line">    <span class="keyword">val</span> columns = requiredSchema.fields.map(_.name)</span><br><span class="line">    <span class="type">Seq</span>(<span class="keyword">new</span> <span class="type">JdbcDataReaderFactory</span>(columns)).asJava</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以用 <code>df.explain(true)</code> 来验证执行计划。例如，<code>SELECT emp_name, age FROM employee</code> 语句的执行计划在优化前后是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">== Analyzed Logical Plan ==</span><br><span class="line">emp_name: string, age: decimal(3,0)</span><br><span class="line">Project [emp_name#1, age#4]</span><br><span class="line">+- SubqueryAlias employee</span><br><span class="line">   +- DataSourceV2Relation [id#0, emp_name#1, dep_name#2, salary#3, age#4], datasource.JdbcDataSourceReader@15ceeb42</span><br><span class="line"></span><br><span class="line">== Optimized Logical Plan ==</span><br><span class="line">Project [emp_name#1, age#4]</span><br><span class="line">+- DataSourceV2Relation [emp_name#1, age#4], datasource.JdbcDataSourceReader@15ceeb42</span><br></pre></td></tr></table></figure>
+<p>可以看到，字段裁剪被反映到了数据源中。如果我们将实际执行的 SQL 语句打印出来，也能看到字段裁剪下推的结果。</p>
+<h4 id="过滤条件"><a href="#过滤条件" class="headerlink" title="过滤条件"></a>过滤条件</h4><p>类似的，实现 <code>SupportsPushDownFilters</code> 接口可以将过滤条件下推到数据源中：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JdbcDataSourceReader</span> <span class="keyword">with</span> <span class="title">SupportsPushDownFilters</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> filters = <span class="type">Array</span>.empty[<span class="type">Filter</span>]</span><br><span class="line">  <span class="keyword">var</span> wheres = <span class="type">Array</span>.empty[<span class="type">String</span>]</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">pushFilters</span></span>(filters: <span class="type">Array</span>[<span class="type">Filter</span>]) = &#123;</span><br><span class="line">    <span class="keyword">val</span> supported = <span class="type">ListBuffer</span>.empty[<span class="type">Filter</span>]</span><br><span class="line">    <span class="keyword">val</span> unsupported = <span class="type">ListBuffer</span>.empty[<span class="type">Filter</span>]</span><br><span class="line">    <span class="keyword">val</span> wheres = <span class="type">ListBuffer</span>.empty[<span class="type">String</span>]</span><br><span class="line"></span><br><span class="line">    filters.foreach &#123;</span><br><span class="line">      <span class="keyword">case</span> filter: <span class="type">EqualTo</span> =&gt; &#123;</span><br><span class="line">        supported += filter</span><br><span class="line">        wheres += <span class="string">s"<span class="subst">$&#123;filter.attribute&#125;</span> = '<span class="subst">$&#123;filter.value&#125;</span>'"</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">case</span> filter =&gt; unsupported += filter</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.filters = supported.toArray</span><br><span class="line">    <span class="keyword">this</span>.wheres = wheres.toArray</span><br><span class="line">    unsupported.toArray</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">pushedFilters</span> </span>= filters</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">createDataReaderFactories</span></span>() = &#123;</span><br><span class="line">    <span class="type">Seq</span>(<span class="keyword">new</span> <span class="type">JdbcDataReaderFactory</span>(wheres)).asJava</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="多分区支持"><a href="#多分区支持" class="headerlink" title="多分区支持"></a>多分区支持</h4><p><code>createDataReaderFactories</code> 返回的是列表类型，每个读取器都会产生一个 RDD 分区。如果我们想开启多个读取任务，就可以生成多个读取器工厂，并为每个读取器限定主键范围：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">createDataReaderFactories</span></span>() = &#123;</span><br><span class="line">  <span class="type">Seq</span>((<span class="number">1</span>, <span class="number">6</span>), (<span class="number">7</span>, <span class="number">11</span>)).map &#123; <span class="keyword">case</span> (minId, maxId) =&gt;</span><br><span class="line">    <span class="keyword">val</span> partition = <span class="string">s"id BETWEEN <span class="subst">$minId</span> AND <span class="subst">$maxId</span>"</span></span><br><span class="line">    <span class="keyword">new</span> <span class="type">JdbcDataReaderFactory</span>(partition)</span><br><span class="line">  &#125;.asJava</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="事务性的写操作"><a href="#事务性的写操作" class="headerlink" title="事务性的写操作"></a>事务性的写操作</h3><p>V2 API 提供了两组 <code>commit</code> / <code>abort</code> 方法，用来实现事务性的写操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DataSourceWriter</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">commit</span><span class="params">(WriterCommitMessage[] messages)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">abort</span><span class="params">(WriterCommitMessage[] messages)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DataWriter</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">write</span><span class="params">(T record)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line">  <span class="function">WriterCommitMessage <span class="title">commit</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">abort</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>DataSourceWriter</code> 在 Spark Driver 中执行，<code>DataWriter</code> 则运行在其他节点的 Spark Executor 上。当 <code>DataWriter</code> 成功执行了写操作，就会将提交信息传递给 Driver；当 <code>DataSourceWriter</code> 收集到了所有写任务的提交信息，就会执行最终的提交操作。如果某个写任务失败了，它的 <code>abort</code> 方法会得到执行；如果经过多轮重试后仍然失败，则所有写任务的 <code>abort</code> 方法都会被调用，进行数据清理操作。</p>
+<h3 id="列存储与流式计算支持"><a href="#列存储与流式计算支持" class="headerlink" title="列存储与流式计算支持"></a>列存储与流式计算支持</h3><p>这两个特性仍处于实验性阶段，在 Spark 中还没有得到使用。简单来说，<code>DataSourceReader</code> 类可以实现 <code>SupportsScanColumnarBatch</code> 接口来声明自己会返回 <code>ColumnarBatch</code> 对象，这个对象是 Spark 内部用来存放列式数据的。对于流式数据，则有 <code>MicroBatchReader</code> 和 <code>ContinuousReader</code> 这两个接口，感兴趣的读者可以到 Spark <a href="https://github.com/apache/spark/blob/v2.3.2/sql/core/src/test/scala/org/apache/spark/sql/sources/v2/DataSourceV2Suite.scala" target="_blank" rel="noopener">单元测试</a> 代码中查看。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://blog.madhukaraphatak.com/spark-datasource-v2-part-1/" target="_blank" rel="noopener">http://blog.madhukaraphatak.com/spark-datasource-v2-part-1/</a></li>
+<li><a href="https://databricks.com/session/apache-spark-data-source-v2" target="_blank" rel="noopener">https://databricks.com/session/apache-spark-data-source-v2</a></li>
+<li><a href="https://databricks.com/blog/2015/01/09/spark-sql-data-sources-api-unified-data-access-for-the-spark-platform.html" target="_blank" rel="noopener">https://databricks.com/blog/2015/01/09/spark-sql-data-sources-api-unified-data-access-for-the-spark-platform.html</a></li>
+<li><a href="https://developer.ibm.com/code/2018/04/16/introducing-apache-spark-data-sources-api-v2/" target="_blank" rel="noopener">https://developer.ibm.com/code/2018/04/16/introducing-apache-spark-data-sources-api-v2/</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2018/12/09/spark-datasource-api-v2/" data-id="cjpgb9p9f004em8r4tnmgyc0r" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2018/12/09/spark-datasource-api-v2/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/spark/">spark</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/cnblogs/2018/10/04/flume-source-code-hdfs-sink/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Flume 源码解析：HDFS Sink</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Python数据平台</h3>
+    <div class="widget">
+      <img src="/cnblogs/images/pydp-qrcode.jpg" style="width: 100%;"></img>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.25px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 17.5px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/eclipse/" style="font-size: 10px;">eclipse</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/eslint/" style="font-size: 10px;">eslint</a> <a href="/cnblogs/tags/etl/" style="font-size: 12.5px;">etl</a> <a href="/cnblogs/tags/flume/" style="font-size: 12.5px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 12.5px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.25px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 12.5px;">hadoop</a> <a href="/cnblogs/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/cnblogs/tags/hdfs/" style="font-size: 10px;">hdfs</a> <a href="/cnblogs/tags/hive/" style="font-size: 13.75px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 17.5px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 15px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 11.25px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.25px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.25px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 12.5px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.25px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.25px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.25px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 18.75px;">python</a> <a href="/cnblogs/tags/react/" style="font-size: 10px;">react</a> <a href="/cnblogs/tags/restful/" style="font-size: 10px;">restful</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.5px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.25px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 12.5px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.25px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 13.75px;">stream processing</a> <a href="/cnblogs/tags/tensorflow/" style="font-size: 10px;">tensorflow</a> <a href="/cnblogs/tags/thrift/" style="font-size: 10px;">thrift</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 17.5px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/09/">九月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/04/">四月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/cnblogs/2018/12/09/spark-datasource-api-v2/">Spark DataSource API V2</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/10/04/flume-source-code-hdfs-sink/">Flume 源码解析：HDFS Sink</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/09/22/how-to-avoid-null-pointer-exception/">Java 空指针异常的若干解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/09/14/is-it-necessary-to-apply-eslint-jsx-no-bind-rule/">是否需要使用 ESLint jsx-no-bind 规则？</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/05/14/serve-tensorflow-estimator-with-savedmodel/">TensorFlow 模型如何对外提供服务</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg"></a>
+      <br>
+      &copy; 2018 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/cnblogs/" class="mobile-nav-link">首页</a>
+  
+    <a href="/cnblogs/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/cnblogs/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/cnblogs/categories/Digest" class="mobile-nav-link">摘译</a>
+  
+    <a href="/cnblogs/archives" class="mobile-nav-link">全部文章</a>
+  
+    <a href="http://shzhangji.com/" class="mobile-nav-link">English</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  var disqus_url = 'http://shzhangji.com/cnblogs/2018/12/09/spark-datasource-api-v2/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="/cnblogs/js/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">
+  <script src="/cnblogs/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/cnblogs/js/script.js"></script>
+
+  </div>
+</body>
+</html>
