@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>使用 Apache Flink 开发实时 ETL | 张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Apache Flink 是大数据领域又一新兴框架。它与 Spark 的不同之处在于，它是使用流式处理来模拟批量处理的，因此能够提供亚秒级的、符合 Exactly-once 语义的实时处理能力。Flink 的使用场景之一是构建实时的数据通道，在不同的存储之间搬运和转换数据。本文将介绍如何使用 Flink 开发实时 ETL 程序，并介绍 Flink 是如何保证其 Exactly-once 语义的。">
+<meta name="keywords" content="etl,java,kafka,flink,hdfs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Apache Flink 开发实时 ETL">
+<meta property="og:url" content="http://shzhangji.com/cnblogs/2018/12/30/real-time-exactly-once-etl-with-apache-flink/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta property="og:description" content="Apache Flink 是大数据领域又一新兴框架。它与 Spark 的不同之处在于，它是使用流式处理来模拟批量处理的，因此能够提供亚秒级的、符合 Exactly-once 语义的实时处理能力。Flink 的使用场景之一是构建实时的数据通道，在不同的存储之间搬运和转换数据。本文将介绍如何使用 Flink 开发实时 ETL 程序，并介绍 Flink 是如何保证其 Exactly-once 语义的。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/flink/arch.png">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/flink/dashboard.png">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/flink/stream-barrier.png">
+<meta property="og:updated_time" content="2018-12-30T04:48:01.830Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 Apache Flink 开发实时 ETL">
+<meta name="twitter:description" content="Apache Flink 是大数据领域又一新兴框架。它与 Spark 的不同之处在于，它是使用流式处理来模拟批量处理的，因此能够提供亚秒级的、符合 Exactly-once 语义的实时处理能力。Flink 的使用场景之一是构建实时的数据通道，在不同的存储之间搬运和转换数据。本文将介绍如何使用 Flink 开发实时 ETL 程序，并介绍 Flink 是如何保证其 Exactly-once 语义的。">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/flink/arch.png">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/cnblogs/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
+  
+  <link rel="stylesheet" href="/cnblogs/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/cnblogs/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/cnblogs/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/cnblogs/">首页</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Digest">摘译</a>
+        
+          <a class="main-nav-link" href="/cnblogs/archives">全部文章</a>
+        
+          <a class="main-nav-link" href="http://shzhangji.com/">English</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/cnblogs/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com/cnblogs"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-real-time-exactly-once-etl-with-apache-flink" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2018/12/30/real-time-exactly-once-etl-with-apache-flink/" class="article-date">
+  <time datetime="2018-12-30T04:39:06.000Z" itemprop="datePublished">2018-12-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Big-Data/">Big Data</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用 Apache Flink 开发实时 ETL
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Apache Flink 是大数据领域又一新兴框架。它与 Spark 的不同之处在于，它是使用流式处理来模拟批量处理的，因此能够提供亚秒级的、符合 Exactly-once 语义的实时处理能力。Flink 的使用场景之一是构建实时的数据通道，在不同的存储之间搬运和转换数据。本文将介绍如何使用 Flink 开发实时 ETL 程序，并介绍 Flink 是如何保证其 Exactly-once 语义的。</p>
+<p><img src="/cnblogs/images/flink/arch.png" alt="Apache Flink"></p>
+<h2 id="示例程序"><a href="#示例程序" class="headerlink" title="示例程序"></a>示例程序</h2><p>让我们来编写一个从 Kafka 抽取数据到 HDFS 的程序。数据源是一组事件日志，其中包含了事件发生的时间，以时间戳的方式存储。我们需要将这些日志按事件时间分别存放到不同的目录中，即按日分桶。时间日志示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;timestamp&quot;:1545184226.432,&quot;event&quot;:&quot;page_view&quot;,&quot;uuid&quot;:&quot;ac0e50bf-944c-4e2f-bbf5-a34b22718e0c&quot;&#125;</span><br><span class="line">&#123;&quot;timestamp&quot;:1545184602.640,&quot;event&quot;:&quot;adv_click&quot;,&quot;uuid&quot;:&quot;9b220808-2193-44d1-a0e9-09b9743dec55&quot;&#125;</span><br><span class="line">&#123;&quot;timestamp&quot;:1545184608.969,&quot;event&quot;:&quot;thumbs_up&quot;,&quot;uuid&quot;:&quot;b44c3137-4c91-4f36-96fb-80f56561c914&quot;&#125;</span><br></pre></td></tr></table></figure>
+<p>产生的目录结构为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/user/flink/event_log/dt=20181219/part-0-1</span><br><span class="line">/user/flink/event_log/dt=20181220/part-1-9</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h3 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h3><p>Flink 应用程序需要使用 Java 8 编写，我们可以使用 Maven 模板创建项目：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mvn archetype:generate \</span><br><span class="line">  -DarchetypeGroupId=org.apache.flink \</span><br><span class="line">  -DarchetypeArtifactId=flink-quickstart-java \</span><br><span class="line">  -DarchetypeVersion=1.7.0</span><br></pre></td></tr></table></figure>
+<p>将生成好的代码导入到 IDE 中，可以看到名为 <code>StreamingJob</code> 的文件，我们由此开始编写程序。</p>
+<h3 id="Kafka-数据源"><a href="#Kafka-数据源" class="headerlink" title="Kafka 数据源"></a>Kafka 数据源</h3><p>Flink 对 Kafka 数据源提供了 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.7/dev/connectors/kafka.html" target="_blank" rel="noopener">原生支持</a>，我们需要选择正确的 Kafka 依赖版本，将其添加到 POM 文件中：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.flink<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flink-connector-kafka-0.10_$&#123;scala.binary.version&#125;<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;flink.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>测试过程中，我们需要一个能够运行的 Kafka 服务，读者可以参照 <a href="https://kafka.apache.org/quickstart" target="_blank" rel="noopener">官方文档</a> 搭建本地服务。在 Flink 中初始化 Kafka 数据源时，传入服务器名和主题名就可以了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Properties props = <span class="keyword">new</span> Properties();</span><br><span class="line">props.setProperty(<span class="string">"bootstrap.servers"</span>, <span class="string">"localhost:9092"</span>);</span><br><span class="line">FlinkKafkaConsumer010&lt;String&gt; consumer = <span class="keyword">new</span> FlinkKafkaConsumer010&lt;&gt;(</span><br><span class="line">    <span class="string">"flink_test"</span>, <span class="keyword">new</span> SimpleStringSchema(), props);</span><br><span class="line">DataStream&lt;String&gt; stream = env.addSource(consumer);</span><br></pre></td></tr></table></figure>
+<p>Flink 会连接本地的 Kafka 服务，读取 <code>flink_test</code> 主题中的数据，转换成字符串后返回。除了 <code>SimpleStringSchema</code>，Flink 还提供了其他内置的反序列化方式，如 JSON、Avro 等，我们也可以编写自定义逻辑。</p>
+<h3 id="流式文件存储"><a href="#流式文件存储" class="headerlink" title="流式文件存储"></a>流式文件存储</h3><p><code>StreamingFileSink</code> 替代了先前的 <code>BucketingSink</code>，用来将上游数据存储到 HDFS 的不同目录中。它的核心逻辑是分桶，默认的分桶方式是 <code>DateTimeBucketAssigner</code>，即按照处理时间分桶。处理时间指的是消息到达 Flink 程序的时间，这点并不符合我们的需求。因此，我们需要自己编写代码将事件时间从消息体中解析出来，按规则生成分桶的名称：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EventTimeBucketAssigner</span> <span class="keyword">implements</span> <span class="title">BucketAssigner</span>&lt;<span class="title">String</span>, <span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">getBucketId</span><span class="params">(String element, Context context)</span> </span>&#123;</span><br><span class="line">    JsonNode node = mapper.readTree(element);</span><br><span class="line">    <span class="keyword">long</span> date = (<span class="keyword">long</span>) (node.path(<span class="string">"timestamp"</span>).floatValue() * <span class="number">1000</span>);</span><br><span class="line">    String partitionValue = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyyMMdd"</span>).format(<span class="keyword">new</span> Date(date));</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"dt="</span> + partitionValue;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码会使用 Jackson 库对消息体进行解析，将时间戳转换成日期字符串，添加前缀后返回。如此一来，<code>StreamingFileSink</code> 就能知道应该将当前记录放置到哪个目录中了。完整代码可以参考 GitHub（<a href="https://github.com/jizhang/flink-sandbox/blob/master/src/main/java/com/shzhangji/flinksandbox/kafka/EventTimeBucketAssigner.java" target="_blank" rel="noopener">链接</a>）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">StreamingFileSink&lt;String&gt; sink = StreamingFileSink</span><br><span class="line">    .forRowFormat(<span class="keyword">new</span> Path(<span class="string">"/tmp/kafka-loader"</span>), <span class="keyword">new</span> SimpleStringEncoder&lt;String&gt;())</span><br><span class="line">    .withBucketAssigner(<span class="keyword">new</span> EventTimeBucketAssigner())</span><br><span class="line">    .build();</span><br><span class="line">stream.addSink(sink);</span><br></pre></td></tr></table></figure>
+<p><code>forRowFormat</code> 表示输出的文件是按行存储的，对应的有 <code>forBulkFormat</code>，可以将输出结果用 Parquet 等格式进行压缩存储。</p>
+<p>关于 <code>StreamingFileSink</code> 还有一点要注意，它只支持 Hadoop 2.7 以上的版本，因为需要用到高版本文件系统提供的 <code>truncate</code> 方法来实现故障恢复，这点下文会详述。</p>
+<h3 id="开启检查点"><a href="#开启检查点" class="headerlink" title="开启检查点"></a>开启检查点</h3><p>代码编写到这里，其实已经可以通过 <code>env.execute()</code> 来运行了。但是，它只能保证 At-least-once 语义，即消息有可能会被重复处理。要做到 Exactly-once，我们还需要开启 Flink 的检查点功能：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">env.enableCheckpointing(<span class="number">60_000</span>);</span><br><span class="line">env.setStateBackend((StateBackend) <span class="keyword">new</span> FsStateBackend(<span class="string">"/tmp/flink/checkpoints"</span>));</span><br><span class="line">env.getCheckpointConfig().enableExternalizedCheckpoints(</span><br><span class="line">    ExternalizedCheckpointCleanup.DELETE_ON_CANCELLATION);</span><br></pre></td></tr></table></figure>
+<p>检查点（Checkpoint）是 Flink 的故障恢复机制，同样会在下文详述。代码中，我们将状态存储方式由 <code>MemoryStateBackend</code> 修改为了 <code>FsStateBackend</code>，即使用外部文件系统，如 HDFS，来保存应用程序的中间状态，这样当 Flink JobManager 宕机时，也可以恢复过来。Flink 还支持 <code>RocksDBStateBackend</code>，用来存放较大的中间状态，并能支持增量的状态更新。</p>
+<h3 id="提交与管理脚本"><a href="#提交与管理脚本" class="headerlink" title="提交与管理脚本"></a>提交与管理脚本</h3><p>Flink 程序可以直接在 IDE 中调试。我们也可以搭建一个本地的 Flink 集群，并通过 Flink CLI 命令行工具来提交脚本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/flink run -c com.shzhangji.flinksandbox.kafka.KafkaLoader target/flink-sandbox-0.1.0.jar</span><br></pre></td></tr></table></figure>
+<p>脚本的运行状态可以在 Flink 仪表盘中查看：</p>
+<p><img src="/cnblogs/images/flink/dashboard.png" alt="Flink Dashboard"></p>
+<h4 id="使用暂存点来停止和恢复脚本"><a href="#使用暂存点来停止和恢复脚本" class="headerlink" title="使用暂存点来停止和恢复脚本"></a>使用暂存点来停止和恢复脚本</h4><p>当需要暂停脚本、或对程序逻辑进行修改时，我们需要用到 Flink 的暂存点机制（Savepoint）。暂存点和检查点类似，同样保存的是 Flink 各个算子的状态数据（Operator State）。不同的是，暂存点主要用于人为的脚本更替，而检查点则主要由 Flink 控制，用来实现故障恢复。<code>flink cancel -s</code> 命令可以在停止脚本的同时创建一个暂存点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ bin/flink cancel -s /tmp/flink/savepoints 1253cc85e5c702dbe963dd7d8d279038</span><br><span class="line">Cancelled job 1253cc85e5c702dbe963dd7d8d279038. Savepoint stored in file:/tmp/flink/savepoints/savepoint-1253cc-0df030f4f2ee.</span><br></pre></td></tr></table></figure>
+<p>具体到我们的 ETL 示例程序，暂存点中保存了当前 Kafka 队列的消费位置、正在写入的文件名等。当需要从暂存点恢复执行时，可以使用 <code>flink run -s</code> 传入目录位置。Flink 会从指定偏移量读取消息队列，并处理好中间结果文件，确保没有缺失或重复的数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flink run -s /tmp/flink/savepoints/savepoint-1253cc-0df030f4f2ee -c com.shzhangji.flinksandbox.kafka.KafkaLoader target/flink-sandbox-0.1.0.jar</span><br></pre></td></tr></table></figure>
+<h4 id="在-YARN-上运行"><a href="#在-YARN-上运行" class="headerlink" title="在 YARN 上运行"></a>在 YARN 上运行</h4><p>要将脚本提交到 YARN 集群上运行，同样是使用 <code>flink run</code> 命令。首先将代码中指定文件目录的部分添加上 HDFS 前缀，如 <code>hdfs://localhost:9000/</code>，重新打包后执行下列命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ export HADOOP_CONF_DIR=/path/to/hadoop/conf</span><br><span class="line">$ bin/flink run -m yarn-cluster -c com.shzhangji.flinksandbox.kafka.KafkaLoader target/flink-sandbox-0.1.0.jar</span><br><span class="line">Submitted application application_1545534487726_0001</span><br></pre></td></tr></table></figure>
+<p>Flink 仪表盘会在 YARN Application Master 中运行，我们可以通过 ResourceManager 界面进入。返回的应用 ID 可以用来管理脚本，添加 <code>-yid</code> 参数即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/flink cancel -s hdfs://localhost:9000/tmp/flink/savepoints -yid application_1545534487726_0001 84de00a5e193f26c937f72a9dc97f386</span><br></pre></td></tr></table></figure>
+<h2 id="Flink-如何保证-Exactly-once-语义"><a href="#Flink-如何保证-Exactly-once-语义" class="headerlink" title="Flink 如何保证 Exactly-once 语义"></a>Flink 如何保证 Exactly-once 语义</h2><p>Flink 实时处理程序可以分为三个部分，数据源、处理流程、以及输出。不同的数据源和输出提供了不同的语义保证，Flink 统称为 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.7/dev/connectors/guarantees.html" target="_blank" rel="noopener">连接器</a>。处理流程则能提供 Exactly-once 或 At-least-once 语义，需要看检查点是否开启。</p>
+<h3 id="实时处理与检查点"><a href="#实时处理与检查点" class="headerlink" title="实时处理与检查点"></a>实时处理与检查点</h3><p>Flink 的检查点机制是基于 Chandy-Lamport 算法的：Flink 会定时在数据流中安插轻量的标记信息（Barrier），将消息流切割成一组组记录；当某个算子处理完一组记录后，就将当前状态保存为一个检查点，提交给 JobManager，该组的标记信息也会传递给下游；当末端的算子（通常是 Sink）处理完这组记录并提交检查点后，这个检查点将被标记为“已完成”；当脚本出现问题时，就会从最后一个“已完成”的检查点开始重放记录。</p>
+<p><img src="/cnblogs/images/flink/stream-barrier.png" alt="Stream Barrier"></p>
+<p>如果算子有多个上游，Flink 会使用一种称为“消息对齐”的机制：如果某个上游出现延迟，当前算子会停止从其它上游消费消息，直到延迟的上游赶上进度，这样就保证了算子中的状态不会包含下一批次的记录。显然，这种方式会引入额外的延迟，因此除了这种 <code>EXACTLY_ONCE</code> 模式，我们也可将检查点配置为 <code>AT_LEAST_ONCE</code>，以获得更高的吞吐量。具体方式请参考 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.7/internals/stream_checkpointing.html" target="_blank" rel="noopener">官方文档</a>。</p>
+<h3 id="可重放的数据源"><a href="#可重放的数据源" class="headerlink" title="可重放的数据源"></a>可重放的数据源</h3><p>当出错的脚本需要从上一个检查点恢复时，Flink 必须对数据进行重放，这就要求数据源支持这一功能。Kafka 是目前使用得较多的消息队列，且支持从特定位点进行消费。具体来说，<code>FlinkKafkaConsumer</code> 类实现了 <code>CheckpointedFunction</code> 接口，会在检查点中存放主题名、分区名、以及偏移量：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">FlinkKafkaConsumerBase</span> <span class="keyword">implements</span> <span class="title">CheckpointedFunction</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initializeState</span><span class="params">(FunctionInitializationContext context)</span> </span>&#123;</span><br><span class="line">    OperatorStateStore stateStore = context.getOperatorStateStore();</span><br><span class="line">    <span class="keyword">this</span>.unionOffsetStates = stateStore.getUnionListState(<span class="keyword">new</span> ListStateDescriptor&lt;&gt;(</span><br><span class="line">        OFFSETS_STATE_NAME,</span><br><span class="line">        TypeInformation.of(<span class="keyword">new</span> TypeHint&lt;Tuple2&lt;KafkaTopicPartition, Long&gt;&gt;() &#123;&#125;)));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (context.isRestored()) &#123;</span><br><span class="line">      <span class="keyword">for</span> (Tuple2&lt;KafkaTopicPartition, Long&gt; kafkaOffset : unionOffsetStates.get()) &#123;</span><br><span class="line">        restoredState.put(kafkaOffset.f0, kafkaOffset.f1);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">snapshotState</span><span class="params">(FunctionSnapshotContext context)</span> </span>&#123;</span><br><span class="line">    unionOffsetStates.clear();</span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;KafkaTopicPartition, Long&gt; kafkaTopicPartitionLongEntry : currentOffsets.entrySet()) &#123;</span><br><span class="line">      unionOffsetStates.add(Tuple2.of(kafkaTopicPartitionLongEntry.getKey(),</span><br><span class="line">          kafkaTopicPartitionLongEntry.getValue()));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当数据源算子从检查点或暂存点恢复时，我们可以在 TaskManager 的日志中看到以下信息，表明当前消费的偏移量是从算子状态中恢复出来的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">2018-12-23 10:56:47,380 INFO FlinkKafkaConsumerBase</span><br><span class="line">  Consumer subtask 0 will start reading 2 partitions with offsets in restored state:</span><br><span class="line">    &#123;KafkaTopicPartition&#123;topic=&apos;flink_test&apos;, partition=1&#125;=725,</span><br><span class="line">     KafkaTopicPartition&#123;topic=&apos;flink_test&apos;, partition=0&#125;=721&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="恢复写入中的文件"><a href="#恢复写入中的文件" class="headerlink" title="恢复写入中的文件"></a>恢复写入中的文件</h3><p>程序运行过程中，<code>StreamingFileSink</code> 首先会将结果写入中间文件，以 <code>.</code> 开头、<code>in-progress</code> 结尾。这些中间文件会在符合一定条件后更名为正式文件，取决于用户配置的 <code>RollingPolicy</code>，默认策略是基于时间（60 秒）和基于大小（128 MB）。当脚本出错或重启时，中间文件会被直接关闭；在恢复时，由于检查点中保存了中间文件名和成功写入的长度，程序会重新打开这些文件，切割到指定长度（Truncate），然后继续写入。这样一来，文件中就不会包含检查点之后的记录了，从而实现 Exactly-once。</p>
+<p>以 Hadoop 文件系统举例，恢复的过程是在 <code>HadoopRecoverableFsDataOutputStream</code> 类的构造函数中进行的。它会接收一个 <code>HadoopFsRecoverable</code> 类型的结构，里面包含了中间文件的路径和长度。这个对象是 <code>BucketState</code> 的成员，会被保存在检查点中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">HadoopRecoverableFsDataOutputStream(FileSystem fs, HadoopFsRecoverable recoverable) &#123;</span><br><span class="line">  <span class="keyword">this</span>.tempFile = checkNotNull(recoverable.tempFile());</span><br><span class="line">  truncate(fs, tempFile, recoverable.offset());</span><br><span class="line">  out = fs.append(tempFile);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>Apache Flink 构建在实时处理之上，从设计之初就充分考虑了中间状态的保存，而且能够很好地与现有 Hadoop 生态环境结合，因而在大数据领域非常有竞争力。它还在高速发展之中，近期也引入了 Table API、流式 SQL、机器学习等功能，像阿里巴巴这样的公司也在大量使用和贡献代码。Flink 的应用场景众多，有很大的发展潜力，值得一试。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2018/12/30/real-time-exactly-once-etl-with-apache-flink/" data-id="cjqaeny0l004a1wr4oj4fi7eb" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2018/12/30/real-time-exactly-once-etl-with-apache-flink/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/etl/">etl</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/flink/">flink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/hdfs/">hdfs</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/kafka/">kafka</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/cnblogs/2018/12/09/spark-datasource-api-v2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Spark DataSource API V2</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Python数据平台</h3>
+    <div class="widget">
+      <img src="/cnblogs/images/pydp-qrcode.jpg" style="width: 100%;"></img>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.25px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 17.5px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/eclipse/" style="font-size: 10px;">eclipse</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/eslint/" style="font-size: 10px;">eslint</a> <a href="/cnblogs/tags/etl/" style="font-size: 13.75px;">etl</a> <a href="/cnblogs/tags/flink/" style="font-size: 10px;">flink</a> <a href="/cnblogs/tags/flume/" style="font-size: 12.5px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 12.5px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.25px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 12.5px;">hadoop</a> <a href="/cnblogs/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/cnblogs/tags/hdfs/" style="font-size: 11.25px;">hdfs</a> <a href="/cnblogs/tags/hive/" style="font-size: 13.75px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 18.75px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 15px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 11.25px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 11.25px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.25px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.25px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 12.5px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.25px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.25px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.25px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 18.75px;">python</a> <a href="/cnblogs/tags/react/" style="font-size: 10px;">react</a> <a href="/cnblogs/tags/restful/" style="font-size: 10px;">restful</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.5px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.25px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 12.5px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.25px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 13.75px;">stream processing</a> <a href="/cnblogs/tags/tensorflow/" style="font-size: 10px;">tensorflow</a> <a href="/cnblogs/tags/thrift/" style="font-size: 10px;">thrift</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 17.5px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/09/">九月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/04/">四月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/cnblogs/2018/12/30/real-time-exactly-once-etl-with-apache-flink/">使用 Apache Flink 开发实时 ETL</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/12/09/spark-datasource-api-v2/">Spark DataSource API V2</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/10/04/flume-source-code-hdfs-sink/">Flume 源码解析：HDFS Sink</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/09/22/how-to-avoid-null-pointer-exception/">Java 空指针异常的若干解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/09/14/is-it-necessary-to-apply-eslint-jsx-no-bind-rule/">是否需要使用 ESLint jsx-no-bind 规则？</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg"></a>
+      <br>
+      &copy; 2018 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/cnblogs/" class="mobile-nav-link">首页</a>
+  
+    <a href="/cnblogs/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/cnblogs/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/cnblogs/categories/Digest" class="mobile-nav-link">摘译</a>
+  
+    <a href="/cnblogs/archives" class="mobile-nav-link">全部文章</a>
+  
+    <a href="http://shzhangji.com/" class="mobile-nav-link">English</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  var disqus_url = 'http://shzhangji.com/cnblogs/2018/12/30/real-time-exactly-once-etl-with-apache-flink/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="/cnblogs/js/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">
+  <script src="/cnblogs/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/cnblogs/js/script.js"></script>
+
+  </div>
+</body>
+</html>
