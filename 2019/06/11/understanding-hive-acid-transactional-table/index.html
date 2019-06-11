@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>深入理解 Hive ACID 事务表 | 张吉的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Apache Hive 0.13 版本引入了事务特性，能够在 Hive 表上实现 ACID 语义，包括 INSERT/UPDATE/DELETE/MERGE 语句、增量数据抽取等。Hive 3.0 又对该特性进行了优化，包括改进了底层的文件组织方式，减少了对表结构的限制，以及支持条件下推和向量化查询。Hive 事务表的介绍和使用方法可以参考 Hive Wiki 和 各类教程，本文将重点讲述 Hiv">
+<meta name="keywords" content="hadoop,hive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解 Hive ACID 事务表">
+<meta property="og:url" content="http://shzhangji.com/cnblogs/2019/06/11/understanding-hive-acid-transactional-table/index.html">
+<meta property="og:site_name" content="张吉的博客">
+<meta property="og:description" content="Apache Hive 0.13 版本引入了事务特性，能够在 Hive 表上实现 ACID 语义，包括 INSERT/UPDATE/DELETE/MERGE 语句、增量数据抽取等。Hive 3.0 又对该特性进行了优化，包括改进了底层的文件组织方式，减少了对表结构的限制，以及支持条件下推和向量化查询。Hive 事务表的介绍和使用方法可以参考 Hive Wiki 和 各类教程，本文将重点讲述 Hiv">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/hive-acid/parallel-execution.png">
+<meta property="og:image" content="http://shzhangji.com/cnblogs/images/hive-acid/transaction-management.png">
+<meta property="og:updated_time" content="2019-06-11T04:00:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解 Hive ACID 事务表">
+<meta name="twitter:description" content="Apache Hive 0.13 版本引入了事务特性，能够在 Hive 表上实现 ACID 语义，包括 INSERT/UPDATE/DELETE/MERGE 语句、增量数据抽取等。Hive 3.0 又对该特性进行了优化，包括改进了底层的文件组织方式，减少了对表结构的限制，以及支持条件下推和向量化查询。Hive 事务表的介绍和使用方法可以参考 Hive Wiki 和 各类教程，本文将重点讲述 Hiv">
+<meta name="twitter:image" content="http://shzhangji.com/cnblogs/images/hive-acid/parallel-execution.png">
+<meta name="twitter:creator" content="@zjerryj">
+<link rel="publisher" href="zhangji87@gmail.com">
+  
+    <link rel="alternate" href="/cnblogs/atom.xml" title="张吉的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link rel="stylesheet" href="/cnblogs/css/source-code-pro.css">
+  
+  <link rel="stylesheet" href="/cnblogs/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37223379-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/cnblogs/" id="logo">张吉的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/cnblogs/" id="subtitle">If I rest, I rust.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/cnblogs/">首页</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Big-Data">大数据</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Programming">编程</a>
+        
+          <a class="main-nav-link" href="/cnblogs/categories/Digest">摘译</a>
+        
+          <a class="main-nav-link" href="/cnblogs/archives">全部文章</a>
+        
+          <a class="main-nav-link" href="http://shzhangji.com/">English</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/cnblogs/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://shzhangji.com/cnblogs"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-understanding-hive-acid-transactional-table" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/cnblogs/2019/06/11/understanding-hive-acid-transactional-table/" class="article-date">
+  <time datetime="2019-06-11T12:40:55.000Z" itemprop="datePublished">2019-06-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/cnblogs/categories/Big-Data/">Big Data</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      深入理解 Hive ACID 事务表
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="http://hive.apache.org/" target="_blank" rel="noopener">Apache Hive</a> 0.13 版本引入了事务特性，能够在 Hive 表上实现 ACID 语义，包括 INSERT/UPDATE/DELETE/MERGE 语句、增量数据抽取等。Hive 3.0 又对该特性进行了优化，包括改进了底层的文件组织方式，减少了对表结构的限制，以及支持条件下推和向量化查询。Hive 事务表的介绍和使用方法可以参考 <a href="https://cwiki.apache.org/confluence/display/Hive/Hive+Transactions" target="_blank" rel="noopener">Hive Wiki</a> 和 <a href="https://hortonworks.com/tutorial/using-hive-acid-transactions-to-insert-update-and-delete-data/" target="_blank" rel="noopener">各类教程</a>，本文将重点讲述 Hive 事务表是如何在 HDFS 上存储的，及其读写过程是怎样的。</p>
+<h2 id="文件结构"><a href="#文件结构" class="headerlink" title="文件结构"></a>文件结构</h2><h3 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> employee (<span class="keyword">id</span> <span class="built_in">int</span>, <span class="keyword">name</span> <span class="keyword">string</span>, salary <span class="built_in">int</span>)</span><br><span class="line"><span class="keyword">STORED</span> <span class="keyword">AS</span> ORC TBLPROPERTIES (<span class="string">'transactional'</span> = <span class="string">'true'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> employee <span class="keyword">VALUES</span></span><br><span class="line">(<span class="number">1</span>, <span class="string">'Jerry'</span>, <span class="number">5000</span>),</span><br><span class="line">(<span class="number">2</span>, <span class="string">'Tom'</span>,   <span class="number">8000</span>),</span><br><span class="line">(<span class="number">3</span>, <span class="string">'Kate'</span>,  <span class="number">6000</span>);</span><br></pre></td></tr></table></figure>
+<p>INSERT 语句会在一个事务中运行。它会创建名为 <code>delta</code> 的目录，存放事务的信息和表的数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/user/hive/warehouse/employee/delta_0000001_0000001_0000</span><br><span class="line">/user/hive/warehouse/employee/delta_0000001_0000001_0000/_orc_acid_version</span><br><span class="line">/user/hive/warehouse/employee/delta_0000001_0000001_0000/bucket_00000</span><br></pre></td></tr></table></figure>
+<p>目录名称的格式为 <code>delta_minWID_maxWID_stmtID</code>，即 delta 前缀、写事务的 ID 范围、以及语句 ID。具体来说：</p>
+<ul>
+<li>所有 INSERT 语句都会创建 <code>delta</code> 目录。UPDATE 语句也会创建 <code>delta</code> 目录，但会先创建一个 <code>delete</code> 目录，即先删除、后插入。<code>delete</code> 目录的前缀是 delete_delta；</li>
+<li>Hive 会为所有的事务生成一个全局唯一的 ID，包括读操作和写操作。针对写事务（INSERT、DELETE 等），Hive 还会创建一个写事务 ID（Write ID），该 ID 在表范围内唯一。写事务 ID 会编码到 <code>delta</code> 和 <code>delete</code> 目录的名称中；</li>
+<li>语句 ID（Statement ID）则是当一个事务中有多条写入语句时使用的，用作唯一标识。</li>
+</ul>
+<a id="more"></a>
+<p>再看文件内容，<code>_orc_acid_version</code> 的内容是 2，即当前 ACID 版本号是 2。它和版本 1 的主要区别是 UPDATE 语句采用了 split-update 特性，即上文提到的先删除、后插入。这个特性能够使 ACID 表支持条件下推等功能，具体可以查看 <a href="https://jira.apache.org/jira/browse/HIVE-14035" target="_blank" rel="noopener">HIVE-14035</a>。<code>bucket_00000</code> 文件则是写入的数据内容。由于这张表没有分区和分桶，所以只有这一个文件。事务表都以 <a href="https://orc.apache.org/" target="_blank" rel="noopener">ORC</a> 格式存储的，我们可以使用 <a href="https://orc.apache.org/docs/java-tools.html" target="_blank" rel="noopener">orc-tools</a> 来查看文件的内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ orc-tools data bucket_00000</span><br><span class="line">&#123;&quot;operation&quot;:0,&quot;originalTransaction&quot;:1,&quot;bucket&quot;:536870912,&quot;rowId&quot;:0,&quot;currentTransaction&quot;:1,&quot;row&quot;:&#123;&quot;id&quot;:1,&quot;name&quot;:&quot;Jerry&quot;,&quot;salary&quot;:5000&#125;&#125;</span><br><span class="line">&#123;&quot;operation&quot;:0,&quot;originalTransaction&quot;:1,&quot;bucket&quot;:536870912,&quot;rowId&quot;:1,&quot;currentTransaction&quot;:1,&quot;row&quot;:&#123;&quot;id&quot;:2,&quot;name&quot;:&quot;Tom&quot;,&quot;salary&quot;:8000&#125;&#125;</span><br><span class="line">&#123;&quot;operation&quot;:0,&quot;originalTransaction&quot;:1,&quot;bucket&quot;:536870912,&quot;rowId&quot;:2,&quot;currentTransaction&quot;:1,&quot;row&quot;:&#123;&quot;id&quot;:3,&quot;name&quot;:&quot;Kate&quot;,&quot;salary&quot;:6000&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>输出内容被格式化为了一行行的 JSON 字符串，我们可以看到具体数据是在 <code>row</code> 这个键中的，其它键则是 Hive 用来实现事务特性所使用的，具体含义为：</p>
+<ul>
+<li><code>operation</code> 0 表示插入，1 表示更新，2 表示删除。由于使用了 split-update，UPDATE 是不会出现的；</li>
+<li><code>originalTransaction</code> 是该条记录的原始写事务 ID。对于 INSERT 操作，该值和 <code>currentTransaction</code> 是一致的。对于 DELETE，则是该条记录第一次插入时的写事务 ID；</li>
+<li><code>bucket</code> 是一个 32 位整型，由 <code>BucketCodec</code> 编码，各个二进制位的含义为：<ul>
+<li>1-3 位：编码版本，当前是 <code>001</code>；</li>
+<li>4 位：保留；</li>
+<li>5-16 位：分桶 ID，由 0 开始。分桶 ID 是由 CLUSTERED BY 子句所指定的字段、以及分桶的数量决定的。该值和 <code>bucket_N</code> 中的 N 一致；</li>
+<li>17-20 位：保留；</li>
+<li>21-32 位：语句 ID；</li>
+<li>举例来说，整型 <code>536936448</code> 的二进制格式为 <code>00100000000000010000000000000000</code>，即它是按版本 1 的格式编码的，分桶 ID 为 1；</li>
+</ul>
+</li>
+<li><code>rowId</code> 是一个自增的唯一 ID，在写事务和分桶的组合中唯一；</li>
+<li><code>currentTransaction</code> 当前的写事务 ID；</li>
+<li><code>row</code> 具体数据。对于 DELETE 语句，则为 <code>null</code>。</li>
+</ul>
+<p>我们可以注意到，文件中的数据会按 (<code>originalTransaction</code>, <code>bucket</code>, <code>rowId</code>) 进行排序，这点对后面的读取操作非常关键。</p>
+<p>这些信息还可以通过 <code>row__id</code> 这个虚拟列进行查看：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> row__id, <span class="keyword">id</span>, <span class="keyword">name</span>, salary <span class="keyword">FROM</span> employee;</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;writeid&quot;:1,&quot;bucketid&quot;:536870912,&quot;rowid&quot;:0&#125;    1       Jerry   5000</span><br><span class="line">&#123;&quot;writeid&quot;:1,&quot;bucketid&quot;:536870912,&quot;rowid&quot;:1&#125;    2       Tom     8000</span><br><span class="line">&#123;&quot;writeid&quot;:1,&quot;bucketid&quot;:536870912,&quot;rowid&quot;:2&#125;    3       Kate    6000</span><br></pre></td></tr></table></figure>
+<h4 id="增量数据抽取-API-V2"><a href="#增量数据抽取-API-V2" class="headerlink" title="增量数据抽取 API V2"></a>增量数据抽取 API V2</h4><p>Hive 3.0 还改进了先前的 <a href="https://cwiki.apache.org/confluence/display/Hive/Streaming+Data+Ingest+V2" target="_blank" rel="noopener">增量抽取 API</a>，通过这个 API，用户或第三方工具（Flume 等）就可以利用 ACID 特性持续不断地向 Hive 表写入数据了。这一操作同样会生成 <code>delta</code> 目录，但更新和删除操作不再支持。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">StreamingConnection connection = HiveStreamingConnection.newBuilder().connect();</span><br><span class="line">connection.beginTransaction();</span><br><span class="line">connection.write(<span class="string">"11,val11,Asia,China"</span>.getBytes());</span><br><span class="line">connection.write(<span class="string">"12,val12,Asia,India"</span>.getBytes());</span><br><span class="line">connection.commitTransaction();</span><br><span class="line">connection.close();</span><br></pre></td></tr></table></figure>
+<h3 id="更新数据"><a href="#更新数据" class="headerlink" title="更新数据"></a>更新数据</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> employee <span class="keyword">SET</span> salary = <span class="number">7000</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+<p>这条语句会先查询出所有符合条件的记录，获取它们的 <code>row__id</code> 信息，然后分别创建 <code>delete</code> 和 <code>delta</code> 目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/user/hive/warehouse/employee/delta_0000001_0000001_0000/bucket_00000</span><br><span class="line">/user/hive/warehouse/employee/delete_delta_0000002_0000002_0000/bucket_00000</span><br><span class="line">/user/hive/warehouse/employee/delta_0000002_0000002_0000/bucket_00000</span><br></pre></td></tr></table></figure>
+<p><code>delete_delta_0000002_0000002_0000/bucket_00000</code> 包含了删除的记录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;operation&quot;:2,&quot;originalTransaction&quot;:1,&quot;bucket&quot;:536870912,&quot;rowId&quot;:1,&quot;currentTransaction&quot;:2,&quot;row&quot;:null&#125;</span><br></pre></td></tr></table></figure>
+<p><code>delta_0000002_0000002_0000/bucket_00000</code> 包含更新后的数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;operation&quot;:0,&quot;originalTransaction&quot;:2,&quot;bucket&quot;:536870912,&quot;rowId&quot;:0,&quot;currentTransaction&quot;:2,&quot;row&quot;:&#123;&quot;id&quot;:2,&quot;name&quot;:&quot;Tom&quot;,&quot;salary&quot;:7000&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>DELETE 语句的工作方式类似，同样是先查询，后生成 <code>delete</code> 目录。</p>
+<h3 id="合并表"><a href="#合并表" class="headerlink" title="合并表"></a>合并表</h3><p>MERGE 语句和 MySQL 的 INSERT ON UPDATE 功能类似，它可以将来源表的数据合并到目标表中：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> employee_update (<span class="keyword">id</span> <span class="built_in">int</span>, <span class="keyword">name</span> <span class="keyword">string</span>, salary <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> employee_update <span class="keyword">VALUES</span></span><br><span class="line">(<span class="number">2</span>, <span class="string">'Tom'</span>,  <span class="number">7000</span>),</span><br><span class="line">(<span class="number">4</span>, <span class="string">'Mary'</span>, <span class="number">9000</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">MERGE</span> <span class="keyword">INTO</span> employee <span class="keyword">AS</span> a</span><br><span class="line"><span class="keyword">USING</span> employee_update <span class="keyword">AS</span> b <span class="keyword">ON</span> a.id = b.id</span><br><span class="line"><span class="keyword">WHEN</span> <span class="keyword">MATCHED</span> <span class="keyword">THEN</span> <span class="keyword">UPDATE</span> <span class="keyword">SET</span> salary = b.salary</span><br><span class="line"><span class="keyword">WHEN</span> <span class="keyword">NOT</span> <span class="keyword">MATCHED</span> <span class="keyword">THEN</span> <span class="keyword">INSERT</span> <span class="keyword">VALUES</span> (b.id, b.name, b.salary);</span><br></pre></td></tr></table></figure>
+<p>这条语句会更新 Tom 的薪资字段，并插入一条 Mary 的新记录。多条 WHEN 子句会被视为不同的语句，有各自的语句 ID（Statement ID）。INSERT 子句会创建 <code>delta_0000002_0000002_0000</code> 文件，内容是 Mary 的数据；UPDATE 语句则会创建 <code>delete_delta_0000002_0000002_0001</code> 和 <code>delta_0000002_0000002_0001</code> 两个文件，删除并新增 Tom 的数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/user/hive/warehouse/employee/delta_0000001_0000001_0000</span><br><span class="line">/user/hive/warehouse/employee/delta_0000002_0000002_0000</span><br><span class="line">/user/hive/warehouse/employee/delete_delta_0000002_0000002_0001</span><br><span class="line">/user/hive/warehouse/employee/delta_0000002_0000002_0001</span><br></pre></td></tr></table></figure>
+<h3 id="压缩"><a href="#压缩" class="headerlink" title="压缩"></a>压缩</h3><p>随着写操作的积累，表中的 <code>delta</code> 和 <code>delete</code> 文件会越来越多。事务表的读取过程中需要合并所有文件，数量一多势必会影响效率。此外，小文件对 HDFS 这样的文件系统也是不够友好的。因此，Hive 引入了压缩（Compaction）的概念，分为 Minor 和 Major 两类。</p>
+<p>Minor Compaction 会将所有的 <code>delta</code> 文件压缩为一个文件，<code>delete</code> 也压缩为一个。压缩后的结果文件名中会包含写事务 ID 范围，同时省略掉语句 ID。压缩过程是在 Hive Metastore 中运行的，会根据一定阈值自动触发。我们也可以使用如下语句人工触发：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> employee <span class="keyword">COMPACT</span> <span class="string">'minor'</span>;</span><br></pre></td></tr></table></figure>
+<p>以上文中的 MERGE 语句的结果举例，在运行了一次 Minor Compaction 后，文件目录结构将变为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/user/hive/warehouse/employee/delete_delta_0000001_0000002</span><br><span class="line">/user/hive/warehouse/employee/delta_0000001_0000002</span><br></pre></td></tr></table></figure>
+<p>在 <code>delta_0000001_0000002/bucket_00000</code> 文件中，数据会被排序和合并起来，因此文件中将包含两行 Tom 的数据。Minor Compaction 不会删除任何数据。</p>
+<p>Major Compaction 则会将所有文件合并为一个文件，以 <code>base_N</code> 的形式命名，其中 N 表示最新的写事务 ID。已删除的数据将在这个过程中被剔除。<code>row__id</code> 则按原样保留。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/user/hive/warehouse/employee/base_0000002</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，在 Minor 或 Major Compaction 执行之后，原来的文件不会被立刻删除。这是因为删除的动作是在另一个名为 Cleaner 的线程中执行的。因此，表中可能同时存在不同事务 ID 的文件组合，这在读取过程中需要做特殊处理。</p>
+<h2 id="读取过程"><a href="#读取过程" class="headerlink" title="读取过程"></a>读取过程</h2><p>我们可以看到 ACID 事务表中会包含三类文件，分别是 <code>base</code>、<code>delta</code>、以及 <code>delete</code>。文件中的每一行数据都会以 <code>row__id</code> 作为标识并排序。从 ACID 事务表中读取数据就是对这些文件进行合并，从而得到最新事务的结果。这一过程是在 <code>OrcInputFormat</code> 和 <code>OrcRawRecordMerger</code> 类中实现的，本质上是一个合并排序的算法。</p>
+<p>以下列文件为例，产生这些文件的操作为：插入三条记录，进行一次 Major Compaction，然后更新两条记录。<code>1-0-0-1</code> 是对 <code>originalTransaction</code> - <code>bucketId</code> - <code>rowId</code> - <code>currentTransaction</code> 的缩写。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+----------+    +----------+    +----------+</span><br><span class="line">| base_1   |    | delete_2 |    | delta_2  |</span><br><span class="line">+----------+    +----------+    +----------+</span><br><span class="line">| 1-0-0-1  |    | 1-0-1-2  |    | 2-0-0-2  |</span><br><span class="line">| 1-0-1-1  |    | 1-0-2-2  |    | 2-0-1-2  |</span><br><span class="line">| 1-0-2-1  |    +----------+    +----------+</span><br><span class="line">+----------+</span><br></pre></td></tr></table></figure>
+<p>合并过程为：</p>
+<ul>
+<li>对所有数据行按照 (<code>originalTransaction</code>, <code>bucketId</code>, <code>rowId</code>) 正序排列，(<code>currentTransaction</code>) 倒序排列，即：<ul>
+<li><code>1-0-0-1</code></li>
+<li><code>1-0-1-2</code></li>
+<li><code>1-0-1-1</code></li>
+<li>…</li>
+<li><code>2-0-1-2</code></li>
+</ul>
+</li>
+<li>获取第一条记录；</li>
+<li>如果当前记录的 <code>row__id</code> 和上条数据一样，则跳过；</li>
+<li>如果当前记录的操作类型为 DELETE，也跳过；<ul>
+<li>通过以上两条规则，对于 <code>1-0-1-2</code> 和 <code>1-0-1-1</code>，这条记录会被跳过；</li>
+</ul>
+</li>
+<li>如果没有跳过，记录将被输出给下游；</li>
+<li>重复以上过程。</li>
+</ul>
+<p>合并过程是流式的，即 Hive 会将所有文件打开，预读第一条记录，并将 <code>row__id</code> 信息存入到 <code>ReaderKey</code> 类型中。该类型实现了 <code>Comparable</code> 接口，因此可以按照上述规则自定义排序：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RecordIdentifier</span> <span class="keyword">implements</span> <span class="title">WritableComparable</span>&lt;<span class="title">RecordIdentifier</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">long</span> writeId;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> bucketId;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">long</span> rowId;</span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">compareToInternal</span><span class="params">(RecordIdentifier other)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (other == <span class="keyword">null</span>) &#123; <span class="keyword">return</span> -<span class="number">1</span>; &#125;</span><br><span class="line">    <span class="keyword">if</span> (writeId != other.writeId) &#123; <span class="keyword">return</span> writeId &lt; other.writeId ? -<span class="number">1</span> : <span class="number">1</span>; &#125;</span><br><span class="line">    <span class="keyword">if</span> (bucketId != other.bucketId) &#123; <span class="keyword">return</span> bucketId &lt; other.bucketId ? - <span class="number">1</span> : <span class="number">1</span>; &#125;</span><br><span class="line">    <span class="keyword">if</span> (rowId != other.rowId) &#123; <span class="keyword">return</span> rowId &lt; other.rowId ? -<span class="number">1</span> : <span class="number">1</span>; &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReaderKey</span> <span class="keyword">extends</span> <span class="title">RecordIdentifier</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">long</span> currentWriteId;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">boolean</span> isDeleteEvent = <span class="keyword">false</span>;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(RecordIdentifier other)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> sup = compareToInternal(other);</span><br><span class="line">    <span class="keyword">if</span> (sup == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (other.getClass() == ReaderKey.class) &#123;</span><br><span class="line">        ReaderKey oth = (ReaderKey) other;</span><br><span class="line">        <span class="keyword">if</span> (currentWriteId != oth.currentWriteId) &#123; <span class="keyword">return</span> currentWriteId &lt; oth.currentWriteId ? +<span class="number">1</span> : -<span class="number">1</span>; &#125;</span><br><span class="line">        <span class="keyword">if</span> (isDeleteEvent != oth.isDeleteEvent) &#123; <span class="keyword">return</span> isDeleteEvent ? -<span class="number">1</span> : +<span class="number">1</span>; &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sup;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后，<code>ReaderKey</code> 会和文件句柄一起存入到 <code>TreeMap</code> 结构中。根据该结构的特性，我们每次获取第一个元素时就能得到排序后的结果，并读取数据了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrcRawRecordMerger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> TreeMap&lt;ReaderKey, ReaderPair&gt; readers = <span class="keyword">new</span> TreeMap&lt;&gt;();</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">next</span><span class="params">(RecordIdentifier recordIdentifier, OrcStruct prev)</span> </span>&#123;</span><br><span class="line">    Map.Entry&lt;ReaderKey, ReaderPair&gt; entry = readers.pollFirstEntry();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="选择文件"><a href="#选择文件" class="headerlink" title="选择文件"></a>选择文件</h3><p>上文中提到，事务表目录中会同时存在多个事务的快照文件，因此 Hive 首先要选择出反映了最新事务结果的文件集合，然后再进行合并。举例来说，下列文件是一系列操作后的结果：两次插入，一次 Minor Compaction，一次 Major Compaction，一次删除。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">delta_0000001_0000001_0000</span><br><span class="line">delta_0000002_0000002_0000</span><br><span class="line">delta_0000001_0000002</span><br><span class="line">base_0000002</span><br><span class="line">delete_delta_0000003_0000003_0000</span><br></pre></td></tr></table></figure>
+<p>过滤过程为：</p>
+<ul>
+<li>从 Hive Metastore 中获取所有成功提交的写事务 ID 列表；</li>
+<li>从文件名中解析出文件类型、写事务 ID 范围、以及语句 ID；</li>
+<li>选取写事务 ID 最大且合法的那个 <code>base</code> 目录，如果存在的话；</li>
+<li>对 <code>delta</code> 和 <code>delete</code> 文件进行排序：<ul>
+<li><code>minWID</code> 较小的优先；</li>
+<li>如果 <code>minWID</code> 相等，则 <code>maxWID</code> 较大的优先；</li>
+<li>如果都相等，则按 <code>stmtID</code> 排序；没有 <code>stmtID</code> 的会排在前面；</li>
+</ul>
+</li>
+<li>将 <code>base</code> 文件中的写事务 ID 作为当前 ID，循环过滤所有 <code>delta</code> 文件：<ul>
+<li>如果 <code>maxWID</code> 大于当前 ID，则保留这个文件，并以此更新当前 ID；</li>
+<li>如果 ID 范围相同，也会保留这个文件；</li>
+<li>重复上述步骤。</li>
+</ul>
+</li>
+</ul>
+<p>过滤过程中还会处理一些特别的情况，如没有 <code>base</code> 文件，有多条语句，包含原始文件（即不含 <code>row__id</code> 信息的文件，一般是通过 LOAD DATA 导入的），以及 ACID 版本 1 格式的文件等。具体可以参考 <code>AcidUtils#getAcidState</code> 方法。</p>
+<h3 id="并行执行"><a href="#并行执行" class="headerlink" title="并行执行"></a>并行执行</h3><p>在 Map-Reduce 模式下运行 Hive 时，多个 Mapper 是并行执行的，这就需要将 <code>delta</code> 文件按一定的规则组织好。简单来说，<code>base</code> 和 <code>delta</code> 文件会被分配到不同的分片（Split）中，但所有分片都需要能够读取所有的 <code>delete</code> 文件，从而根据它们忽略掉已删除的记录。</p>
+<p><img src="/cnblogs/images/hive-acid/parallel-execution.png" alt="Parallel Execution"></p>
+<h3 id="向量化查询"><a href="#向量化查询" class="headerlink" title="向量化查询"></a>向量化查询</h3><p>当 <a href="https://cwiki.apache.org/confluence/display/Hive/Vectorized+Query+Execution" target="_blank" rel="noopener">向量化查询</a> 特性开启时，Hive 会尝试将所有的 <code>delete</code> 文件读入内存，并维护一个特定的数据结构，能够快速地对数据进行过滤。如果内存放不下，则会像上文提到的过程一样，逐步读取 <code>delete</code> 文件，使用合并排序的算法进行过滤。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VectorizedOrcAcidRowBatchReader</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> DeleteEventRegistry deleteEventRegistry;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">static</span> <span class="class"><span class="keyword">interface</span> <span class="title">DeleteEventRegistry</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">findDeletedRecords</span><span class="params">(ColumnVector[] cols, <span class="keyword">int</span> size, BitSet selectedBitSet)</span></span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ColumnizedDeleteEventRegistry</span> <span class="keyword">implements</span> <span class="title">DeleteEventRegistry</span> </span>&#123;&#125;</span><br><span class="line">  <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SortMergedDeleteEventRegistry</span> <span class="keyword">implements</span> <span class="title">DeleteEventRegistry</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">next</span><span class="params">(NullWritable key, VectorizedRowBatch value)</span> </span>&#123;</span><br><span class="line">    BitSet selectedBitSet = <span class="keyword">new</span> BitSet(vectorizedRowBatchBase.size);</span><br><span class="line">    <span class="keyword">this</span>.deleteEventRegistry.findDeletedRecords(innerRecordIdColumnVector,</span><br><span class="line">        vectorizedRowBatchBase.size, selectedBitSet);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> setBitIndex = selectedBitSet.nextSetBit(<span class="number">0</span>), selectedItr = <span class="number">0</span>;</span><br><span class="line">        setBitIndex &gt;= <span class="number">0</span>;</span><br><span class="line">        setBitIndex = selectedBitSet.nextSetBit(setBitIndex+<span class="number">1</span>), ++selectedItr) &#123;</span><br><span class="line">      value.selected[selectedItr] = setBitIndex;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="事务管理"><a href="#事务管理" class="headerlink" title="事务管理"></a>事务管理</h2><p>为了实现 ACID 事务机制，Hive 还引入了新的事务管理器 <code>DbTxnManager</code>，它能够在查询计划中分辨出 ACID 事务表，联系 Hive Metastore 打开新的事务，完成后提交事务。它也同时实现了过去的读写锁机制，用来支持非事务表的情形。</p>
+<p><img src="/cnblogs/images/hive-acid/transaction-management.png" alt="Transaction Management"></p>
+<p>Hive Metastore 负责分配新的事务 ID。这一过程是在一个数据库事务中完成的，从而避免多个 Metastore 实例冲突的情况。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">TxnHandler</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">private</span> List&lt;Long&gt; <span class="title">openTxns</span><span class="params">(Connection dbConn, Statement stmt, OpenTxnRequest rqst)</span> </span>&#123;</span><br><span class="line">    String s = sqlGenerator.addForUpdateClause(<span class="string">"select ntxn_next from NEXT_TXN_ID"</span>);</span><br><span class="line">    s = <span class="string">"update NEXT_TXN_ID set ntxn_next = "</span> + (first + numTxns);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">long</span> i = first; i &lt; first + numTxns; i++) &#123;</span><br><span class="line">      txnIds.add(i);</span><br><span class="line">      rows.add(i + <span class="string">","</span> + quoteChar(TXN_OPEN) + <span class="string">","</span> + now + <span class="string">","</span> + now + <span class="string">","</span></span><br><span class="line">          + quoteString(rqst.getUser()) + <span class="string">","</span> + quoteString(rqst.getHostname()) + <span class="string">","</span> + txnType.getValue());</span><br><span class="line">    &#125;</span><br><span class="line">    List&lt;String&gt; queries = sqlGenerator.createInsertValuesStmt(</span><br><span class="line">        <span class="string">"TXNS (txn_id, txn_state, txn_started, txn_last_heartbeat, txn_user, txn_host, txn_type)"</span>, rows);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://cwiki.apache.org/confluence/display/Hive/Hive+Transactions" target="_blank" rel="noopener">Hive Transactions</a></li>
+<li><a href="https://www.slideshare.net/Hadoop_Summit/transactional-operations-in-apache-hive-present-and-future-102803358" target="_blank" rel="noopener">Transactional Operations in Apache Hive</a></li>
+<li><a href="https://orc.apache.org/docs/acid.html" target="_blank" rel="noopener">ORCFile ACID Support</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://shzhangji.com/cnblogs/2019/06/11/understanding-hive-acid-transactional-table/" data-id="cjwr9ieev0000jezjjlpt9r5n" class="article-share-link">分享</a>
+      
+        <a href="http://shzhangji.com/cnblogs/2019/06/11/understanding-hive-acid-transactional-table/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/hadoop/">hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/cnblogs/tags/hive/">hive</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/cnblogs/2018/12/30/real-time-exactly-once-etl-with-apache-flink/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">使用 Apache Flink 开发实时 ETL</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Python数据平台</h3>
+    <div class="widget">
+      <img src="/cnblogs/images/pydp-qrcode.jpg" style="width: 100%;">
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/cnblogs/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/cnblogs/tags/analytics/" style="font-size: 15px;">analytics</a> <a href="/cnblogs/tags/angular/" style="font-size: 10px;">angular</a> <a href="/cnblogs/tags/aop/" style="font-size: 10px;">aop</a> <a href="/cnblogs/tags/aosa/" style="font-size: 11.25px;">aosa</a> <a href="/cnblogs/tags/apache-beam/" style="font-size: 10px;">apache beam</a> <a href="/cnblogs/tags/bootstrap/" style="font-size: 10px;">bootstrap</a> <a href="/cnblogs/tags/c/" style="font-size: 10px;">c</a> <a href="/cnblogs/tags/canal/" style="font-size: 10px;">canal</a> <a href="/cnblogs/tags/cdh/" style="font-size: 10px;">cdh</a> <a href="/cnblogs/tags/clojure/" style="font-size: 17.5px;">clojure</a> <a href="/cnblogs/tags/crossfilter/" style="font-size: 10px;">crossfilter</a> <a href="/cnblogs/tags/data-science/" style="font-size: 10px;">data science</a> <a href="/cnblogs/tags/dc-js/" style="font-size: 10px;">dc.js</a> <a href="/cnblogs/tags/docker/" style="font-size: 10px;">docker</a> <a href="/cnblogs/tags/druid/" style="font-size: 10px;">druid</a> <a href="/cnblogs/tags/eclipse/" style="font-size: 10px;">eclipse</a> <a href="/cnblogs/tags/es6/" style="font-size: 10px;">es6</a> <a href="/cnblogs/tags/eslint/" style="font-size: 10px;">eslint</a> <a href="/cnblogs/tags/etl/" style="font-size: 13.75px;">etl</a> <a href="/cnblogs/tags/flink/" style="font-size: 10px;">flink</a> <a href="/cnblogs/tags/flume/" style="font-size: 12.5px;">flume</a> <a href="/cnblogs/tags/frontend/" style="font-size: 12.5px;">frontend</a> <a href="/cnblogs/tags/functional-programming/" style="font-size: 10px;">functional programming</a> <a href="/cnblogs/tags/git/" style="font-size: 11.25px;">git</a> <a href="/cnblogs/tags/hadoop/" style="font-size: 13.75px;">hadoop</a> <a href="/cnblogs/tags/hbase/" style="font-size: 10px;">hbase</a> <a href="/cnblogs/tags/hdfs/" style="font-size: 11.25px;">hdfs</a> <a href="/cnblogs/tags/hive/" style="font-size: 15px;">hive</a> <a href="/cnblogs/tags/java/" style="font-size: 18.75px;">java</a> <a href="/cnblogs/tags/javascript/" style="font-size: 15px;">javascript</a> <a href="/cnblogs/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/cnblogs/tags/kafka/" style="font-size: 11.25px;">kafka</a> <a href="/cnblogs/tags/lodash/" style="font-size: 10px;">lodash</a> <a href="/cnblogs/tags/machine-learning/" style="font-size: 11.25px;">machine learning</a> <a href="/cnblogs/tags/mapreduce/" style="font-size: 11.25px;">mapreduce</a> <a href="/cnblogs/tags/mysql/" style="font-size: 11.25px;">mysql</a> <a href="/cnblogs/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/cnblogs/tags/noir/" style="font-size: 12.5px;">noir</a> <a href="/cnblogs/tags/opensource/" style="font-size: 10px;">opensource</a> <a href="/cnblogs/tags/ops/" style="font-size: 11.25px;">ops</a> <a href="/cnblogs/tags/pandas/" style="font-size: 11.25px;">pandas</a> <a href="/cnblogs/tags/perl/" style="font-size: 11.25px;">perl</a> <a href="/cnblogs/tags/python/" style="font-size: 18.75px;">python</a> <a href="/cnblogs/tags/react/" style="font-size: 10px;">react</a> <a href="/cnblogs/tags/restful/" style="font-size: 10px;">restful</a> <a href="/cnblogs/tags/scala/" style="font-size: 12.5px;">scala</a> <a href="/cnblogs/tags/source-code/" style="font-size: 10px;">source code</a> <a href="/cnblogs/tags/spark/" style="font-size: 16.25px;">spark</a> <a href="/cnblogs/tags/spark-streaming/" style="font-size: 10px;">spark streaming</a> <a href="/cnblogs/tags/spring/" style="font-size: 12.5px;">spring</a> <a href="/cnblogs/tags/sql/" style="font-size: 11.25px;">sql</a> <a href="/cnblogs/tags/storm/" style="font-size: 10px;">storm</a> <a href="/cnblogs/tags/stream-processing/" style="font-size: 13.75px;">stream processing</a> <a href="/cnblogs/tags/tensorflow/" style="font-size: 10px;">tensorflow</a> <a href="/cnblogs/tags/thrift/" style="font-size: 10px;">thrift</a> <a href="/cnblogs/tags/translation/" style="font-size: 20px;">translation</a> <a href="/cnblogs/tags/tutorial/" style="font-size: 17.5px;">tutorial</a> <a href="/cnblogs/tags/unix/" style="font-size: 10px;">unix</a> <a href="/cnblogs/tags/vue/" style="font-size: 10px;">vue</a> <a href="/cnblogs/tags/vuex/" style="font-size: 10px;">vuex</a> <a href="/cnblogs/tags/websocket/" style="font-size: 10px;">websocket</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/09/">九月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2018/04/">四月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2016/03/">三月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/09/">九月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/06/">六月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/03/">三月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2015/01/">一月 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/12/">十二月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/11/">十一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/10/">十月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/07/">七月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/04/">四月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2014/01/">一月 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/12/">十二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/09/">九月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/06/">六月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/05/">五月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/04/">四月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/03/">三月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/02/">二月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2013/01/">一月 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/12/">十二月 2012</a></li><li class="archive-list-item"><a class="archive-list-link" href="/cnblogs/archives/2012/11/">十一月 2012</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/cnblogs/2019/06/11/understanding-hive-acid-transactional-table/">深入理解 Hive ACID 事务表</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/12/30/real-time-exactly-once-etl-with-apache-flink/">使用 Apache Flink 开发实时 ETL</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/12/09/spark-datasource-api-v2/">Spark DataSource API V2</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/10/04/flume-source-code-hdfs-sink/">Flume 源码解析：HDFS Sink</a>
+          </li>
+        
+          <li>
+            <a href="/cnblogs/2018/09/22/how-to-avoid-null-pointer-exception/">Java 空指针异常的若干解决方案</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg"></a>
+      <br>
+      &copy; 2019 张吉<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/cnblogs/" class="mobile-nav-link">首页</a>
+  
+    <a href="/cnblogs/categories/Big-Data" class="mobile-nav-link">大数据</a>
+  
+    <a href="/cnblogs/categories/Programming" class="mobile-nav-link">编程</a>
+  
+    <a href="/cnblogs/categories/Digest" class="mobile-nav-link">摘译</a>
+  
+    <a href="/cnblogs/archives" class="mobile-nav-link">全部文章</a>
+  
+    <a href="http://shzhangji.com/" class="mobile-nav-link">English</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'jizhang';
+  
+  var disqus_url = 'http://shzhangji.com/cnblogs/2019/06/11/understanding-hive-acid-transactional-table/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="/cnblogs/js/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/cnblogs/fancybox/jquery.fancybox.css">
+  <script src="/cnblogs/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/cnblogs/js/script.js"></script>
+
+  </div>
+</body>
+</html>
