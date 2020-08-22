@@ -14,7 +14,7 @@
 <meta property="og:description" content="Kubernetes 是目前非常流行的容器编排系统，在其之上可以运行 Web 服务、大数据处理等各类应用。这些应用被打包在一个个非常轻量的容器中，我们通过声明的方式来告知 Kubernetes 要如何部署和扩容这些程序，并对外提供服务。Flink 同样是非常流行的分布式处理框架，它也可以运行在 Kubernetes 之上。将两者相结合，我们就可以得到一个健壮和高可扩的数据处理应用，并且能够更安全地">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://shzhangji.com/cnblogs/images/flink-on-kubernetes.png">
-<meta property="og:updated_time" content="2019-08-25T07:56:18.828Z">
+<meta property="og:updated_time" content="2020-08-22T12:06:11.270Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用 Kubernetes 部署 Flink 应用">
 <meta name="twitter:description" content="Kubernetes 是目前非常流行的容器编排系统，在其之上可以运行 Web 服务、大数据处理等各类应用。这些应用被打包在一个个非常轻量的容器中，我们通过声明的方式来告知 Kubernetes 要如何部署和扩容这些程序，并对外提供服务。Flink 同样是非常流行的分布式处理框架，它也可以运行在 Kubernetes 之上。将两者相结合，我们就可以得到一个健壮和高可扩的数据处理应用，并且能够更安全地">
@@ -153,9 +153,9 @@ ga('send', 'pageview');
 <li>添加 <code>flink</code> 用户和组；</li>
 <li>指定入口文件，不过我们会在 K8s 配置中覆盖此项。</li>
 </ul>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> openjdk:<span class="number">8</span>-jre</span><br><span class="line"><span class="keyword">ENV</span> FLINK_HOME=/opt/flink</span><br><span class="line"><span class="keyword">WORKDIR</span> $FLINK_HOME</span><br><span class="line"><span class="keyword">RUN</span> useradd flink &amp;&amp; \</span><br><span class="line">  wget -O flink.tgz "$FLINK_TGZ_URL" &amp;&amp; \</span><br><span class="line">  tar -xf flink.tgz</span><br><span class="line"><span class="keyword">ENTRYPOINT</span> ["/docker-entrypoint.sh"]</span><br></pre></td></tr></table></figure>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> openjdk:<span class="number">8</span>-jre</span><br><span class="line"><span class="keyword">ENV</span> FLINK_HOME=/opt/flink</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> <span class="variable">$FLINK_HOME</span></span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> useradd flink &amp;&amp; \</span></span><br><span class="line"><span class="bash">  wget -O flink.tgz <span class="string">"<span class="variable">$FLINK_TGZ_URL</span>"</span> &amp;&amp; \</span></span><br><span class="line"><span class="bash">  tar -xf flink.tgz</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="bash"> [<span class="string">"/docker-entrypoint.sh"</span>]</span></span><br></pre></td></tr></table></figure>
 <p>在此基础上，我们编写新的 Dockerfile：</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> flink:<span class="number">1.8</span>.<span class="number">1</span>-scala_2.<span class="number">12</span></span><br><span class="line"><span class="keyword">ARG</span> hadoop_jar</span><br><span class="line"><span class="keyword">ARG</span> job_jar</span><br><span class="line"><span class="keyword">COPY</span> --chown=flink:flink $hadoop_jar $job_jar $FLINK_HOME/lib/</span><br><span class="line"><span class="keyword">USER</span> flink</span><br></pre></td></tr></table></figure>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> flink:<span class="number">1.8</span>.<span class="number">1</span>-scala_2.<span class="number">12</span></span><br><span class="line"><span class="keyword">ARG</span> hadoop_jar</span><br><span class="line"><span class="keyword">ARG</span> job_jar</span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> --chown=flink:flink <span class="variable">$hadoop_jar</span> <span class="variable">$job_jar</span> <span class="variable">$FLINK_HOME</span>/lib/</span></span><br><span class="line"><span class="keyword">USER</span> flink</span><br></pre></td></tr></table></figure>
 <p>在构建镜像之前，我们需要安装 Docker 命令行工具，并将其指向 Minikube 中的 Docker 服务，这样打出来的镜像才能被 K8s 使用：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ brew install docker</span><br><span class="line">$ <span class="built_in">eval</span> $(minikube docker-env)</span><br></pre></td></tr></table></figure>
 <p>下载 <a href="https://repo.maven.apache.org/maven2/org/apache/flink/flink-shaded-hadoop-2-uber/2.8.3-7.0/flink-shaded-hadoop-2-uber-2.8.3-7.0.jar" target="_blank" rel="noopener">Hadoop Jar 包</a>，执行以下命令：</p>
@@ -232,7 +232,7 @@ ga('send', 'pageview');
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://shzhangji.com/cnblogs/2019/08/25/deploy-flink-job-cluster-on-kubernetes/" data-id="cjzqij3rz004oxkr4o3cgnxmw" class="article-share-link">分享</a>
+      <a data-url="http://shzhangji.com/cnblogs/2019/08/25/deploy-flink-job-cluster-on-kubernetes/" data-id="cke5mze5t004tyfc7gqw7l0oa" class="article-share-link">分享</a>
       
         <a href="http://shzhangji.com/cnblogs/2019/08/25/deploy-flink-job-cluster-on-kubernetes/#disqus_thread" class="article-comment-link">留言</a>
       
@@ -335,7 +335,7 @@ ga('send', 'pageview');
     <div id="footer-info" class="inner">
       <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="https://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-nc-sa.svg"></a>
       <br>
-      &copy; 2019 张吉<br>
+      &copy; 2020 张吉<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
