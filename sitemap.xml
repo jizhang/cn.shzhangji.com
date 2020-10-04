@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://shzhangji.com/cnblogs/2020/10/04/python-static-typing/</loc>
+    
+    <lastmod>2020-10-04T11:11:18.877Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://shzhangji.com/cnblogs/2019/08/25/deploy-flink-job-cluster-on-kubernetes/</loc>
     
     <lastmod>2020-08-22T12:06:11.270Z</lastmod>
@@ -30,14 +37,14 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2018/10/04/flume-source-code-hdfs-sink/</loc>
+    <loc>http://shzhangji.com/cnblogs/2018/09/22/how-to-avoid-null-pointer-exception/</loc>
     
     <lastmod>2020-08-22T12:06:11.269Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2018/09/22/how-to-avoid-null-pointer-exception/</loc>
+    <loc>http://shzhangji.com/cnblogs/2018/10/04/flume-source-code-hdfs-sink/</loc>
     
     <lastmod>2020-08-22T12:06:11.269Z</lastmod>
     
@@ -51,7 +58,7 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2018/04/22/connect-hbase-with-python-and-thrift/</loc>
+    <loc>http://shzhangji.com/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/</loc>
     
     <lastmod>2020-08-22T12:06:11.268Z</lastmod>
     
@@ -65,14 +72,14 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/</loc>
+    <loc>http://shzhangji.com/cnblogs/2018/04/22/connect-hbase-with-python-and-thrift/</loc>
     
     <lastmod>2020-08-22T12:06:11.268Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2017/09/30/pandas-and-tidy-data/</loc>
+    <loc>http://shzhangji.com/cnblogs/2017/10/24/flume-source-code-component-lifecycle/</loc>
     
     <lastmod>2020-08-22T12:06:11.267Z</lastmod>
     
@@ -86,7 +93,7 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2017/10/24/flume-source-code-component-lifecycle/</loc>
+    <loc>http://shzhangji.com/cnblogs/2017/09/30/pandas-and-tidy-data/</loc>
     
     <lastmod>2020-08-22T12:06:11.267Z</lastmod>
     
@@ -163,14 +170,14 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/</loc>
+    <loc>http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/</loc>
     
     <lastmod>2020-08-22T12:06:11.262Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2017/06/18/druid-machine-learning-spark/</loc>
+    <loc>http://shzhangji.com/cnblogs/2017/06/18/build-interactive-report-with-crossfilter-and-dc-js/</loc>
     
     <lastmod>2020-08-22T12:06:11.262Z</lastmod>
     
@@ -184,6 +191,13 @@
   </url>
   
   <url>
+    <loc>http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/</loc>
+    
+    <lastmod>2020-08-22T12:06:11.259Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://shzhangji.com/cnblogs/2015/03/08/hbase-dos-and-donts/</loc>
     
     <lastmod>2020-08-22T12:06:11.259Z</lastmod>
@@ -192,13 +206,6 @@
   
   <url>
     <loc>http://shzhangji.com/cnblogs/2015/06/25/compressed-oops-in-the-hotspot-jvm/</loc>
-    
-    <lastmod>2020-08-22T12:06:11.259Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2015/09/05/anemic-domain-model/</loc>
     
     <lastmod>2020-08-22T12:06:11.259Z</lastmod>
     
@@ -219,20 +226,6 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/</loc>
-    
-    <lastmod>2020-08-22T12:06:11.258Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/</loc>
-    
-    <lastmod>2020-08-22T12:06:11.258Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://shzhangji.com/cnblogs/2014/12/16/spark-quick-start/</loc>
     
     <lastmod>2020-08-22T12:06:11.258Z</lastmod>
@@ -247,9 +240,16 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/</loc>
+    <loc>http://shzhangji.com/cnblogs/2014/11/07/sbt-offline/</loc>
     
-    <lastmod>2020-08-22T12:06:11.257Z</lastmod>
+    <lastmod>2020-08-22T12:06:11.258Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2014/10/14/mysql-incorrent-utf8-value/</loc>
+    
+    <lastmod>2020-08-22T12:06:11.258Z</lastmod>
     
   </url>
   
@@ -261,9 +261,9 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2013/12/17/the-law-of-leaky-abstractions/</loc>
+    <loc>http://shzhangji.com/cnblogs/2014/04/07/hive-small-files/</loc>
     
-    <lastmod>2020-08-22T12:06:11.256Z</lastmod>
+    <lastmod>2020-08-22T12:06:11.257Z</lastmod>
     
   </url>
   
@@ -276,6 +276,13 @@
   
   <url>
     <loc>http://shzhangji.com/cnblogs/2014/01/25/java-reflection-tutorial/</loc>
+    
+    <lastmod>2020-08-22T12:06:11.256Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://shzhangji.com/cnblogs/2013/12/17/the-law-of-leaky-abstractions/</loc>
     
     <lastmod>2020-08-22T12:06:11.256Z</lastmod>
     
@@ -359,7 +366,7 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/</loc>
+    <loc>http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/</loc>
     
     <lastmod>2020-08-22T12:06:11.252Z</lastmod>
     
@@ -373,7 +380,7 @@
   </url>
   
   <url>
-    <loc>http://shzhangji.com/cnblogs/2012/12/23/nginx-live-upgrade/</loc>
+    <loc>http://shzhangji.com/cnblogs/2012/12/16/cia-noir-3/</loc>
     
     <lastmod>2020-08-22T12:06:11.252Z</lastmod>
     
